@@ -23,6 +23,7 @@ ECU32 es una **ECU universal** para vehículos de 12 / 24 V: una placa de propó
 - [Características](#características)
 - [Diagrama de bloques](#diagrama-de-bloques)
 - [Hardware](#hardware)
+- [Gabinete](#gabinete)
 - [Conectores](#conectores)
 - [Pinout](#pinout)
 - [Firmware](#firmware)
@@ -92,7 +93,7 @@ El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN,
 
 ---
 
-### Gabinete
+## Gabinete
 
 La placa se protege con tapas de acrílico superior e inferior, sostenidas por separadores impresos en 3D con insertos roscados M2 que pasan por los agujeros de Ø 5 mm de la PCB. Evitan cortocircuitos accidentales al manipular la placa energizada. El modelo y las medidas están en [`hardware/enclosure/`](hardware/enclosure/).
 
