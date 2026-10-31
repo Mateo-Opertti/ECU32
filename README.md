@@ -15,7 +15,7 @@ Santiago Acosta · Mateo Opertti
   <img src="docs/images/renders/ecu32-3d.png" alt="Render 3D de ECU32" width="700">
 </p>
 
-ECU32 es una **ECU universal** para vehículos de 12 V: una placa de propósito general con CAN FD, LIN, entradas y salidas digitales y analógicas protegidas, y conectividad Wi-Fi/BLE. Se adapta a cada aplicación desde el firmware. Está pensada para el entorno automotriz:
+ECU32 es una **ECU universal** para vehículos de 12 / 24 V: una placa de propósito general con CAN FD, LIN, entradas y salidas digitales y analógicas protegidas, y conectividad Wi-Fi/BLE. Se adapta a cada aplicación desde el firmware. Está pensada para el entorno automotriz:
 
 - componentes AEC-Q100/Q200;
 - protección contra transitorios ISO 16750-2 (cold crank y load dump);
