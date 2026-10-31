@@ -92,6 +92,12 @@ El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN,
 
 ---
 
+### Gabinete
+
+La placa se protege con tapas de acrílico superior e inferior, sostenidas por separadores impresos en 3D con insertos roscados M2 que pasan por los agujeros de Ø 5 mm de la PCB. Evitan cortocircuitos accidentales al manipular la placa energizada. El modelo y las medidas están en [`hardware/enclosure/`](hardware/enclosure/).
+
+---
+
 ## Conectores
 
 | Ref. | Función | Pines |
@@ -268,6 +274,7 @@ ECU32/
 │   ├── schematic/         Esquemático en PDF (7 hojas) + netlist PI_3.NET
 │   ├── pcb/               Layout en PDF (top y bottom)
 │   ├── 3d/                Modelo 3D de la placa (STEP)
+│   ├── enclosure/         Separadores impresos en 3D para el gabinete (STL)
 │   ├── fabrication/       Gerbers, NC Drill y Pick & Place (JLCPCB)      [pendiente]
 │   └── bom/               BOM con links a DigiKey                        [pendiente]
 ├── firmware/              Proyecto CMake (STM32Cube para VS Code)
@@ -312,6 +319,7 @@ Las carpetas marcadas como *pendiente* todavía sólo tienen un `README.md` que 
 | PCB layout | Terminado, fabricado por JLCPCB en octubre de 2026 |
 | Componentes | Recibidos |
 | Armado | Placa armada |
+| Gabinete | Separadores impresos en 3D |
 | Bring-up | En curso |
 | Firmware | En curso: programas de prueba por periférico listos |
 | Entrega final | 30/11/2026 |
