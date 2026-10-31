@@ -280,7 +280,7 @@ ECU32/
 │   │   ├── pcb/           Capturas del layout
 │   │   └── photos/        Fotos de la placa armada y de las pruebas
 │   ├── manual/            Manual de usuario UM-ECU32                     [pendiente]
-│   └── reports/           Anteproyecto e informe final                   [pendiente]
+│   └── reports/           Anteproyecto (informe final pendiente)
 └── README.md
 ```
 
