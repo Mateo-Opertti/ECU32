@@ -38,3 +38,12 @@ desktop.ini
 # --- Altium: simulación (>100 MB) ---
 *.sdf
 Simulation/
+
+# --- Fuentes editables de Altium (por ahora no se publican) ---
+hardware/altium/
+*.SchDoc
+*.PcbDoc
+*.PrjPcb
+*.SchLib
+*.PcbLib
+*.IntLib
