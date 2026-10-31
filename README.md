@@ -5,13 +5,14 @@ Proyecto Integrador 3 · Ingeniería en Electrónica · Universidad ORT Uruguay
 Santiago Acosta · Mateo Opertti
 
 <p align="center">
-  <img src="docs/images/pcb/ecu32-layout-top.png" alt="Layout de ECU32 (vista top)" width="600">
+  <img src="docs/images/renders/ecu32-3d.png" alt="Render 3D de ECU32" width="700">
 </p>
 
 <p align="center">
-  <a href="hardware/schematic/ECU32_Schematic_Rev1.0.pdf"><b>📄 Esquemático (PDF)</b></a> ·
-  <a href="hardware/pcb/ECU32_PCB_Layout_Rev1.0.pdf"><b>🧩 PCB Layout (PDF)</b></a> ·
-  <a href="hardware/schematic/PI_3.NET"><b>🔗 Netlist</b></a>
+  <a href="#pinout"><b>Pinout</b></a> ·
+  <a href="hardware/schematic/ECU32_Schematic_Rev1.0.pdf"><b>Esquemático (PDF)</b></a> ·
+  <a href="hardware/pcb/ECU32_PCB_Layout_Rev1.0.pdf"><b>PCB Layout (PDF)</b></a> ·
+  <a href="hardware/schematic/PI_3.NET"><b>Netlist</b></a>
 </p>
 
 ECU32 reúne en un solo nodo dos funciones que normalmente están en ECUs separadas: un **BMS**, que es relevante para la seguridad, y un **control de clima**, que no es crítico. Con eso buscamos bajar la cantidad de ítems del BOM, el peso del arnés y el costo total. La placa está pensada para el entorno automotriz:
@@ -253,7 +254,7 @@ Cada carpeta tiene su propio `README.md` que explica qué va adentro y cómo exp
 
 | Render 3D | Placa armada |
 |---|---|
-| ![render](docs/images/renders/ecu32-iso.png) | ![foto](docs/images/photos/ecu32-assembled.jpg) |
+| ![render](docs/images/renders/ecu32-3d.png) | ![foto](docs/images/photos/ecu32-assembled.jpg) |
 -->
 
 *Próximamente: renders 3D y fotos de la placa armada.*
@@ -264,12 +265,12 @@ Cada carpeta tiene su propio `README.md` que explica qué va adentro y cómo exp
 
 | Etapa | Estado |
 |---|---|
-| Esquemático | ✅ Rev 1.0 |
-| PCB layout | ✅ Rev 1.0, enviada a JLCPCB (octubre de 2026) |
-| Componentes | ✅ Recibidos |
-| Armado y bring-up | 🔄 En curso |
-| Firmware | 🔄 En curso |
-| Entrega final | 📅 30/11/2026 |
+| Esquemático | Terminado (Rev 1.0) |
+| PCB layout | Terminado (Rev 1.0), enviado a JLCPCB en octubre de 2026 |
+| Componentes | Recibidos |
+| Armado y bring-up | En curso |
+| Firmware | En curso |
+| Entrega final | 30/11/2026 |
 
 ### Limitaciones conocidas de la Rev 1.0
 
@@ -281,9 +282,9 @@ Cada carpeta tiene su propio `README.md` que explica qué va adentro y cómo exp
 
 ## Equipo
 
-| | Rol |
-|---|---|
-| **Santiago Acosta** | Esquemático |
-| **Mateo Opertti** | PCB layout y fabricación |
+Diseñado y desarrollado en conjunto por:
+
+- **Santiago Acosta**
+- **Mateo Opertti**
 
 Proyecto Integrador 3, Universidad ORT Uruguay, 2026.
