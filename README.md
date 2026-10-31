@@ -4,10 +4,12 @@
 Proyecto Integrador 3 · Ingeniería en Electrónica · Universidad ORT Uruguay
 Santiago Acosta · Mateo Opertti
 
+<h2 align="center"><a href="#pinout">Ver pinout</a></h2>
+
 <p align="center">
-  <a href="#pinout"><b>Pinout</b></a> ·
   <a href="hardware/schematic/ECU32_Schematic.pdf"><b>Esquemático (PDF)</b></a> ·
-  <a href="hardware/pcb/ECU32_PCB_Layout.pdf"><b>PCB Layout (PDF)</b></a>
+  <a href="hardware/pcb/ECU32_PCB_Layout.pdf"><b>PCB Layout (PDF)</b></a> ·
+  <a href="#galería"><b>Fotos reales</b></a>
 </p>
 
 <p align="center">
