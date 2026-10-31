@@ -5,14 +5,14 @@ Proyecto Integrador 3 · Ingeniería en Electrónica · Universidad ORT Uruguay
 Santiago Acosta · Mateo Opertti
 
 <p align="center">
-  <img src="docs/images/renders/ecu32-3d.png" alt="Render 3D de ECU32" width="700">
-</p>
-
-<p align="center">
   <a href="#pinout"><b>Pinout</b></a> ·
   <a href="hardware/schematic/ECU32_Schematic_Rev1.0.pdf"><b>Esquemático (PDF)</b></a> ·
   <a href="hardware/pcb/ECU32_PCB_Layout_Rev1.0.pdf"><b>PCB Layout (PDF)</b></a> ·
   <a href="hardware/schematic/PI_3.NET"><b>Netlist</b></a>
+</p>
+
+<p align="center">
+  <img src="docs/images/renders/ecu32-3d.png" alt="Render 3D de ECU32" width="700">
 </p>
 
 ECU32 reúne en un solo nodo dos funciones que normalmente están en ECUs separadas: un **BMS**, que es relevante para la seguridad, y un **control de clima**, que no es crítico. Con eso buscamos bajar la cantidad de ítems del BOM, el peso del arnés y el costo total. La placa está pensada para el entorno automotriz:
@@ -134,7 +134,32 @@ El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN,
 
 ## Pinout
 
-> La fuente de verdad es el netlist `PI_3.NET`. Algunos nombres de net del esquemático de Altium no coinciden con el pin real del MCU. Ante cualquier duda, gana el netlist.
+### Niveles de tensión por conector
+
+| Conector | Señales | Nivel de trabajo | Protección |
+|---|---|---|---|
+| J7 | VBAT, GND | 12 V nominal | Fusible, TVS en anti-serie, corte por sobretensión (≈ 35 V) y protección de polaridad inversa |
+| J1 | DI1 – DI4 | **3,3 V, 12 V o 24 V**, según el jumper (ver abajo) | 4,7 kΩ en serie, zener de 4,7 V, Schottky y TVS de 36 V |
+| J1 | DO1 – DO4 | Salida lógica de 3,3 V a través de 4,7 kΩ (señal, no potencia) | Zener de 4,7 V, Schottky y TVS de 36 V |
+| J4 | AN1 – AN4 | 0 – 5 V (5 V a la entrada = 2,97 V en el ADC) | 5,6 kΩ en serie, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
+| J3 | CAN1, CAN2 | Niveles CAN FD estándar | ESD2CAN36-Q1 por bus |
+| J3 | LIN | Nivel de batería (bus LIN estándar) | Propia del TLIN4029A-Q1 |
+
+### Selección de tensión de las entradas digitales (jumpers)
+
+Cada entrada digital tiene, cerca de J1, una columna de jumpers con tres posiciones: **3V3**, **12V** y **24V**. La serigrafía de cada columna indica el pin del MCU:
+
+| Columna (serigrafía) | C11 | D2 | E1 | E5 |
+|---|---|---|---|---|
+| Entrada | DI4 | DI3 | DI2 | DI1 |
+
+| Jumper | Divisor (4,7 kΩ en serie +) | Tensión en el buffer a fondo de escala |
+|---|---|---|
+| **3V3** | sin resistencia a GND | 3,3 V (entrada directa) |
+| **12V** | 1,5 kΩ a GND | 12 V → 2,90 V |
+| **24V** | 680 Ω a GND | 24 V → 3,03 V |
+
+Poné **un solo jumper por canal**. Las entradas están protegidas por el zener de 4,7 V aunque el jumper no coincida con la tensión aplicada, pero la lectura sólo es correcta si la posición del jumper corresponde a la señal.
 
 ### Entradas y salidas digitales (U5 SN74LV244A)
 
@@ -271,12 +296,6 @@ Cada carpeta tiene su propio `README.md` que explica qué va adentro y cómo exp
 | Armado y bring-up | En curso |
 | Firmware | En curso |
 | Entrega final | 30/11/2026 |
-
-### Limitaciones conocidas de la Rev 1.0
-
-- El grado de temperatura del MCU (sufijo 6) es −40…85 °C ambiente.
-- El divisor de BAT_MON tiene un consumo permanente de ~100 µA, lo que compromete el objetivo de IQ en sleep.
-- El TLV9164 de las entradas analógicas se alimenta desde 5 V. Para la próxima revisión se evalúa pasarlo a 3,3 V.
 
 ---
 
