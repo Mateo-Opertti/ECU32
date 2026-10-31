@@ -7,8 +7,7 @@ Santiago Acosta · Mateo Opertti
 <p align="center">
   <a href="#pinout"><b>Pinout</b></a> ·
   <a href="hardware/schematic/ECU32_Schematic_Rev1.0.pdf"><b>Esquemático (PDF)</b></a> ·
-  <a href="hardware/pcb/ECU32_PCB_Layout_Rev1.0.pdf"><b>PCB Layout (PDF)</b></a> ·
-  <a href="hardware/3d/ECU32_Rev1.0.step"><b>Modelo 3D (STEP)</b></a>
+  <a href="hardware/pcb/ECU32_PCB_Layout_Rev1.0.pdf"><b>PCB Layout (PDF)</b></a>
 </p>
 
 <p align="center">
