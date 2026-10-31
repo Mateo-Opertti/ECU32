@@ -14,10 +14,7 @@ Santiago Acosta · Mateo Opertti
   <img src="docs/images/renders/ecu32-3d.png" alt="Render 3D de ECU32" width="700">
 </p>
 
-ECU32 es una **ECU universal** para vehículos de 12 / 24 V: una placa de propósito general con CAN FD, LIN, entradas y salidas digitales y analógicas protegidas, y conectividad Wi-Fi/BLE. Se adapta a cada aplicación desde el firmware. Está pensada para el entorno automotriz:
-
-- componentes AEC-Q100/Q200;
-- protección contra transitorios ISO 16750-2 (cold crank y load dump);
+ECU32 es una **ECU universal** para vehículos de 12 / 24 V: una placa de propósito general con CAN FD, LIN, entradas y salidas digitales y analógicas protegidas, y conectividad Wi-Fi/BLE. Se adapta a cada aplicación desde el firmware. Está pensada para el entorno automotriz, componentes AEC-Q100/Q200 y protecciónes contra transitorios ISO 16750-2 (cold crank y load dump).
 
 ---
 
@@ -139,7 +136,7 @@ El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN,
 | J7 | VBAT, GND | 12 V o 24 V nominal | Fusible, TVS en anti-serie, corte por sobretensión (≈ 35 V) y protección de polaridad inversa |
 | J1 | DI1 – DI4 | **3,3 V, 12 V o 24 V**, según el jumper (ver abajo) | 4,7 kΩ en serie, zener de 4,7 V, Schottky y TVS de 36 V |
 | J1 | DO1 – DO4 | Salida lógica de 3,3 V a través de 4,7 kΩ (señal, no potencia) | Zener de 4,7 V, Schottky y TVS de 36 V |
-| J4 | AN1 – AN4 | 0 – 5 V (5 V a la entrada = 2,97 V en el ADC) | 5,6 kΩ en serie, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
+| J4 | AN1 – AN4 | 0 – 5 V (5 V a la entrada = 2,97 V en el ADC AN1) AN2 3.3V AN3 12V y AN4 es 24V | 5,6 kΩ en serie, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
 | J3 | CAN1, CAN2 | Niveles CAN FD estándar | ESD2CAN36-Q1 por bus |
 | J3 | LIN | Nivel de batería (bus LIN estándar) | Propia del TLIN4029A-Q1 |
 
