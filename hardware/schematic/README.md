@@ -2,7 +2,7 @@
 
 | Archivo | Contenido |
 |---|---|
-| `ECU32_Schematic_Rev1.0.pdf` | Las 7 hojas del esquemático (A4) |
+| `ECU32_Schematic.pdf` | Las 7 hojas del esquemático (A4) |
 | `PI_3.NET` | Netlist exportada desde Altium: **fuente de verdad del pinout** |
 
 ## Hojas

@@ -2,7 +2,7 @@
 
 | Archivo | Contenido |
 |---|---|
-| `ECU32_Rev1.0.step` | Placa completa con componentes (STEP AP214, ~26 MB) |
+| `ECU32.step` | Placa completa con componentes (STEP AP214, ~26 MB) |
 
 Sirve para diseñar la carcasa (Fusion, SolidWorks, FreeCAD) y para verificar alturas e interferencias. Para verlo sin instalar nada se puede usar un visor online de STEP, como [3dviewer.net](https://3dviewer.net).
 

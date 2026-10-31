@@ -2,7 +2,7 @@
 
 | Archivo | Contenido |
 |---|---|
-| `ECU32_PCB_Layout_Rev1.0.pdf` | Página 1: vista top (composite). Página 2: vista bottom |
+| `ECU32_PCB_Layout.pdf` | Página 1: vista top (composite). Página 2: vista bottom |
 
 Las capturas en PNG que se muestran en el README principal están en [`docs/images/pcb/`](../../docs/images/pcb/).
 
