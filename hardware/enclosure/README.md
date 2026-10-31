@@ -10,11 +10,11 @@
 
 ## Qué son
 
-Piezas impresas en 3D que pasan por los **agujeros de Ø 5 mm de la PCB** y sostienen las **tapas de acrílico** superior e inferior. Cada una tiene una brida en un extremo y un **inserto roscado M2 de bronce** en el otro, donde se atornilla la tapa con un tornillo M2.
+Piezas impresas en 3D que pasan por los **agujeros de Ø 5 mm de la PCB** y sostienen las **tapas de acrílico** superior e inferior. Cada una mide **32 mm de largo** y tiene una brida de base en un extremo y un **inserto roscado M2 de bronce** en el otro, donde se atornilla la tapa con un tornillo M2.
 
 | Medida | Valor |
 |---|---|
-| Largo total | 34 mm (brida de 2 mm + fuste de 32 mm) |
+| Largo | **32 mm** (fuste; la brida de 2 mm hace de base, por eso el STL mide 34 mm en total) |
 | Diámetro del fuste | 4,6 mm (entra en el agujero de Ø 5 mm) |
 | Diámetro de la brida | 7,5 mm |
 | Alojamiento del inserto | Ø 2,8 mm × 5 mm de profundidad |
