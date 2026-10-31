@@ -31,7 +31,7 @@ Cada archivo de [`Apps/`](Apps/) es un programa completo con su propio `main()`.
 
 - **CAN FD:** unir CANH1 con CANH2 y CANL1 con CANL2 en J3, con una terminación de 120 Ω (SW2 o SW4).
 - **LIN:** dos placas, una con `LIN_Maestro.c` y otra con `LIN_Esclavo.c`, unidas por el pin LIN de J3 y GND. En la placa maestra, SW3 cerrado (pull-up de master).
-- **ADC:** las entradas trabajan de 0 a 5 V en J4 (5 V a la entrada = 2,97 V en el pin del ADC).
+- **ADC:** cada entrada de J4 tiene su propio rango: AN1 de 0 a 5 V, AN2 de 0 a 3,3 V, AN3 de 0 a 12 V y AN4 de 0 a 24 V.
 
 ## Compilar y grabar
 

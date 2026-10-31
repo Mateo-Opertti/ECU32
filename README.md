@@ -120,6 +120,7 @@ El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN,
 | Pin J4 | 1 | 2 | 3 | 4 |
 |---|---|---|---|---|
 | Señal | AN1 | AN2 | AN3 | AN4 |
+| Rango | 0 – 5 V | 0 – 3,3 V | 0 – 12 V | 0 – 24 V |
 
 **J7, alimentación:** pin 1 = VBAT y pin 2 = GND.
 
@@ -136,7 +137,10 @@ El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN,
 | J7 | VBAT, GND | 12 V o 24 V nominal | Fusible, TVS en anti-serie, corte por sobretensión (≈ 35 V) y protección de polaridad inversa |
 | J1 | DI1 – DI4 | **3,3 V, 12 V o 24 V**, según el jumper (ver abajo) | 4,7 kΩ en serie, zener de 4,7 V, Schottky y TVS de 36 V |
 | J1 | DO1 – DO4 | Salida lógica de 3,3 V a través de 4,7 kΩ (señal, no potencia) | Zener de 4,7 V, Schottky y TVS de 36 V |
-| J4 | AN1 – AN4 | 0 – 5 V (5 V a la entrada = 2,97 V en el ADC AN1) AN2 3.3V AN3 12V y AN4 es 24V | 5,6 kΩ en serie, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
+| J4 | AN1 | 0 – 5 V | Divisor resistivo y filtro RC, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
+| J4 | AN2 | 0 – 3,3 V | Ídem |
+| J4 | AN3 | 0 – 12 V | Ídem |
+| J4 | AN4 | 0 – 24 V | Ídem |
 | J3 | CAN1, CAN2 | Niveles CAN FD estándar | ESD2CAN36-Q1 por bus |
 | J3 | LIN | Nivel de batería (bus LIN estándar) | Propia del TLIN4029A-Q1 |
 
