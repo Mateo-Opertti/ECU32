@@ -229,7 +229,7 @@ Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta im
 
 ## Firmware: notas de arranque
 
-Puntos que hay que configurar sí o sí en CubeMX o en el código de inicialización:
+Puntos que hay que configurar sí o sí en el código de inicialización:
 
 1. **Debug:** dejar el JTAG completo habilitado (PA15, PB3 y PB4 están cableados a J2).
 2. **Relojes:** HSE de 16 MHz y LSE de 32,768 kHz. Si el LSE no arranca, ajustar `LSEDRV`.
@@ -239,7 +239,11 @@ Puntos que hay que configurar sí o sí en CubeMX o en el código de inicializac
 6. **ESP32:** manejar PE7 como open-drain, porque el DevKit ya tiene su propio pull-up en EN.
 7. **Wake-up por CAN:** WKUP3 (PE6) desde CAN1 y WKUP2 (PC13) desde CAN2.
 
-Herramientas: STM32CubeIDE, STM32CubeMX, STM32CubeProgrammer y STM32CubeG4 (HAL/LL). La placa no tiene USB propio; siempre se alimenta por J7.
+### Programas de prueba
+
+En [`firmware/`](firmware/) están los programas de bring-up, uno por periférico: LEDs, entradas y salidas digitales, ADC, CAN FD, LIN (maestro y esclavo) y PWM. Están escritos a nivel de registros, sin HAL, y se elige cuál grabar desde `Src/main.c`. En el [README del firmware](firmware/README.md) está qué prueba cada uno, cómo conectar la placa y cómo compilar y grabar.
+
+Herramientas: VS Code con la extensión STM32Cube (CMake + Ninja, GCC 14.3.1) y un ST-LINK conectado a J2. La placa no tiene USB propio; siempre se alimenta por J7.
 
 ---
 
@@ -253,7 +257,9 @@ ECU32/
 │   ├── 3d/                Modelo 3D de la placa (STEP)
 │   ├── fabrication/       Gerbers, NC Drill y Pick & Place enviados a JLCPCB
 │   └── bom/               BOM con links a DigiKey
-├── firmware/              Proyecto STM32CubeIDE
+├── firmware/              Proyecto CMake (STM32Cube para VS Code)
+│   ├── Apps/              Programas de prueba, uno por periférico
+│   └── Src/               main.c (selector de programa), startup y syscalls
 ├── docs/
 │   ├── images/
 │   │   ├── renders/       Renders 3D para el README
@@ -293,7 +299,7 @@ Cada carpeta tiene su propio `README.md` que explica qué va adentro y cómo exp
 | PCB layout | Terminado (Rev 1.0), enviado a JLCPCB en octubre de 2026 |
 | Componentes | Recibidos |
 | Armado y bring-up | En curso |
-| Firmware | En curso |
+| Firmware | En curso: programas de prueba por periférico listos |
 | Entrega final | 30/11/2026 |
 
 ---

@@ -11,10 +11,10 @@ Project Outputs for */
 ~$*
 .~lock.*
 
-# --- STM32CubeIDE ---
+# --- Firmware (STM32Cube para VS Code / CMake) ---
+firmware/build/
 firmware/**/Debug/
 firmware/**/Release/
-firmware/**/.settings/
 *.launch
 
 # --- LaTeX ---

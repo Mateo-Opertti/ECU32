@@ -1,0 +1,10 @@
+// Selector de programa: descomentá la app que quieras grabar (solo una a la vez)
+//#include "../Apps/LEDs.c"
+//#include "../Apps/Digital.c"
+//#include "../Apps/Digital_Salidas.c"
+//#include "../Apps/Digital_Loopback.c"
+//#include "../Apps/CAN_FD.c"
+//#include "../Apps/ADC.c"
+//#include "../Apps/LIN_Maestro.c"
+//#include "../Apps/LIN_Esclavo.c"
+#include "../Apps/PWM.c"
