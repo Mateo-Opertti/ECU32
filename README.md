@@ -1,6 +1,6 @@
 # ECU32
 
-**ECU universal para vehículos de 12 V basada en STM32G491**
+**ECU universal para vehículos de 12 / 24 V basada en STM32G491**
 Proyecto Integrador 3 · Ingeniería en Electrónica · Universidad ORT Uruguay
 Santiago Acosta · Mateo Opertti
 
