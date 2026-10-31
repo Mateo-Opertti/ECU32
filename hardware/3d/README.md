@@ -1,13 +1,13 @@
 # Modelo 3D
 
-Archivo esperado: `ECU32_RevA.step`
+| Archivo | Contenido |
+|---|---|
+| `ECU32_Rev1.0.step` | Placa completa con componentes (STEP AP214, ~26 MB) |
 
-**Cómo exportarlo desde Altium:**
+Sirve para diseñar la carcasa (Fusion, SolidWorks, FreeCAD) y para verificar alturas e interferencias. Para verlo sin instalar nada se puede usar un visor online de STEP, como [3dviewer.net](https://3dviewer.net).
 
-1. Abrí el `.PcbDoc`.
-2. **File → Export → STEP 3D**.
-3. Incluí los componentes con modelo 3D y la placa con sus agujeros.
+Los renders en PNG están en [`docs/images/renders/`](../../docs/images/renders/).
 
-Sirve para diseñar la carcasa (Fusion, SolidWorks, FreeCAD) y para verificar alturas.
+## Cómo regenerarlo
 
-Los **renders** en PNG para el README van en [`docs/images/renders/`](../../docs/images/renders/). Se pueden sacar desde la vista 3D (tecla `3`) o con un OutJob: **Documentation Outputs → PCB 3D Print**.
+Desde Altium, con el `.PcbDoc` abierto: **File → Export → STEP 3D**, incluyendo los componentes con modelo 3D.
