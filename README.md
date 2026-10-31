@@ -278,7 +278,7 @@ ECU32/
 │   ├── pcb/               Layout en PDF (top y bottom)
 │   ├── 3d/                Modelo 3D de la placa (STEP)
 │   ├── enclosure/         Separadores impresos en 3D para el gabinete (STL)
-│   ├── fabrication/       Gerbers, NC Drill y Pick & Place (JLCPCB)      [pendiente]
+│   ├── fabrication/       Gerbers y NC Drill enviados a JLCPCB (zip)
 │   └── bom/               BOM (CSV y Excel)
 ├── firmware/              Proyecto CMake (STM32Cube para VS Code)
 │   ├── Apps/              Programas de prueba, uno por periférico
