@@ -1,0 +1,40 @@
+# --- Altium Designer ---
+History/
+__Previews/
+Project Logs for */
+Project Outputs for */
+*.PrjPcbStructure
+*.SchDocPreview
+*.PcbDocPreview
+*.LOG
+*.Dat
+~$*
+.~lock.*
+
+# --- STM32CubeIDE ---
+firmware/**/Debug/
+firmware/**/Release/
+firmware/**/.settings/
+*.launch
+
+# --- LaTeX ---
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+
+# --- OS ---
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# --- Altium: simulación (>100 MB) ---
+*.sdf
+Simulation/

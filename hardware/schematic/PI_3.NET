@@ -1,0 +1,1358 @@
+Wire List
+
+<<< Component List >>>
+RCE5C1H100J0A2H03B              C1             FP-RCE0DB-MFG
+RCE5C1H6R0D0DBH03A              C2             FP-RCE0DB-MFG
+RCE5C1H6R0D0DBH03A              C3             FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C4             FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C5             FP-RCE0DB-MFG
+Capacitor cerámico TH           C6             Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C7             Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C8             Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C9             Capacitor cerámico TH-Footpri
+ECA1HM100                       C10            CAPPR55-200-1100X500X1200
+Capacitor cerámico TH           C11            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C12            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C13            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C14            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C15            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C16            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C17            Capacitor cerámico TH-Footpri
+ECA1HHG331B                     C18            FP-RAD-TH-D_10_0_5-L_16_1-MFG
+FG14C0G2A153JRT06               C19            FG14C0G2A153JRT06-Footprint-1
+Capacitor cerámico TH           C20            Capacitor cerámico TH-Footpri
+RCE5C1H100J0A2H03B              C21            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C22            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C23            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C24            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C25            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C26            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C27            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C28            FP-RCE0DB-MFG
+C322C221K5R5TA                  C29            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C30            FP-RCE0DB-MFG
+Capacitor cerámico TH           C31            Capacitor cerámico TH-Footpri
+RCE5C1H100J0A2H03B              C32            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C33            FP-RCE0DB-MFG
+RCE5C1H100J0A2H03B              C34            FP-RCE0DB-MFG
+Capacitor cerámico TH           C35            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C36            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C37            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C38            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C39            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C40            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C41            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C42            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C44            Capacitor cerámico TH-Footpri
+Capacitor cerámico TH           C45            Capacitor cerámico TH-Footpri
+ESD2CAN36DBZRQ1                 D1             SOT-23-3_DBZ_TEX
+BAS40LT1G                       D2             ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D3             ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D4             ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D5             ONSC-SOT-23-3-318-08_V
+ESD2CAN36DBZRQ1                 D6             SOT-23-3_DBZ_TEX
+BAS40LT1G                       D7             ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D8             ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D9             ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D10            ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D11            ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D12            ONSC-SOT-23-3-318-08_V
+ESD2CAN36DBZRQ1                 D13            SOT-23-3_DBZ_TEX
+BAS40LT1G                       D14            ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D15            ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D16            ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D17            ONSC-SOT-23-3-318-08_V
+ESD2CAN36DBZRQ1                 D18            SOT-23-3_DBZ_TEX
+BAS40LT1G                       D19            ONSC-SOT-23-3-318-08_V
+BZX84C4V7LT1G                   D20            ONSC-SOT-23-3-318-08_V
+SMBJ58A                         D21            FP-SMBJ-MFG
+BZT52C18-7-F                    D22            FP-SOD123-MFG
+SMBJ28A                         D23            FP-SMBJ-MFG
+STPS2H100AY                     D24            FP-SMA-MFG
+ESD2CAN36DBZRQ1                 D25            SOT-23-3_DBZ_TEX
+ESD2CAN36DBZRQ1                 D26            SOT-23-3_DBZ_TEX
+MMSD4148T3G                     D27            ONSC-SOD-123-2-425-04_V
+BAS40LT1G                       D28            ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D29            ONSC-SOT-23-3-318-08_V
+ESD2CAN36DBZRQ1                 D30            SOT-23-3_DBZ_TEX
+BAS40LT1G                       D31            ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D32            ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D33            ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D34            ONSC-SOT-23-3-318-08_V
+ESD2CAN36DBZRQ1                 D35            SOT-23-3_DBZ_TEX
+BAS40LT1G                       D36            ONSC-SOT-23-3-318-08_V
+BAS40LT1G                       D37            ONSC-SOT-23-3-318-08_V
+B340A-13-F                      D38            FP-SMA-MFG
+PESD5V0L4UG,115                 D39            PESD5V0L4UG,115-Footprint-1
+ESD9X5.0ST5G                    D40            ONSC-SOD-923-2-514AA-01_V
+G502DC                          DS1            CGX-G502DC
+G502DC                          DS2            CGX-G502DC
+G502DC                          DS3            CGX-G502DC
+G502DC                          DS4            CGX-G502DC
+9.52017E+14                     F1             9.52017E+14-Footprint-1
+TBL002A-350-08GR-2OR            J1             CUI_TBL002A-350-08GR-2OR
+SSK03-MPH-254-B10               J2             SAMESKY_SSK03-MPH-254-B10
+TBL002A-350-05GR-2OR            J3             TBL002A-350-05GR-2OR-Footprin
+TBL002A-350-04GR-2OR            J4             CUI_TBL002A-350-04GR-2OR
+TBL002A-350-02GR-2OR            J7             CUI_TBL002A-350-02GR-2OR
+SSK03-MPH-254-B10               J?             SAMESKY_SSK03-MPH-254-B10
+HPAL1V1040-100-R                L1             INDC115100X400M
+SRN6045TA-101M                  L2             SRN6045TA-101M-Footprint-1
+TSW-102-26-F-S                  P1             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P2             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P3             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P4             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P5             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P6             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P7             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P8             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P9             SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P10            SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P11            SMTC-TSW-102-26-XX-S
+TSW-102-26-F-S                  P12            SMTC-TSW-102-26-XX-S
+BUK7K15-80EX                    Q1             BUK7K15-80EX-Footprint-1
+MFR-25FBF52-47R5                R1             RESA60-630X240
+MFR-25FBF52-47R5                R2             RESA60-630X240
+MFR-25FBF52-47R5                R3             RESA60-630X240
+MFR-25FBF52-47R5                R4             RESA60-630X240
+MFR-25FBF52-47R5                R5             RESA60-630X240
+MFR-25FBF52-47R5                R6             RESA60-630X240
+MFR-25FBF52-47R5                R7             RESA60-630X240
+MFR-25FBF52-47R5                R8             RESA60-630X240
+MFR-25FBF52-47R5                R9             RESA60-630X240
+MFR-25FBF52-47R5                R10            RESA60-630X240
+MFR-25FBF52-47R5                R11            RESA60-630X240
+MFR-25FBF52-47R5                R12            RESA60-630X240
+MFR-25FBF52-47R5                R13            RESA60-630X240
+MFR-25FBF52-47R5                R14            RESA60-630X240
+MFR-25FBF52-47R5                R15            RESA60-630X240
+MFR-25FBF52-47R5                R16            RESA60-630X240
+MFR-25FBF52-47R5                R17            RESA60-630X240
+MFR-25FBF52-47R5                R18            RESA60-630X240
+MFR-25FBF52-47R5                R19            RESA60-630X240
+MFR-25FBF52-47R5                R20            RESA60-630X240
+MFR-25FBF52-47R5                R21            RESA60-630X240
+MFR-25FBF52-47R5                R22            RESA60-630X240
+MFR-25FBF52-47R5                R23            RESA60-630X240
+MFR-25FBF52-47R5                R24            RESA60-630X240
+MFR-25FBF52-47R5                R25            RESA60-630X240
+MFR-25FBF52-47R5                R26            RESA60-630X240
+MFR-25FBF52-47R5                R27            RESA60-630X240
+MFR-25FBF52-47R5                R28            RESA60-630X240
+MFR-25FBF52-47R5                R29            RESA60-630X240
+MFR-25FBF52-47R5                R30            RESA60-630X240
+MFR-25FBF52-47R5                R31            RESA60-630X240
+MFR-25FBF52-47R5                R32            RESA60-630X240
+MFR-25FBF52-47R5                R33            RESA60-630X240
+MFR-25FBF52-47R5                R34            RESA60-630X240
+MFR-25FBF52-47R5                R35            RESA60-630X240
+MFR-25FBF52-47R5                R36            RESA60-630X240
+MFR-25FBF52-47R5                R37            RESA60-630X240
+MFR-25FBF52-47R5                R38            RESA60-630X240
+MFR-25FBF52-47R5                R39            RESA60-630X240
+MFR-25FBF52-47R5                R40            RESA60-630X240
+MFR-25FBF52-47R5                R41            RESA60-630X240
+MFR-25FBF52-47R5                R42            RESA60-630X240
+MFR-25FBF52-47R5                R43            RESA60-630X240
+MFR-25FBF52-47R5                R44            RESA60-630X240
+MFR-25FBF52-47R5                R45            RESA60-630X240
+MFR-25FBF52-47R5                R46            RESA60-630X240
+MFR-25FBF52-47R5                R47            RESA60-630X240
+MFR-25FBF52-47R5                R48            RESA60-630X240
+MFR-25FBF52-47R5                R49            RESA60-630X240
+MFR-25FBF52-47R5                R50            RESA60-630X240
+MFR-25FBF52-47R5                R51            RESA60-630X240
+MFR-25FBF52-47R5                R52            RESA60-630X240
+MFR-25FBF52-47R5                R53            RESA60-630X240
+MFR-25FBF52-47R5                R54            RESA60-630X240
+MFR-25FBF52-47R5                R55            RESA60-630X240
+MFR-25FBF52-47R5                R56            RESA60-630X240
+MFR-25FBF52-47R5                R57            RESA60-630X240
+MFR-25FBF52-47R5                R58            RESA60-630X240
+MFR-25FBF52-47R5                R59            RESA60-630X240
+MFR-25FBF52-47R5                R60            RESA60-630X240
+MFR-25FBF52-47R5                R61            RESA60-630X240
+MFR-25FBF52-47R5                R62            RESA60-630X240
+MFR-25FBF52-47R5                R63            RESA60-630X240
+MFR-25FBF52-47R5                R64            RESA60-630X240
+MFR-25FBF52-47R5                R65            RESA60-630X240
+MFR-25FBF52-47R5                R66            RESA60-630X240
+MFR-25FBF52-47R5                R67            RESA60-630X240
+MFR-25FBF52-47R5                R68            RESA60-630X240
+MFR-25FBF52-47R5                R69            RESA60-630X240
+MFR-25FBF52-47R5                R70            RESA60-630X240
+MFR-25FBF52-47R5                R71            RESA60-630X240
+MFR-25FBF52-47R5                R72            RESA60-630X240
+TS02-66-43-BK-160-LCR-D         S1             SW_TS02-66-43-BK-160-LCR-D
+1825255-1                       SW1            TECO-1825255-1_V
+SLW-111629-7A-D                 SW2            SLW-111629-7A-D-Footprint-1
+1825255-1                       SW3            TECO-1825255-1_V
+SLW-111629-7A-D                 SW4            SLW-111629-7A-D-Footprint-1
+STM32G491VCT6                   U1             STM32G491VCT6-Footprint-1
+LM74720QDRRRQ1                  U2             LM74720QDRRRQ1-Footprint-1
+AP64202SP-13                    U3             IC8_AP64202SP-13_DIO
+TLE42744GS V33                  U4             INF-PG-SOT223_SC-73_M
+SN74LV244AQDGSRQ1               U5             VSSOP20_DGS_TEX
+TCAN1046AVDYYRQ1                U6             TCAN1046AVDYYRQ1-Footprint-1
+TLIN4029ADRQ1                   U7             SOIC127P600X175-8M
+TLV9164IDR                      U8             TLV9164IDR-Footprint-1
+ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
+32.768KHz                       X1             FP-ABS07AIG-MFG
+16MHz                           X2             ABM8AIG-16.000MHZ-8-1Z-T-Foot
+
+<<< Wire List >>>
+
+  NODE  REFERENCE  PIN #   PIN NAME       PIN TYPE    PART VALUE
+
+[00232] VBAT_FUSE
+        C16        2       2              PASSIVE     Capacitor cerámico TH
+        D21        1       C              PASSIVE     SMBJ58A
+        F1         2       2              PASSIVE     9.52017E+14
+        Q1         1       1              PASSIVE     BUK7K15-80EX
+        U2         2       A              INPUT       LM74720QDRRRQ1
+        U2         3       VSNS           INPUT       LM74720QDRRRQ1
+
+[00231] VBAT_F
+        C7         1       1              PASSIVE     Capacitor cerámico TH
+        C8         1       1              PASSIVE     Capacitor cerámico TH
+        C18        2       A              PASSIVE     ECA1HHG331B
+        C30        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        D22        2       A              PASSIVE     BZT52C18-7-F
+        D24        1       K              PASSIVE     STPS2H100AY
+        Q1         3       3              PASSIVE     BUK7K15-80EX
+        R17        1       1              PASSIVE     MFR-25FBF52-47R5
+        SW3        2       2              PASSIVE     1825255-1
+        U3         2       VIN            PASSIVE     AP64202SP-13
+        U7         7       VSUP           POWER       TLIN4029ADRQ1
+
+[00230] VBAT
+        F1         1       1              PASSIVE     9.52017E+14
+        J7         1       1              PASSIVE     TBL002A-350-02GR-2OR
+
+[00229] TRST
+        J2         18      18             PASSIVE     SSK03-MPH-254-B10
+        U1         91      PB4            I/O         STM32G491VCT6
+
+[00228] TDO
+        J2         8       8              PASSIVE     SSK03-MPH-254-B10
+        U1         90      PB3            I/O         STM32G491VCT6
+
+[00227] TDI
+        J2         16      16             PASSIVE     SSK03-MPH-254-B10
+        U1         78      PA15           I/O         STM32G491VCT6
+
+[00226] SWDAT
+        J2         14      14             PASSIVE     SSK03-MPH-254-B10
+        U1         76      PA13           I/O         STM32G491VCT6
+
+[00225] SWCLK
+        J2         12      12             PASSIVE     SSK03-MPH-254-B10
+        U1         77      PA14           I/O         STM32G491VCT6
+
+[00224] Pin_C1
+        C34        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        D36        3       K              PASSIVE     BAS40LT1G
+        D37        1       A              PASSIVE     BAS40LT1G
+        R39        1       1              PASSIVE     MFR-25FBF52-47R5
+        R40        2       2              PASSIVE     MFR-25FBF52-47R5
+        U8         12      IN4+           INPUT       TLV9164IDR
+
+[00223] Pin_B11
+        C32        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        D31        3       K              PASSIVE     BAS40LT1G
+        D32        1       A              PASSIVE     BAS40LT1G
+        R35        1       1              PASSIVE     MFR-25FBF52-47R5
+        R36        2       2              PASSIVE     MFR-25FBF52-47R5
+        U8         3       IN1+           INPUT       TLV9164IDR
+
+[00222] Pin_A1
+        C1         2       2              PASSIVE     RCE5C1H100J0A2H03B
+        D28        1       A              PASSIVE     BAS40LT1G
+        D29        3       K              PASSIVE     BAS40LT1G
+        R28        2       2              PASSIVE     MFR-25FBF52-47R5
+        R33        1       1              PASSIVE     MFR-25FBF52-47R5
+        U8         5       IN2+           INPUT       TLV9164IDR
+
+[00221] Pin_A0
+        C33        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        D33        1       A              PASSIVE     BAS40LT1G
+        D34        3       K              PASSIVE     BAS40LT1G
+        R37        2       2              PASSIVE     MFR-25FBF52-47R5
+        R38        1       1              PASSIVE     MFR-25FBF52-47R5
+        U8         10      IN3+           INPUT       TLV9164IDR
+
+[00220] PF10
+        DS2        1       A              PASSIVE     G502DC
+        U1         11      PF10           I/O         STM32G491VCT6
+
+[00219] PF9
+        DS1        1       A              PASSIVE     G502DC
+        U1         10      PF9            I/O         STM32G491VCT6
+
+[00218] PF2
+        U1         19      PF2            I/O         STM32G491VCT6
+
+[00217] PE15
+        U1         46      PE15           I/O         STM32G491VCT6
+
+[00216] PE14
+        U1         45      PE14           I/O         STM32G491VCT6
+
+[00215] PE13
+        U1         44      PE13           I/O         STM32G491VCT6
+
+[00214] PE12
+        U1         43      PE12           I/O         STM32G491VCT6
+
+[00213] PE11
+        U1         42      PE11           I/O         STM32G491VCT6
+
+[00212] PE10
+        R54        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         41      PE10           I/O         STM32G491VCT6
+        U5         19      2*OE           INPUT       SN74LV244AQDGSRQ1
+
+[00211] PE8
+        R53        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         39      PE8            I/O         STM32G491VCT6
+        U5         1       1*OE           INPUT       SN74LV244AQDGSRQ1
+
+[00210] PE7
+        R44        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         38      PE7            I/O         STM32G491VCT6
+
+[00209] PE6
+        R61        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         5       PE6            I/O         STM32G491VCT6
+
+[00208] PE5
+        R14        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         4       PE5            I/O         STM32G491VCT6
+
+[00207] PE4
+        U1         3       PE4            I/O         STM32G491VCT6
+
+[00206] PE3
+        U1         2       PE3            I/O         STM32G491VCT6
+
+[00205] PE2
+        U1         1       PE2            I/O         STM32G491VCT6
+
+[00204] PE1
+        R13        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         98      PE1            I/O         STM32G491VCT6
+
+[00203] PE0
+        U1         97      PE0            I/O         STM32G491VCT6
+        U5         8       1A4            INPUT       SN74LV244AQDGSRQ1
+
+[00202] PD15
+        R51        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         62      PD15           I/O         STM32G491VCT6
+        U6         8       STB2/NSTB2     I/O         TCAN1046AVDYYRQ1
+
+[00201] PD14
+        R50        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         61      PD14           I/O         STM32G491VCT6
+        U6         14      STB1           I/O         TCAN1046AVDYYRQ1
+
+[00200] PD13
+        U1         60      PD13           I/O         STM32G491VCT6
+
+[00199] PD12
+        U1         59      PD12           I/O         STM32G491VCT6
+
+[00198] PD11
+        U1         58      PD11           I/O         STM32G491VCT6
+
+[00197] PD10
+        R52        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         57      PD10           I/O         STM32G491VCT6
+        U7         2       EN             INPUT       TLIN4029ADRQ1
+
+[00196] PD9
+        R48        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         56      PD9            I/O         STM32G491VCT6
+        U7         1       RXD            OUTPUT      TLIN4029ADRQ1
+
+[00195] PD8
+        R70        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         55      PD8            I/O         STM32G491VCT6
+        U7         4       TXD            INPUT       TLIN4029ADRQ1
+
+[00194] PD7
+        U1         89      PD7            I/O         STM32G491VCT6
+
+[00193] PD6
+        R45        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         88      PD6            I/O         STM32G491VCT6
+
+[00192] PD5
+        R46        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         87      PD5            I/O         STM32G491VCT6
+
+[00191] PD4
+        R47        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         86      PD4            I/O         STM32G491VCT6
+
+[00190] PD3
+        R43        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         85      PD3            I/O         STM32G491VCT6
+
+[00189] PD2
+        R15        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         84      PD2            I/O         STM32G491VCT6
+
+[00188] PD1
+        U1         83      PD1            I/O         STM32G491VCT6
+
+[00187] PD0
+        U1         82      PD0            I/O         STM32G491VCT6
+
+[00186] PC13
+        R60        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         7       PC13           I/O         STM32G491VCT6
+
+[00185] PC12
+        U1         81      PC12           I/O         STM32G491VCT6
+        U5         4       1A2            INPUT       SN74LV244AQDGSRQ1
+
+[00184] PC11
+        R12        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         80      PC11           I/O         STM32G491VCT6
+
+[00183] PC10
+        U1         79      PC10           I/O         STM32G491VCT6
+        U5         2       1A1            INPUT       SN74LV244AQDGSRQ1
+
+[00182] PC9
+        U1         68      PC9            I/O         STM32G491VCT6
+
+[00181] PC8
+        U1         67      PC8            I/O         STM32G491VCT6
+
+[00180] PC7
+        U1         66      PC7            I/O         STM32G491VCT6
+
+[00179] PC6
+        U1         65      PC6            I/O         STM32G491VCT6
+
+[00178] PC5
+        U1         31      PC5            I/O         STM32G491VCT6
+
+[00177] PC4
+        U1         30      PC4            I/O         STM32G491VCT6
+
+[00176] PC3
+        U1         18      PC3            I/O         STM32G491VCT6
+
+[00175] PC2
+        U1         17      PC2            I/O         STM32G491VCT6
+
+[00174] PC1_EXT
+        D35        1       IO             I/O         ESD2CAN36DBZRQ1
+        J4         3       3              PASSIVE     TBL002A-350-04GR-2OR
+        R40        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00173] PC1
+        U1         16      PC1            I/O         STM32G491VCT6
+        U8         13      IN4            OUTPUT      TLV9164IDR
+        U8         14      OUT4           INPUT       TLV9164IDR
+
+[00172] PC0
+        U1         15      PC0            I/O         STM32G491VCT6
+
+[00171] PB15
+        U1         54      PB15           I/O         STM32G491VCT6
+
+[00170] PB14
+        U1         53      PB14           I/O         STM32G491VCT6
+
+[00169] PB13
+        U1         52      PB13           I/O         STM32G491VCT6
+
+[00168] PB12
+        U1         51      PB12           I/O         STM32G491VCT6
+
+[00167] PB11_EXT
+        D30        1       IO             I/O         ESD2CAN36DBZRQ1
+        J4         1       1              PASSIVE     TBL002A-350-04GR-2OR
+        R36        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00166] PB11
+        U1         50      PB11           I/O         STM32G491VCT6
+        U8         1       OUT1           OUTPUT      TLV9164IDR
+        U8         2       IN1            INPUT       TLV9164IDR
+
+[00165] PB10
+        U1         47      PB10           I/O         STM32G491VCT6
+
+[00164] PB9
+        U1         96      PB9            I/O         STM32G491VCT6
+        U5         6       1A3            INPUT       SN74LV244AQDGSRQ1
+
+[00163] PB7
+        U1         94      PB7            I/O         STM32G491VCT6
+
+[00162] PB6
+        U1         93      PB6            I/O         STM32G491VCT6
+        U6         6       TXD2           I/O         TCAN1046AVDYYRQ1
+
+[00161] PB5
+        R59        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         92      PB5            I/O         STM32G491VCT6
+
+[00160] PB2
+        U1         34      PB2            I/O         STM32G491VCT6
+
+[00159] PB1
+        U1         33      PB1            I/O         STM32G491VCT6
+
+[00158] PB0
+        U1         32      PB0            I/O         STM32G491VCT6
+
+[00157] PAD
+        U2         13      NC             PASSIVE     LM74720QDRRRQ1
+
+[00156] PA12
+        U1         73      PA12           I/O         STM32G491VCT6
+        U6         1       TXD1           I/O         TCAN1046AVDYYRQ1
+
+[00155] PA11
+        R49        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         72      PA11           I/O         STM32G491VCT6
+
+[00154] PA10
+        R72        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         71      PA10           I/O         STM32G491VCT6
+
+[00153] PA9
+        R71        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         70      PA9            I/O         STM32G491VCT6
+
+[00152] PA8
+        U1         69      PA8            I/O         STM32G491VCT6
+
+[00151] PA7
+        U1         29      PA7            I/O         STM32G491VCT6
+
+[00150] PA6
+        U1         28      PA6            I/O         STM32G491VCT6
+
+[00149] PA5
+        U1         27      PA5            I/O         STM32G491VCT6
+
+[00148] PA4
+        U1         26      PA4            I/O         STM32G491VCT6
+
+[00147] PA3
+        U1         25      PA3            I/O         STM32G491VCT6
+
+[00146] PA2
+        U1         22      PA2            I/O         STM32G491VCT6
+
+[00145] PA1_EXT
+        D30        2       IO             I/O         ESD2CAN36DBZRQ1
+        J4         2       2              PASSIVE     TBL002A-350-04GR-2OR
+        R28        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00144] PA1
+        U1         21      PA1            I/O         STM32G491VCT6
+        U8         6       IN2            INPUT       TLV9164IDR
+        U8         7       OUT2           OUTPUT      TLV9164IDR
+
+[00143] PA0_EXT
+        D35        2       IO             I/O         ESD2CAN36DBZRQ1
+        J4         4       4              PASSIVE     TBL002A-350-04GR-2OR
+        R37        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00142] PA0
+        U1         20      PA0            I/O         STM32G491VCT6
+        U8         8       OUT3           INPUT       TLV9164IDR
+        U8         9       IN3            OUTPUT      TLV9164IDR
+
+[00141] OSC_OUT
+        R5         1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         13      PF1-OSC_OUT    I/O         STM32G491VCT6
+
+[00140] OSC_IN
+        C5         1       1              PASSIVE     RCE5C1H100J0A2H03B
+        U1         12      PF0-OSC_IN     I/O         STM32G491VCT6
+        X2         3       2              PASSIVE     16MHz
+
+[00139] OSC32_OUT
+        C3         1       1              PASSIVE     RCE5C1H6R0D0DBH03A
+        U1         9       PC15-OSC32_OUT I/O         STM32G491VCT6
+        X1         1       1              PASSIVE     32.768KHz
+
+[00138] OSC32_IN
+        C2         1       1              PASSIVE     RCE5C1H6R0D0DBH03A
+        U1         8       PC14-OSC32_IN  I/O         STM32G491VCT6
+        X1         2       2              PASSIVE     32.768KHz
+
+[00137] NRST
+        C20        1       1              PASSIVE     Capacitor cerámico TH
+        J2         6       6              PASSIVE     SSK03-MPH-254-B10
+        S1         3       3              PASSIVE     TS02-66-43-BK-160-LCR-D
+        S1         4       4              PASSIVE     TS02-66-43-BK-160-LCR-D
+        U1         14      PG10-NRST      I/O         STM32G491VCT6
+
+[00136] NetX2_4
+        X2         4       GND            POWER       16MHz
+
+[00135] NetX2_2
+        X2         2       GND            POWER       16MHz
+
+[00134] NetU9_22
+        U9         22      D33            I/O         ESP32-DEVKIT-V1
+
+[00133] NetU9_20
+        U9         20      D35            I/O         ESP32-DEVKIT-V1
+
+[00132] NetU9_19
+        U9         19      D34            I/O         ESP32-DEVKIT-V1
+
+[00131] NetU9_18
+        U9         18      VN             I/O         ESP32-DEVKIT-V1
+
+[00130] NetU9_17
+        U9         17      VP             I/O         ESP32-DEVKIT-V1
+
+[00129] NetU9_13
+        U9         13      TX0            OUTPUT      ESP32-DEVKIT-V1
+
+[00128] NetU9_12
+        U9         12      RX0            INPUT       ESP32-DEVKIT-V1
+
+[00127] NetU7_8
+        U7         8       NC             PASSIVE     TLIN4029ADRQ1
+
+[00126] NetU7_3
+        U7         3       NC             PASSIVE     TLIN4029ADRQ1
+
+[00125] NetSW3_MH2
+        SW3        MH2     MH2            PASSIVE     1825255-1
+
+[00124] NetSW3_MH1
+        SW3        MH1     MH1            PASSIVE     1825255-1
+
+[00123] NetSW3_3
+        SW3        3       3              PASSIVE     1825255-1
+
+[00122] NetSW1_MH2
+        SW1        MH2     MH2            PASSIVE     1825255-1
+
+[00121] NetSW1_MH1
+        SW1        MH1     MH1            PASSIVE     1825255-1
+
+[00120] NetR59_2
+        R59        2       2              PASSIVE     MFR-25FBF52-47R5
+        R60        2       2              PASSIVE     MFR-25FBF52-47R5
+        U6         7       RXD2           I/O         TCAN1046AVDYYRQ1
+
+[00119] NetR49_2
+        R49        2       2              PASSIVE     MFR-25FBF52-47R5
+        R61        2       2              PASSIVE     MFR-25FBF52-47R5
+        U6         4       RXD1           I/O         TCAN1046AVDYYRQ1
+
+[00118] NetR42_2
+        R42        2       2              PASSIVE     MFR-25FBF52-47R5
+        SW1        2       2              PASSIVE     1825255-1
+
+[00117] NetR32_2
+        R32        2       2              PASSIVE     MFR-25FBF52-47R5
+        SW4        2       2              PASSIVE     SLW-111629-7A-D
+
+[00116] NetR31_1
+        R31        1       1              PASSIVE     MFR-25FBF52-47R5
+        SW4        5       5              PASSIVE     SLW-111629-7A-D
+
+[00115] NetR30_2
+        R30        2       2              PASSIVE     MFR-25FBF52-47R5
+        SW2        5       5              PASSIVE     SLW-111629-7A-D
+
+[00114] NetR29_1
+        R29        1       1              PASSIVE     MFR-25FBF52-47R5
+        SW2        2       2              PASSIVE     SLW-111629-7A-D
+
+[00113] NetR25_2
+        R25        2       2              PASSIVE     MFR-25FBF52-47R5
+        R27        1       1              PASSIVE     MFR-25FBF52-47R5
+        U2         5       OV             INPUT       LM74720QDRRRQ1
+
+[00112] NetR23_1
+        R23        1       1              PASSIVE     MFR-25FBF52-47R5
+        U2         4       SW             INPUT       LM74720QDRRRQ1
+
+[00111] NetR22_2
+        R22        2       2              PASSIVE     MFR-25FBF52-47R5
+        U2         8       PD             OUTPUT      LM74720QDRRRQ1
+
+[00110] NetR19_2
+        R19        2       2              PASSIVE     MFR-25FBF52-47R5
+        R21        1       1              PASSIVE     MFR-25FBF52-47R5
+        U3         5       FB             PASSIVE     AP64202SP-13
+
+[00109] NetR18_2
+        R18        2       2              PASSIVE     MFR-25FBF52-47R5
+        U3         4       RT/CLK         PASSIVE     AP64202SP-13
+
+[00108] NetR17_2
+        R17        2       2              PASSIVE     MFR-25FBF52-47R5
+        R20        1       1              PASSIVE     MFR-25FBF52-47R5
+        U3         3       EN             PASSIVE     AP64202SP-13
+
+[00107] NetR16_2
+        R16        2       2              PASSIVE     MFR-25FBF52-47R5
+        R19        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00106] NetR15_1
+        R15        1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         5       2Y3            OUTPUT      SN74LV244AQDGSRQ1
+
+[00105] NetR14_1
+        R14        1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         9       2Y1            OUTPUT      SN74LV244AQDGSRQ1
+
+[00104] NetR13_1
+        R13        1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         7       2Y2            OUTPUT      SN74LV244AQDGSRQ1
+
+[00103] NetR12_1
+        R12        1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         3       2Y4            OUTPUT      SN74LV244AQDGSRQ1
+
+[00102] NetQ1_2
+        Q1         2       2              PASSIVE     BUK7K15-80EX
+        U2         1       GATE           OUTPUT      LM74720QDRRRQ1
+
+[00101] NetP12_1
+        P12        1       1              PASSIVE     TSW-102-26-F-S
+        R69        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00100] NetP11_1
+        P11        1       1              PASSIVE     TSW-102-26-F-S
+        R68        2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00099] NetP10_2
+        P10        2       2              PASSIVE     TSW-102-26-F-S
+
+[00098] NetP10_1
+        P10        1       1              PASSIVE     TSW-102-26-F-S
+
+[00097] NetP9_2
+        P9         2       2              PASSIVE     TSW-102-26-F-S
+        R67        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00096] NetP8_2
+        P8         2       2              PASSIVE     TSW-102-26-F-S
+        R66        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00095] NetP7_2
+        P7         2       2              PASSIVE     TSW-102-26-F-S
+
+[00094] NetP7_1
+        P7         1       1              PASSIVE     TSW-102-26-F-S
+
+[00093] NetP6_1
+        P6         1       1              PASSIVE     TSW-102-26-F-S
+        R65        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00092] NetP5_1
+        P5         1       1              PASSIVE     TSW-102-26-F-S
+        R64        2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00091] NetP4_2
+        P4         2       2              PASSIVE     TSW-102-26-F-S
+
+[00090] NetP4_1
+        P4         1       1              PASSIVE     TSW-102-26-F-S
+
+[00089] NetP3_2
+        P3         2       2              PASSIVE     TSW-102-26-F-S
+        R63        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00088] NetP2_2
+        P2         2       2              PASSIVE     TSW-102-26-F-S
+        R62        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00087] NetP1_2
+        P1         2       2              PASSIVE     TSW-102-26-F-S
+
+[00086] NetP1_1
+        P1         1       1              PASSIVE     TSW-102-26-F-S
+
+[00085] NetL2_2
+        L2         2       2              PASSIVE     SRN6045TA-101M
+        U2         9       LX             INPUT       LM74720QDRRRQ1
+
+[00084] NetJ2_10
+        J2         10      10             PASSIVE     SSK03-MPH-254-B10
+        R41        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00083] NetJ2_4
+        J2         4       4              PASSIVE     SSK03-MPH-254-B10
+        R7         1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00082] NetJ2_2
+        J2         2       2              PASSIVE     SSK03-MPH-254-B10
+        R6         1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00081] NetDS4_2
+        DS4        2       K              PASSIVE     G502DC
+        R58        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00080] NetDS3_2
+        DS3        2       K              PASSIVE     G502DC
+        R57        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00079] NetDS2_2
+        DS2        2       K              PASSIVE     G502DC
+        R56        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00078] NetDS1_2
+        DS1        2       K              PASSIVE     G502DC
+        R55        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00077] NetD40_1
+        D40        1       K              PASSIVE     ESD9X5.0ST5G
+        R44        2       2              PASSIVE     MFR-25FBF52-47R5
+        U9         16      EN             INPUT       ESP32-DEVKIT-V1
+
+[00076] NetD37_2
+        D37        2       NC             PASSIVE     BAS40LT1G
+
+[00075] NetD36_2
+        D36        2       NC             PASSIVE     BAS40LT1G
+
+[00074] NetD34_2
+        D34        2       NC             PASSIVE     BAS40LT1G
+
+[00073] NetD33_2
+        D33        2       NC             PASSIVE     BAS40LT1G
+
+[00072] NetD32_2
+        D32        2       NC             PASSIVE     BAS40LT1G
+
+[00071] NetD31_2
+        D31        2       NC             PASSIVE     BAS40LT1G
+
+[00070] NetD29_2
+        D29        2       NC             PASSIVE     BAS40LT1G
+
+[00069] NetD28_2
+        D28        2       NC             PASSIVE     BAS40LT1G
+
+[00068] NetD27_2
+        D27        2       A              PASSIVE     MMSD4148T3G
+        SW3        1       1              PASSIVE     1825255-1
+
+[00067] NetD27_1
+        D27        1       K              PASSIVE     MMSD4148T3G
+        R34        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00066] NetD22_1
+        D22        1       C              PASSIVE     BZT52C18-7-F
+        Q1         4       4              PASSIVE     BUK7K15-80EX
+        R22        1       1              PASSIVE     MFR-25FBF52-47R5
+        R24        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00065] NetD21_2
+        D21        2       A              PASSIVE     SMBJ58A
+        D23        2       A              PASSIVE     SMBJ28A
+
+[00064] NetD19_2
+        D19        2       NC             PASSIVE     BAS40LT1G
+
+[00063] NetD17_2
+        D17        2       NC             PASSIVE     BAS40LT1G
+
+[00062] NetD14_2
+        D14        2       NC             PASSIVE     BAS40LT1G
+
+[00061] NetD12_2
+        D12        2       NC             PASSIVE     BAS40LT1G
+
+[00060] NetD9_2
+        D9         2       NC             PASSIVE     BAS40LT1G
+
+[00059] NetD7_2
+        D7         2       NC             PASSIVE     BAS40LT1G
+
+[00058] NetD4_2
+        D4         2       NC             PASSIVE     BAS40LT1G
+
+[00057] NetD2_2
+        D2         2       NC             PASSIVE     BAS40LT1G
+
+[00056] NetC45_2
+        C45        2       2              PASSIVE     Capacitor cerámico TH
+        R26        2       2              PASSIVE     MFR-25FBF52-47R5
+        U1         40      PE9            I/O         STM32G491VCT6
+
+[00055] NetC24_1
+        C24        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        R31        2       2              PASSIVE     MFR-25FBF52-47R5
+        R32        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00054] NetC21_1
+        C21        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        R29        2       2              PASSIVE     MFR-25FBF52-47R5
+        R30        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00053] NetC19_2
+        C19        2       2              PASSIVE     FG14C0G2A153JRT06
+        R24        2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00052] NetC15_1
+        C15        1       1              PASSIVE     Capacitor cerámico TH
+        U2         10      CAP            OUTPUT      LM74720QDRRRQ1
+
+[00051] NetC11_1
+        C11        1       1              PASSIVE     Capacitor cerámico TH
+        U3         6       SS             PASSIVE     AP64202SP-13
+
+[00050] NetC6_2
+        C6         2       2              PASSIVE     Capacitor cerámico TH
+        L1         1       1              PASSIVE     HPAL1V1040-100-R
+        U3         8       SW             PASSIVE     AP64202SP-13
+
+[00049] NetC6_1
+        C6         1       1              PASSIVE     Capacitor cerámico TH
+        U3         1       BST            PASSIVE     AP64202SP-13
+
+[00048] NetC4_1
+        C4         1       1              PASSIVE     RCE5C1H100J0A2H03B
+        R5         2       2              PASSIVE     MFR-25FBF52-47R5
+        X2         1       1              PASSIVE     16MHz
+
+[00047] LIN_BUS
+        C29        1       1              PASSIVE     C322C221K5R5TA
+        J3         1       1              PASSIVE     TBL002A-350-05GR-2OR
+        R34        2       2              PASSIVE     MFR-25FBF52-47R5
+        U7         6       LIN            I/O         TLIN4029ADRQ1
+
+[00046] GND
+        C1         1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C2         2       2              PASSIVE     RCE5C1H6R0D0DBH03A
+        C3         2       2              PASSIVE     RCE5C1H6R0D0DBH03A
+        C4         2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C5         2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C7         2       2              PASSIVE     Capacitor cerámico TH
+        C8         2       2              PASSIVE     Capacitor cerámico TH
+        C9         1       1              PASSIVE     Capacitor cerámico TH
+        C10        2       2              PASSIVE     ECA1HM100
+        C11        2       2              PASSIVE     Capacitor cerámico TH
+        C12        2       2              PASSIVE     Capacitor cerámico TH
+        C13        2       2              PASSIVE     Capacitor cerámico TH
+        C14        1       1              PASSIVE     Capacitor cerámico TH
+        C16        1       1              PASSIVE     Capacitor cerámico TH
+        C17        1       1              PASSIVE     Capacitor cerámico TH
+        C18        1       C              PASSIVE     ECA1HHG331B
+        C19        1       1              PASSIVE     FG14C0G2A153JRT06
+        C20        2       2              PASSIVE     Capacitor cerámico TH
+        C21        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C22        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C23        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C24        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C25        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C26        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C27        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C28        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C29        2       2              PASSIVE     C322C221K5R5TA
+        C30        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        C31        2       2              PASSIVE     Capacitor cerámico TH
+        C32        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C33        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C34        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C35        1       1              PASSIVE     Capacitor cerámico TH
+        C36        1       1              PASSIVE     Capacitor cerámico TH
+        C37        1       1              PASSIVE     Capacitor cerámico TH
+        C38        1       1              PASSIVE     Capacitor cerámico TH
+        C39        1       1              PASSIVE     Capacitor cerámico TH
+        C40        1       1              PASSIVE     Capacitor cerámico TH
+        C41        1       1              PASSIVE     Capacitor cerámico TH
+        C42        1       1              PASSIVE     Capacitor cerámico TH
+        C44        1       1              PASSIVE     Capacitor cerámico TH
+        C45        1       1              PASSIVE     Capacitor cerámico TH
+        D1         3       GND            POWER       ESD2CAN36DBZRQ1
+        D2         1       A              PASSIVE     BAS40LT1G
+        D3         1       A              PASSIVE     BZX84C4V7LT1G
+        D4         1       A              PASSIVE     BAS40LT1G
+        D5         1       A              PASSIVE     BZX84C4V7LT1G
+        D6         3       GND            POWER       ESD2CAN36DBZRQ1
+        D7         1       A              PASSIVE     BAS40LT1G
+        D8         1       A              PASSIVE     BZX84C4V7LT1G
+        D9         1       A              PASSIVE     BAS40LT1G
+        D10        1       A              PASSIVE     BZX84C4V7LT1G
+        D11        1       A              PASSIVE     BZX84C4V7LT1G
+        D12        1       A              PASSIVE     BAS40LT1G
+        D13        3       GND            POWER       ESD2CAN36DBZRQ1
+        D14        1       A              PASSIVE     BAS40LT1G
+        D15        1       A              PASSIVE     BZX84C4V7LT1G
+        D16        1       A              PASSIVE     BZX84C4V7LT1G
+        D17        1       A              PASSIVE     BAS40LT1G
+        D18        3       GND            POWER       ESD2CAN36DBZRQ1
+        D19        1       A              PASSIVE     BAS40LT1G
+        D20        1       A              PASSIVE     BZX84C4V7LT1G
+        D23        1       C              PASSIVE     SMBJ28A
+        D24        2       A              PASSIVE     STPS2H100AY
+        D25        3       GND            POWER       ESD2CAN36DBZRQ1
+        D26        3       GND            POWER       ESD2CAN36DBZRQ1
+        D29        1       A              PASSIVE     BAS40LT1G
+        D30        3       GND            POWER       ESD2CAN36DBZRQ1
+        D31        1       A              PASSIVE     BAS40LT1G
+        D34        1       A              PASSIVE     BAS40LT1G
+        D35        3       GND            POWER       ESD2CAN36DBZRQ1
+        D36        1       A              PASSIVE     BAS40LT1G
+        D39        2       A              PASSIVE     PESD5V0L4UG,115
+        D40        2       A              PASSIVE     ESD9X5.0ST5G
+        J2         1       1              PASSIVE     SSK03-MPH-254-B10
+        J2         3       3              PASSIVE     SSK03-MPH-254-B10
+        J2         5       5              PASSIVE     SSK03-MPH-254-B10
+        J2         7       7              PASSIVE     SSK03-MPH-254-B10
+        J2         9       9              PASSIVE     SSK03-MPH-254-B10
+        J2         11      11             PASSIVE     SSK03-MPH-254-B10
+        J2         13      13             PASSIVE     SSK03-MPH-254-B10
+        J2         15      15             PASSIVE     SSK03-MPH-254-B10
+        J2         17      17             PASSIVE     SSK03-MPH-254-B10
+        J7         2       2              PASSIVE     TBL002A-350-02GR-2OR
+        J?         1       1              PASSIVE     SSK03-MPH-254-B10
+        J?         3       3              PASSIVE     SSK03-MPH-254-B10
+        J?         5       5              PASSIVE     SSK03-MPH-254-B10
+        J?         7       7              PASSIVE     SSK03-MPH-254-B10
+        R6         2       2              PASSIVE     MFR-25FBF52-47R5
+        R7         2       2              PASSIVE     MFR-25FBF52-47R5
+        R18        1       1              PASSIVE     MFR-25FBF52-47R5
+        R20        2       2              PASSIVE     MFR-25FBF52-47R5
+        R21        2       2              PASSIVE     MFR-25FBF52-47R5
+        R27        2       2              PASSIVE     MFR-25FBF52-47R5
+        R33        2       2              PASSIVE     MFR-25FBF52-47R5
+        R35        2       2              PASSIVE     MFR-25FBF52-47R5
+        R38        2       2              PASSIVE     MFR-25FBF52-47R5
+        R39        2       2              PASSIVE     MFR-25FBF52-47R5
+        R41        2       2              PASSIVE     MFR-25FBF52-47R5
+        R52        2       2              PASSIVE     MFR-25FBF52-47R5
+        R55        2       2              PASSIVE     MFR-25FBF52-47R5
+        R56        2       2              PASSIVE     MFR-25FBF52-47R5
+        R57        2       2              PASSIVE     MFR-25FBF52-47R5
+        R58        2       2              PASSIVE     MFR-25FBF52-47R5
+        R62        2       2              PASSIVE     MFR-25FBF52-47R5
+        R63        2       2              PASSIVE     MFR-25FBF52-47R5
+        R64        1       1              PASSIVE     MFR-25FBF52-47R5
+        R65        2       2              PASSIVE     MFR-25FBF52-47R5
+        R66        2       2              PASSIVE     MFR-25FBF52-47R5
+        R67        2       2              PASSIVE     MFR-25FBF52-47R5
+        R68        1       1              PASSIVE     MFR-25FBF52-47R5
+        R69        2       2              PASSIVE     MFR-25FBF52-47R5
+        R71        1       1              PASSIVE     MFR-25FBF52-47R5
+        R72        1       1              PASSIVE     MFR-25FBF52-47R5
+        S1         1       1              PASSIVE     TS02-66-43-BK-160-LCR-D
+        S1         2       2              PASSIVE     TS02-66-43-BK-160-LCR-D
+        SW1        3       3              PASSIVE     1825255-1
+        SW2        1       1              PASSIVE     SLW-111629-7A-D
+        SW2        4       4              PASSIVE     SLW-111629-7A-D
+        SW4        3       3              PASSIVE     SLW-111629-7A-D
+        SW4        6       6              PASSIVE     SLW-111629-7A-D
+        U1         23      VSS            POWER       STM32G491VCT6
+        U1         35      VSSA           POWER       STM32G491VCT6
+        U1         48      VSS            POWER       STM32G491VCT6
+        U1         63      VSS            POWER       STM32G491VCT6
+        U1         74      VSS            POWER       STM32G491VCT6
+        U1         99      VSS            POWER       STM32G491VCT6
+        U2         7       GND            POWER       LM74720QDRRRQ1
+        U3         7       GND            POWER       AP64202SP-13
+        U3         EPAD    EPAD           PASSIVE     AP64202SP-13
+        U4         2       GND            POWER       TLE42744GS V33
+        U4         4       GND            POWER       TLE42744GS V33
+        U5         10      GND            POWER       SN74LV244AQDGSRQ1
+        U6         2       GND1           POWER       TCAN1046AVDYYRQ1
+        U6         5       GND2           POWER       TCAN1046AVDYYRQ1
+        U7         5       GND            POWER       TLIN4029ADRQ1
+        U8         11      V              PASSIVE     TLV9164IDR
+        U9         2       GND            POWER       ESP32-DEVKIT-V1
+        U9         29      GND            POWER       ESP32-DEVKIT-V1
+
+[00045] ESP_VIN
+        D38        1       C              PASSIVE     B340A-13-F
+        J?         17      17             PASSIVE     SSK03-MPH-254-B10
+        J?         19      19             PASSIVE     SSK03-MPH-254-B10
+        J?         20      20             PASSIVE     SSK03-MPH-254-B10
+        U9         30      VIN            INPUT       ESP32-DEVKIT-V1
+
+[00044] ESP_TX
+        D39        3       K2             PASSIVE     PESD5V0L4UG,115
+        R45        1       1              PASSIVE     MFR-25FBF52-47R5
+        U9         7       TX2            OUTPUT      ESP32-DEVKIT-V1
+
+[00043] ESP_RX
+        D39        4       K3             PASSIVE     PESD5V0L4UG,115
+        R46        1       1              PASSIVE     MFR-25FBF52-47R5
+        U9         6       RX2            INPUT       ESP32-DEVKIT-V1
+
+[00042] ESP_D32
+        U9         21      D32            I/O         ESP32-DEVKIT-V1
+
+[00041] ESP_D27
+        U9         25      D27            I/O         ESP32-DEVKIT-V1
+
+[00040] ESP_D26
+        U9         24      D26            I/O         ESP32-DEVKIT-V1
+
+[00039] ESP_D25
+        U9         23      D25            I/O         ESP32-DEVKIT-V1
+
+[00038] ESP_D23
+        J?         11      11             PASSIVE     SSK03-MPH-254-B10
+        U9         15      D23            I/O         ESP32-DEVKIT-V1
+
+[00037] ESP_D22
+        J?         9       9              PASSIVE     SSK03-MPH-254-B10
+        U9         14      D22            I/O         ESP32-DEVKIT-V1
+
+[00036] ESP_D21
+        J?         16      16             PASSIVE     SSK03-MPH-254-B10
+        U9         11      D21            I/O         ESP32-DEVKIT-V1
+
+[00035] ESP_D19
+        J?         14      14             PASSIVE     SSK03-MPH-254-B10
+        U9         10      D19            I/O         ESP32-DEVKIT-V1
+
+[00034] ESP_D18
+        D39        1       K1             PASSIVE     PESD5V0L4UG,115
+        R43        1       1              PASSIVE     MFR-25FBF52-47R5
+        U9         9       D18            I/O         ESP32-DEVKIT-V1
+
+[00033] ESP_D15
+        J?         12      12             PASSIVE     SSK03-MPH-254-B10
+        U9         3       D15            I/O         ESP32-DEVKIT-V1
+
+[00032] ESP_D14
+        J?         10      10             PASSIVE     SSK03-MPH-254-B10
+        U9         26      D14            I/O         ESP32-DEVKIT-V1
+
+[00031] ESP_D13
+        J?         8       8              PASSIVE     SSK03-MPH-254-B10
+        U9         28      D13            I/O         ESP32-DEVKIT-V1
+
+[00030] ESP_D12
+        J?         6       6              PASSIVE     SSK03-MPH-254-B10
+        U9         27      D12            I/O         ESP32-DEVKIT-V1
+
+[00029] ESP_D5
+        J?         4       4              PASSIVE     SSK03-MPH-254-B10
+        U9         8       D5             I/O         ESP32-DEVKIT-V1
+
+[00028] ESP_D4
+        D39        5       K4             PASSIVE     PESD5V0L4UG,115
+        R47        1       1              PASSIVE     MFR-25FBF52-47R5
+        U9         5       D4             I/O         ESP32-DEVKIT-V1
+
+[00027] ESP_D2
+        J?         2       2              PASSIVE     SSK03-MPH-254-B10
+        U9         4       D2             I/O         ESP32-DEVKIT-V1
+
+[00026] ESP_3V3
+        J?         13      13             PASSIVE     SSK03-MPH-254-B10
+        J?         15      15             PASSIVE     SSK03-MPH-254-B10
+        J?         18      18             PASSIVE     SSK03-MPH-254-B10
+        U9         1       3V3            OUTPUT      ESP32-DEVKIT-V1
+
+[00025] Drains
+        C15        2       2              PASSIVE     Capacitor cerámico TH
+        C17        2       2              PASSIVE     Capacitor cerámico TH
+        L2         1       1              PASSIVE     SRN6045TA-101M
+        Q1         5       5              PASSIVE     BUK7K15-80EX
+        Q1         6       6              PASSIVE     BUK7K15-80EX
+        Q1         7       7              PASSIVE     BUK7K15-80EX
+        Q1         8       8              PASSIVE     BUK7K15-80EX
+        U2         6       EN             INPUT       LM74720QDRRRQ1
+        U2         11      VS             POWER       LM74720QDRRRQ1
+        U2         12      C              INPUT       LM74720QDRRRQ1
+
+[00024] DO4_EXT
+        D6         1       IO             I/O         ESD2CAN36DBZRQ1
+        J1         3       3              PASSIVE     TBL002A-350-08GR-2OR
+        R4         2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00023] DO4
+        D10        3       K              PASSIVE     BZX84C4V7LT1G
+        D17        3       K              PASSIVE     BAS40LT1G
+        R4         1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         16      1Y2            OUTPUT      SN74LV244AQDGSRQ1
+
+[00022] DO3_EXT
+        D6         2       IO             I/O         ESD2CAN36DBZRQ1
+        J1         4       4              PASSIVE     TBL002A-350-08GR-2OR
+        R3         2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00021] DO3
+        D8         3       K              PASSIVE     BZX84C4V7LT1G
+        D12        3       K              PASSIVE     BAS40LT1G
+        R3         1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         18      1Y1            OUTPUT      SN74LV244AQDGSRQ1
+
+[00020] DO2_EXT
+        D1         1       IO             I/O         ESD2CAN36DBZRQ1
+        J1         1       1              PASSIVE     TBL002A-350-08GR-2OR
+        R2         2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00019] DO2
+        D5         3       K              PASSIVE     BZX84C4V7LT1G
+        D7         3       K              PASSIVE     BAS40LT1G
+        R2         1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         12      1Y4            OUTPUT      SN74LV244AQDGSRQ1
+
+[00018] DO1_EXT
+        D1         2       IO             I/O         ESD2CAN36DBZRQ1
+        J1         2       2              PASSIVE     TBL002A-350-08GR-2OR
+        R1         2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00017] DO1
+        D2         3       K              PASSIVE     BAS40LT1G
+        D3         3       K              PASSIVE     BZX84C4V7LT1G
+        R1         1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         14      1Y3            OUTPUT      SN74LV244AQDGSRQ1
+
+[00016] DI4_EXT
+        D18        2       IO             I/O         ESD2CAN36DBZRQ1
+        J1         8       8              PASSIVE     TBL002A-350-08GR-2OR
+        R10        2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00015] DI4
+        D14        3       K              PASSIVE     BAS40LT1G
+        D16        3       K              PASSIVE     BZX84C4V7LT1G
+        P8         1       1              PASSIVE     TSW-102-26-F-S
+        P9         1       1              PASSIVE     TSW-102-26-F-S
+        R10        1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         17      2A4            INPUT       SN74LV244AQDGSRQ1
+
+[00014] DI3_EXT
+        D18        1       IO             I/O         ESD2CAN36DBZRQ1
+        J1         7       7              PASSIVE     TBL002A-350-08GR-2OR
+        R11        2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00013] DI3
+        D19        3       K              PASSIVE     BAS40LT1G
+        D20        3       K              PASSIVE     BZX84C4V7LT1G
+        P11        2       2              PASSIVE     TSW-102-26-F-S
+        P12        2       2              PASSIVE     TSW-102-26-F-S
+        R11        1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         15      2A3            INPUT       SN74LV244AQDGSRQ1
+
+[00012] DI2_EXT
+        D13        2       IO             I/O         ESD2CAN36DBZRQ1
+        J1         6       6              PASSIVE     TBL002A-350-08GR-2OR
+        R8         2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00011] DI2
+        D4         3       K              PASSIVE     BAS40LT1G
+        D11        3       K              PASSIVE     BZX84C4V7LT1G
+        P2         1       1              PASSIVE     TSW-102-26-F-S
+        P3         1       1              PASSIVE     TSW-102-26-F-S
+        R8         1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         13      2A2            INPUT       SN74LV244AQDGSRQ1
+
+[00010] DI1_EXT
+        D13        1       IO             I/O         ESD2CAN36DBZRQ1
+        J1         5       5              PASSIVE     TBL002A-350-08GR-2OR
+        R9         2       2              PASSIVE     MFR-25FBF52-47R5
+
+[00009] DI1
+        D9         3       K              PASSIVE     BAS40LT1G
+        D15        3       K              PASSIVE     BZX84C4V7LT1G
+        P5         2       2              PASSIVE     TSW-102-26-F-S
+        P6         2       2              PASSIVE     TSW-102-26-F-S
+        R9         1       1              PASSIVE     MFR-25FBF52-47R5
+        U5         11      2A1            INPUT       SN74LV244AQDGSRQ1
+
+[00008] CAN2_P
+        C27        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        D26        2       IO             I/O         ESD2CAN36DBZRQ1
+        J3         3       3              PASSIVE     TBL002A-350-05GR-2OR
+        SW4        4       4              PASSIVE     SLW-111629-7A-D
+        U6         10      CANH2          I/O         TCAN1046AVDYYRQ1
+
+[00007] CAN2_N
+        C28        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        D26        1       IO             I/O         ESD2CAN36DBZRQ1
+        J3         2       2              PASSIVE     TBL002A-350-05GR-2OR
+        SW4        1       1              PASSIVE     SLW-111629-7A-D
+        U6         9       CANL2          I/O         TCAN1046AVDYYRQ1
+
+[00006] CAN1_P
+        C26        2       2              PASSIVE     RCE5C1H100J0A2H03B
+        D25        2       IO             I/O         ESD2CAN36DBZRQ1
+        J3         4       4              PASSIVE     TBL002A-350-05GR-2OR
+        SW2        3       3              PASSIVE     SLW-111629-7A-D
+        U6         13      CANH1          I/O         TCAN1046AVDYYRQ1
+
+[00005] CAN1_N
+        C25        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        D25        1       IO             I/O         ESD2CAN36DBZRQ1
+        J3         5       5              PASSIVE     TBL002A-350-05GR-2OR
+        SW2        6       6              PASSIVE     SLW-111629-7A-D
+        U6         12      CANL1          I/O         TCAN1046AVDYYRQ1
+
+[00004] BOOT0
+        R42        1       1              PASSIVE     MFR-25FBF52-47R5
+        U1         95      PB8-BOOT0      I/O         STM32G491VCT6
+
+[00003] BAT_MON
+        R23        2       2              PASSIVE     MFR-25FBF52-47R5
+        R25        1       1              PASSIVE     MFR-25FBF52-47R5
+        R26        1       1              PASSIVE     MFR-25FBF52-47R5
+
+[00002] 5V
+        C10        1       1              PASSIVE     ECA1HM100
+        C12        1       1              PASSIVE     Capacitor cerámico TH
+        C13        1       1              PASSIVE     Capacitor cerámico TH
+        C14        2       2              PASSIVE     Capacitor cerámico TH
+        C22        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C42        2       2              PASSIVE     Capacitor cerámico TH
+        D38        2       A              PASSIVE     B340A-13-F
+        DS4        1       A              PASSIVE     G502DC
+        L1         2       2              PASSIVE     HPAL1V1040-100-R
+        R16        1       1              PASSIVE     MFR-25FBF52-47R5
+        U4         1       I              POWER       TLE42744GS V33
+        U6         3       VCC            POWER       TCAN1046AVDYYRQ1
+        U8         4       V+             POWER       TLV9164IDR
+
+[00001] 3V3
+        C9         2       2              PASSIVE     Capacitor cerámico TH
+        C23        1       1              PASSIVE     RCE5C1H100J0A2H03B
+        C31        1       1              PASSIVE     Capacitor cerámico TH
+        C35        2       2              PASSIVE     Capacitor cerámico TH
+        C36        2       2              PASSIVE     Capacitor cerámico TH
+        C37        2       2              PASSIVE     Capacitor cerámico TH
+        C38        2       2              PASSIVE     Capacitor cerámico TH
+        C39        2       2              PASSIVE     Capacitor cerámico TH
+        C40        2       2              PASSIVE     Capacitor cerámico TH
+        C41        2       2              PASSIVE     Capacitor cerámico TH
+        C44        2       2              PASSIVE     Capacitor cerámico TH
+        D28        3       K              PASSIVE     BAS40LT1G
+        D32        3       K              PASSIVE     BAS40LT1G
+        D33        3       K              PASSIVE     BAS40LT1G
+        D37        3       K              PASSIVE     BAS40LT1G
+        DS3        1       A              PASSIVE     G502DC
+        J2         19      19             PASSIVE     SSK03-MPH-254-B10
+        J2         20      20             PASSIVE     SSK03-MPH-254-B10
+        R48        1       1              PASSIVE     MFR-25FBF52-47R5
+        R50        1       1              PASSIVE     MFR-25FBF52-47R5
+        R51        2       2              PASSIVE     MFR-25FBF52-47R5
+        R53        2       2              PASSIVE     MFR-25FBF52-47R5
+        R54        2       2              PASSIVE     MFR-25FBF52-47R5
+        R70        1       1              PASSIVE     MFR-25FBF52-47R5
+        SW1        1       1              PASSIVE     1825255-1
+        U1         6       VBAT           POWER       STM32G491VCT6
+        U1         24      VDD            POWER       STM32G491VCT6
+        U1         36      VREF+          POWER       STM32G491VCT6
+        U1         37      VDDA           POWER       STM32G491VCT6
+        U1         49      VDD            POWER       STM32G491VCT6
+        U1         64      VDD            POWER       STM32G491VCT6
+        U1         75      VDD            POWER       STM32G491VCT6
+        U1         100     VDD            POWER       STM32G491VCT6
+        U4         3       Q              POWER       TLE42744GS V33
+        U5         20      VCC            POWER       SN74LV244AQDGSRQ1
+        U6         11      VIO            POWER       TCAN1046AVDYYRQ1
+
