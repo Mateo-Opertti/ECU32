@@ -137,6 +137,8 @@ La placa se protege con tapas de acrílico superior e inferior, sostenidas por s
 
 ## Pinout
 
+> **QR de la serigrafía.** La cara inferior de la placa tiene un [QR con el pinout](docs/images/qr-pinout.png). Ese QR se generó antes de verificar la netlist y tiene dos errores: dice DO2 = PC10 y DO3 = PE0 (es al revés), y agrupa las /OE mezclando DI y DO (en realidad 1/OE controla DO1–DO4 y 2/OE controla DI1–DI4). **Las tablas de esta sección son las correctas.**
+
 ### Niveles de tensión por conector
 
 | Conector | Señales | Nivel de trabajo | Protección |
@@ -284,6 +286,7 @@ ECU32/
 │   └── cmake/             Toolchain y flags
 ├── docs/
 │   ├── images/
+│   │   ├── diagrams/      Diagrama de bloques inicial (PNG + fuente .cddx)
 │   │   ├── renders/       Renders 3D
 │   │   ├── pcb/           Capturas del layout
 │   │   └── photos/        Fotos de la placa armada y de las pruebas
