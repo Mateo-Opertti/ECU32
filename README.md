@@ -28,7 +28,7 @@ ECU32 es una **ECU universal** para vehículos de 12 / 24 V: una placa de propó
 - [Hardware](#hardware)
 - [Conectores](#conectores)
 - [Pinout](#pinout)
-- [Firmware: notas de arranque](#firmware-notas-de-arranque)
+- [Firmware](#firmware)
 - [Estructura del repositorio](#estructura-del-repositorio)
 - [Galería](#galería)
 - [Estado del proyecto](#estado-del-proyecto)
@@ -226,23 +226,36 @@ Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta im
 
 ---
 
-## Firmware: notas de arranque
+## Firmware
+
+Los programas de prueba del bring-up están en [`firmware/`](firmware/). Hay uno por periférico, escritos a nivel de registros (sin HAL), y el que se graba se elige desde [`Src/main.c`](firmware/Src/main.c).
+
+| Programa | Qué prueba | Cómo se ve que funciona |
+|---|---|---|
+| `LEDs.c` | LED1 (PF9) y LED2 (PF10) | Parpadean cada 500 ms |
+| `Digital.c` | Entrada DI4 (PC11) | Verde en alto, rojo en bajo |
+| `Digital_Salidas.c` | Salida PC10, con el buffer U5 habilitado | Salida en alto y LED verde |
+| `Digital_Loopback.c` | Lazo salida PC10 → entrada DI4 | El LED sigue el nivel leído |
+| `ADC.c` | AN1 – AN4 (ADC1) | Tensión en mV en `an_mv[]` y LEDs por umbral |
+| `CAN_FD.c` | FDCAN1 → FDCAN2, 500 kbit/s / 2 Mbit/s, 64 bytes | Verde alterna con cada trama correcta |
+| `LIN_Maestro.c` / `LIN_Esclavo.c` | LIN 2.x a 19200 baud entre dos placas | Verde alterna con cada trama correcta |
+| `PWM.c` | PWM de 500 kHz por PC10 (TIM8_CH1N) | Duty ajustable en vivo desde el debugger |
+
+En el [README del firmware](firmware/README.md) están las conexiones de cada prueba y cómo compilar y grabar.
+
+**Herramientas:** VS Code con la extensión STM32Cube (CMake + Ninja, GCC 14.3.1) y un ST-LINK conectado a J2. La placa no tiene USB propio; siempre se alimenta por J7.
+
+### Notas de arranque
 
 Puntos que hay que configurar sí o sí en el código de inicialización:
 
 1. **Debug:** dejar el JTAG completo habilitado (PA15, PB3 y PB4 están cableados a J2).
-2. **Relojes:** HSE de 16 MHz y LSE de 32,768 kHz. Si el LSE no arranca, ajustar `LSEDRV`.
+2. **Relojes:** los programas de prueba usan el HSI16 por defecto. Para la aplicación final están el HSE de 16 MHz (que ya usa `CAN_FD.c`) y el LSE de 32,768 kHz; si el LSE no arranca, ajustar `LSEDRV`.
 3. **Buffer de E/S:** PE8 y PE10 arrancan en alto. Después: fijar niveles seguros en las DO, bajar 1/OE y luego bajar 2/OE.
 4. **CAN:** poner PD14 y PD15 en bajo para sacar los transceptores de standby.
 5. **LIN:** poner PD10 en alto antes de transmitir. USART3 en modo LIN (`LINEN`).
 6. **ESP32:** manejar PE7 como open-drain, porque el DevKit ya tiene su propio pull-up en EN.
 7. **Wake-up por CAN:** WKUP3 (PE6) desde CAN1 y WKUP2 (PC13) desde CAN2.
-
-### Programas de prueba
-
-En [`firmware/`](firmware/) están los programas de bring-up, uno por periférico: LEDs, entradas y salidas digitales, ADC, CAN FD, LIN (maestro y esclavo) y PWM. Están escritos a nivel de registros, sin HAL, y se elige cuál grabar desde `Src/main.c`. En el [README del firmware](firmware/README.md) está qué prueba cada uno, cómo conectar la placa y cómo compilar y grabar.
-
-Herramientas: VS Code con la extensión STM32Cube (CMake + Ninja, GCC 14.3.1) y un ST-LINK conectado a J2. La placa no tiene USB propio; siempre se alimenta por J7.
 
 ---
 
@@ -253,23 +266,24 @@ ECU32/
 ├── hardware/
 │   ├── schematic/         Esquemático en PDF (7 hojas) + netlist PI_3.NET
 │   ├── pcb/               Layout en PDF (top y bottom)
-│   ├── 3d/                Modelo 3D de la placa (STEP)
-│   ├── fabrication/       Gerbers, NC Drill y Pick & Place enviados a JLCPCB
-│   └── bom/               BOM con links a DigiKey
+│   ├── 3d/                Modelo 3D de la placa (STEP)                   [pendiente]
+│   ├── fabrication/       Gerbers, NC Drill y Pick & Place (JLCPCB)      [pendiente]
+│   └── bom/               BOM con links a DigiKey                        [pendiente]
 ├── firmware/              Proyecto CMake (STM32Cube para VS Code)
 │   ├── Apps/              Programas de prueba, uno por periférico
-│   └── Src/               main.c (selector de programa), startup y syscalls
+│   ├── Src/               main.c (selector de programa), startup y syscalls
+│   └── cmake/             Toolchain y flags
 ├── docs/
 │   ├── images/
-│   │   ├── renders/       Renders 3D para el README
+│   │   ├── renders/       Renders 3D
 │   │   ├── pcb/           Capturas del layout
-│   │   └── photos/        Fotos de la placa armada y de las pruebas
-│   ├── manual/            Manual de usuario UM-ECU32
-│   └── reports/           Anteproyecto e informe final
+│   │   └── photos/        Fotos de la placa armada y de las pruebas      [pendiente]
+│   ├── manual/            Manual de usuario UM-ECU32                     [pendiente]
+│   └── reports/           Anteproyecto e informe final                   [pendiente]
 └── README.md
 ```
 
-Cada carpeta tiene su propio `README.md` que explica qué va adentro y cómo exportarlo desde Altium. Las carpetas que todavía no tienen archivos sólo contienen ese README.
+Las carpetas marcadas como *pendiente* todavía sólo tienen un `README.md` que explica qué va adentro y cómo exportarlo desde Altium.
 
 ---
 
@@ -279,14 +293,14 @@ Cada carpeta tiene su propio `README.md` que explica qué va adentro y cómo exp
 |---|---|
 | ![Layout top](docs/images/pcb/ecu32-layout-top.png) | ![Layout bottom](docs/images/pcb/ecu32-layout-bottom.png) |
 
-<!-- Descomentá a medida que agregues renders y fotos:
+<!-- Descomentá cuando agregues fotos:
 
-| Render 3D | Placa armada |
+| Placa armada | Pruebas |
 |---|---|
-| ![render](docs/images/renders/ecu32-3d.png) | ![foto](docs/images/photos/ecu32-assembled.jpg) |
+| ![foto](docs/images/photos/ecu32-assembled.jpg) | ![pruebas](docs/images/photos/ecu32-test.jpg) |
 -->
 
-*Próximamente: renders 3D y fotos de la placa armada.*
+*Próximamente: fotos de la placa armada y de las pruebas.*
 
 ---
 
