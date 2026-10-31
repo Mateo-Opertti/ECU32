@@ -41,7 +41,7 @@ ECU32 es una **ECU universal** para vehículos de 12 / 24 V: una placa de propó
 | | |
 |---|---|
 | **MCU** | STM32G491VCT6: Cortex-M4F a 170 MHz, 256 KB de flash, LQFP100 |
-| **Alimentación** | 12 V nominal, con protección de polaridad inversa y sobretensión y TVS para load dump |
+| **Alimentación** | 12 V o 24 V nominal, con protección de polaridad inversa y sobretensión y TVS para load dump |
 | **CAN FD** | 2 canales con terminación partida conmutable y wake-up por bus |
 | **LIN** | 1 canal, con pull-up de master conmutable |
 | **E/S digitales** | 4 DI y 4 DO protegidas, a través de un buffer con habilitación por grupo |
@@ -57,7 +57,7 @@ ECU32 es una **ECU universal** para vehículos de 12 / 24 V: una placa de propó
 
 ```mermaid
 flowchart LR
-    BAT["J7 Batería 12 V"] --> PROT["Fusible + TVS<br/>LM74720-Q1<br/>ideal diode"]
+    BAT["J7 Batería 12 / 24 V"] --> PROT["Fusible + TVS<br/>LM74720-Q1<br/>ideal diode"]
     PROT --> BUCK["Buck AP64202<br/>5 V"]
     BUCK --> LDO["LDO TLE42744<br/>3,3 V"]
     PROT -. BAT_MON .-> MCU
@@ -137,7 +137,7 @@ El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN,
 
 | Conector | Señales | Nivel de trabajo | Protección |
 |---|---|---|---|
-| J7 | VBAT, GND | 12 V nominal | Fusible, TVS en anti-serie, corte por sobretensión (≈ 35 V) y protección de polaridad inversa |
+| J7 | VBAT, GND | 12 V o 24 V nominal | Fusible, TVS en anti-serie, corte por sobretensión (≈ 35 V) y protección de polaridad inversa |
 | J1 | DI1 – DI4 | **3,3 V, 12 V o 24 V**, según el jumper (ver abajo) | 4,7 kΩ en serie, zener de 4,7 V, Schottky y TVS de 36 V |
 | J1 | DO1 – DO4 | Salida lógica de 3,3 V a través de 4,7 kΩ (señal, no potencia) | Zener de 4,7 V, Schottky y TVS de 36 V |
 | J4 | AN1 – AN4 | 0 – 5 V (5 V a la entrada = 2,97 V en el ADC) | 5,6 kΩ en serie, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
