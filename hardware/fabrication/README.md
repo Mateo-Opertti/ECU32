@@ -1,13 +1,12 @@
 # Archivos de fabricación (JLCPCB)
 
-Subí acá **exactamente lo que se mandó a fabricar**, versionado por revisión:
+Subí acá **exactamente lo que se mandó a fabricar**:
 
 ```
 fabrication/
-└── RevA/
-    ├── ECU32_RevA_Gerber.zip      Gerbers + NC Drill
-    ├── ECU32_RevA_PickPlace.csv   (si hubo armado SMT)
-    └── order-notes.md             Fecha, espesor, color, acabado, cantidad
+├── ECU32_Gerber.zip      Gerbers + NC Drill
+├── ECU32_PickPlace.csv   (si hubo armado SMT)
+└── order-notes.md        Fecha, espesor, color, acabado, cantidad
 ```
 
 **Configuración usada:**

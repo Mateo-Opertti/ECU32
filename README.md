@@ -278,7 +278,7 @@ ECU32/
 │   ├── images/
 │   │   ├── renders/       Renders 3D
 │   │   ├── pcb/           Capturas del layout
-│   │   └── photos/        Fotos de la placa armada y de las pruebas      [pendiente]
+│   │   └── photos/        Fotos de la placa armada y de las pruebas
 │   ├── manual/            Manual de usuario UM-ECU32                     [pendiente]
 │   └── reports/           Anteproyecto e informe final                   [pendiente]
 └── README.md
@@ -290,20 +290,17 @@ Las carpetas marcadas como *pendiente* todavía sólo tienen un `README.md` que 
 
 ## Galería
 
+| Placa armada (top) | Placa armada (bottom) |
+|---|---|
+| ![Placa armada, top](docs/images/photos/ecu32-assembled-top.jpg) | ![Placa armada, bottom](docs/images/photos/ecu32-assembled-bottom.jpg) |
+
 ![Render 3D de ECU32](docs/images/renders/ecu32-3d.png)
 
 | Layout top | Layout bottom |
 |---|---|
 | ![Layout top](docs/images/pcb/ecu32-layout-top.png) | ![Layout bottom](docs/images/pcb/ecu32-layout-bottom.png) |
 
-<!-- Descomentá cuando agregues fotos:
-
-| Placa armada | Pruebas |
-|---|---|
-| ![foto](docs/images/photos/ecu32-assembled.jpg) | ![pruebas](docs/images/photos/ecu32-test.jpg) |
--->
-
-*Próximamente: fotos de la placa armada y de las pruebas.*
+*Próximamente: fotos de las pruebas.*
 
 ---
 
@@ -311,10 +308,11 @@ Las carpetas marcadas como *pendiente* todavía sólo tienen un `README.md` que 
 
 | Etapa | Estado |
 |---|---|
-| Esquemático | Terminado (Rev 1.0) |
-| PCB layout | Terminado (Rev 1.0), enviado a JLCPCB en octubre de 2026 |
+| Esquemático | Terminado |
+| PCB layout | Terminado, fabricado por JLCPCB en octubre de 2026 |
 | Componentes | Recibidos |
-| Armado y bring-up | En curso |
+| Armado | Placa armada |
+| Bring-up | En curso |
 | Firmware | En curso: programas de prueba por periférico listos |
 | Entrega final | 30/11/2026 |
 

@@ -1,6 +1,6 @@
 # Bill of Materials
 
-Archivo esperado: `ECU32_BOM_RevA.xlsx` (o `.csv`)
+Archivo esperado: `ECU32_BOM.xlsx` (o `.csv`)
 
 **Cómo exportarlo desde Altium:** Reports → Bill of Materials, o con un OutJob: **Report Outputs → Bill of Materials**.
 

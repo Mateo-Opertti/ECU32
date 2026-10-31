@@ -4,7 +4,7 @@
 |---|---|---|
 | `renders/` | Renders 3D de Altium | `ecu32-top.png`, `ecu32-bottom.png`, `ecu32-iso.png` |
 | `pcb/` | Capturas 2D del layout | `ecu32-layout.png`, `ecu32-top-copper.png` |
-| `photos/` | Placa armada, pruebas y banco de trabajo | `ecu32-assembled.jpg`, `test-can.jpg` |
+| `photos/` | Placa armada, pruebas y banco de trabajo | `ecu32-assembled-top.jpg`, `ecu32-assembled-bottom.jpg` |
 
 **Pautas:**
 
