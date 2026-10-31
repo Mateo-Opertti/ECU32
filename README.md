@@ -15,11 +15,10 @@ Santiago Acosta · Mateo Opertti
   <img src="docs/images/renders/ecu32-3d.png" alt="Render 3D de ECU32" width="700">
 </p>
 
-ECU32 reúne en un solo nodo dos funciones que normalmente están en ECUs separadas: un **BMS**, que es relevante para la seguridad, y un **control de clima**, que no es crítico. Con eso buscamos bajar la cantidad de ítems del BOM, el peso del arnés y el costo total. La placa está pensada para el entorno automotriz:
+ECU32 es una **ECU universal** para vehículos de 12 V: una placa de propósito general con CAN FD, LIN, entradas y salidas digitales y analógicas protegidas, y conectividad Wi-Fi/BLE. Se adapta a cada aplicación desde el firmware. Está pensada para el entorno automotriz:
 
 - componentes AEC-Q100/Q200;
 - protección contra transitorios ISO 16750-2 (cold crank y load dump);
-- consumo en sleep menor a 100 µA usando Standby + RTC.
 
 ---
 
@@ -43,7 +42,7 @@ ECU32 reúne en un solo nodo dos funciones que normalmente están en ECUs separa
 |---|---|
 | **MCU** | STM32G491VCT6: Cortex-M4F a 170 MHz, 256 KB de flash, LQFP100 |
 | **Alimentación** | 12 V nominal, con protección de polaridad inversa y sobretensión y TVS para load dump |
-| **CAN FD** | 2 canales con terminación partida conmutable y wake-up desde Standby |
+| **CAN FD** | 2 canales con terminación partida conmutable y wake-up por bus |
 | **LIN** | 1 canal, con pull-up de master conmutable |
 | **E/S digitales** | 4 DI y 4 DO protegidas, a través de un buffer con habilitación por grupo |
 | **Entradas analógicas** | 4 canales con divisor, filtro RC, clamp y buffer op-amp |
@@ -84,7 +83,7 @@ flowchart LR
 | Bloque | Componente | Notas |
 |---|---|---|
 | Protección de entrada | F1, SMBJ58A + SMBJ28A, LM74720-Q1 + BUK7K15-80E | TVS en anti-serie e ideal diode con corte por OV (≈ 35 V) |
-| Buck 5 V | AP64202SP-13 | Modo PFM para bajo IQ |
+| Buck 5 V | AP64202SP-13 | |
 | LDO 3,3 V | TLE42744GS-V33 | |
 | MCU | STM32G491VCT6 | HSE de 16 MHz, LSE de 32,768 kHz |
 | CAN FD | TCAN1046AVDYYRQ1 | VIO = 3,3 V; ESD con ESD2CAN36-Q1 |
@@ -238,7 +237,7 @@ Puntos que hay que configurar sí o sí en CubeMX o en el código de inicializac
 4. **CAN:** poner PD14 y PD15 en bajo para sacar los transceptores de standby.
 5. **LIN:** poner PD10 en alto antes de transmitir. USART3 en modo LIN (`LINEN`).
 6. **ESP32:** manejar PE7 como open-drain, porque el DevKit ya tiene su propio pull-up en EN.
-7. **Bajo consumo:** Standby + RTC, con wake-up por WKUP3 (CAN1) y WKUP2 (CAN2).
+7. **Wake-up por CAN:** WKUP3 (PE6) desde CAN1 y WKUP2 (PC13) desde CAN2.
 
 Herramientas: STM32CubeIDE, STM32CubeMX, STM32CubeProgrammer y STM32CubeG4 (HAL/LL). La placa no tiene USB propio; siempre se alimenta por J7.
 
