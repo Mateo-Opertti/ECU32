@@ -291,7 +291,7 @@ ECU32/
 │   │   ├── diagrams/      Diagrama de bloques inicial (PNG + fuente .cddx)
 │   │   ├── renders/       Renders 3D
 │   │   ├── pcb/           Capturas del layout
-│   │   └── photos/        Fotos de la placa armada y de las pruebas
+│   │   └── photos/        Fotos de la placa armada y del separador
 │   ├── manual/            Manual de usuario UM-ECU32                     [pendiente]
 │   └── reports/           Anteproyecto (informe final pendiente)
 └── README.md
@@ -312,8 +312,6 @@ Las carpetas marcadas como *pendiente* todavía sólo tienen un `README.md` que 
 | Layout top | Layout bottom |
 |---|---|
 | ![Layout top](docs/images/pcb/ecu32-layout-top.png) | ![Layout bottom](docs/images/pcb/ecu32-layout-bottom.png) |
-
-*Próximamente: fotos de las pruebas.*
 
 ---
 
