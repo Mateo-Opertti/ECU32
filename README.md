@@ -307,6 +307,12 @@ Las carpetas marcadas como *pendiente* todavía sólo tienen un `README.md` que 
 |---|---|
 | ![Placa armada, top](docs/images/photos/ecu32-assembled-top.jpg) | ![Placa armada, bottom](docs/images/photos/ecu32-assembled-bottom.jpg) |
 
+| Placa en el gabinete (top) | Placa en el gabinete (bottom) |
+|---|---|
+| ![Placa en el gabinete, top](docs/images/photos/ecu32-enclosure-top.jpg) | ![Placa en el gabinete, bottom](docs/images/photos/ecu32-enclosure-bottom.jpg) |
+
+**[Ver el video de la placa](docs/images/photos/ecu32-video.mp4)**
+
 ![Render 3D de ECU32](docs/images/renders/ecu32-3d.png)
 
 | Layout top | Layout bottom |
