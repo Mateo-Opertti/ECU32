@@ -4,6 +4,8 @@
 //#include "../Apps/Digital_Salidas.c"
 //#include "../Apps/Digital_Loopback.c"
 //#include "../Apps/CAN_FD.c"
+//#include "../Apps/CAN_Maestro.c"
+//#include "../Apps/CAN_Esclavo.c"
 //#include "../Apps/ADC.c"
 //#include "../Apps/LIN_Maestro.c"
 //#include "../Apps/LIN_Esclavo.c"
