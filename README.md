@@ -126,7 +126,7 @@ La placa se protege con tapas de acrílico superior e inferior, sostenidas por s
 
 **J4, entradas analógicas:**
 
-| Pin J4 | 1 | 2 | 3 | 4 |
+| Pin STM32 | B11 | A1 | C1 | A0 |
 |---|---|---|---|---|
 | Señal | AN1 | AN2 | AN3 | AN4 |
 | Rango | 0 – 3,3 V | 0 – 5 V | 0 – 12 V | 0 – 24 V |
@@ -223,6 +223,8 @@ Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta im
 | AN4 | PA0 | ADC12_IN1 | 0 – 24 V | R37 = ‹completar› | R38 = ‹completar› | ‹completar› |
 
 Factor = (R serie + R a GND) / R a GND. Fondo de escala = 3,3 V × factor.
+
+> **El esquemático no está actualizado.** Los divisores de AN1 y AN2 se cambiaron en la placa armada (AN1 quedó de 0 a 3,3 V y AN2 de 0 a 5 V), pero el PDF del esquemático todavía muestra los valores anteriores. Para los rangos vale esta tabla.
 
 ### CAN FD (U6 TCAN1046AV-Q1)
 
