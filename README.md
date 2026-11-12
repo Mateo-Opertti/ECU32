@@ -114,15 +114,17 @@ La placa se protege con tapas de acrílico superior e inferior, sostenidas por s
 
 **J1, pines de la bornera:**
 
-| Pin J1 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| Pin STM32 | E0 | B9 | C12 | C10 | E5 | E1 | D2 | C11 |
 |---|---|---|---|---|---|---|---|---|
 | Señal | DO2 | DO1 | DO4 | DO3 | DI1 | DI2 | DI3 | DI4 |
 
 **J3, CAN y LIN:**
 
-| Pin J3 | 1 | 2 | 3 | 4 | 5 |
+| Pin STM32 (TX / RX) | D8 / D9 | B6 / B5 | B6 / B5 | A12 / A11 | A12 / A11 |
 |---|---|---|---|---|---|
 | Señal | LIN | CAN2_L | CAN2_H | CAN1_H | CAN1_L |
+
+Las columnas siguen el orden físico de cada bornera. Las señales de J1 pasan por el buffer U5, y las de J3 por un transceptor (U7 para LIN, U6 para CAN): en J3 cada columna indica los pines TX / RX del micro para ese bus.
 
 **J4, entradas analógicas:**
 
