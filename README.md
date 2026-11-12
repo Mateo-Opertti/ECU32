@@ -88,7 +88,7 @@ flowchart LR
 | CAN FD | TCAN1046AVDYYRQ1 | VIO = 3,3 V; ESD con ESD2CAN36-Q1 |
 | LIN | TLIN4029A-Q1 | Se maneja con el modo LIN del USART3 |
 | E/S digitales | SN74LV244A | Por canal: R serie, zener, Schottky y TVS |
-| Entradas analógicas | TLV9164 (seguidor) | Por canal: 5,6 k / 8,2 k, 10 nF y clamps BAS40 |
+| Entradas analógicas | TLV9164 (seguidor) | Divisor distinto por canal (ver Pinout), 10 nF y clamps BAS40 |
 | Wi-Fi / BLE | ESP32-DEVKIT-V1 (zócalo) | Se alimenta desde 5 V a través de un Schottky |
 
 El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN, LIN, entradas analógicas y ESP32. Está todo en [`hardware/schematic/ECU32_Schematic.pdf`](hardware/schematic/ECU32_Schematic.pdf). El layout (top y bottom) está en [`hardware/pcb/ECU32_PCB_Layout.pdf`](hardware/pcb/ECU32_PCB_Layout.pdf) y el modelo 3D en [`hardware/3d/ECU32.step`](hardware/3d/ECU32.step).
@@ -129,7 +129,7 @@ La placa se protege con tapas de acrílico superior e inferior, sostenidas por s
 | Pin J4 | 1 | 2 | 3 | 4 |
 |---|---|---|---|---|
 | Señal | AN1 | AN2 | AN3 | AN4 |
-| Rango | 0 – 5 V | 0 – 3,3 V | 0 – 12 V | 0 – 24 V |
+| Rango | 0 – 3,3 V | 0 – 5 V | 0 – 12 V | 0 – 24 V |
 
 **J7, alimentación:** pin 1 = VBAT y pin 2 = GND.
 
@@ -148,8 +148,8 @@ La placa se protege con tapas de acrílico superior e inferior, sostenidas por s
 | J7 | VBAT, GND | 12 V o 24 V nominal | Fusible, TVS en anti-serie, corte por sobretensión (≈ 35 V) y protección de polaridad inversa |
 | J1 | DI1 – DI4 | **3,3 V, 12 V o 24 V**, según el jumper (ver abajo) | 4,7 kΩ en serie, zener de 4,7 V, Schottky y TVS de 36 V |
 | J1 | DO1 – DO4 | Salida lógica de 3,3 V a través de 4,7 kΩ (señal, no potencia) | Zener de 4,7 V, Schottky y TVS de 36 V |
-| J4 | AN1 | 0 – 5 V | Divisor resistivo y filtro RC, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
-| J4 | AN2 | 0 – 3,3 V | Ídem |
+| J4 | AN1 | 0 – 3,3 V | Divisor resistivo y filtro RC, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
+| J4 | AN2 | 0 – 5 V | Ídem |
 | J4 | AN3 | 0 – 12 V | Ídem |
 | J4 | AN4 | 0 – 24 V | Ídem |
 | J3 | CAN1, CAN2 | Niveles CAN FD estándar | ESD2CAN36-Q1 por bus |
@@ -173,12 +173,23 @@ Poné **un solo jumper por canal**. Las entradas están protegidas por el zener 
 
 ### Entradas y salidas digitales (U5 SN74LV244A)
 
-| Señal | Pin STM32 | Pin LQFP100 | | Señal | Pin STM32 | Pin LQFP100 |
-|---|---|---|---|---|---|---|
-| DI1 | PE5 | 4 | | DO1 | PB9 | 96 |
-| DI2 | PE1 | 98 | | DO2 | PE0 | 97 |
-| DI3 | PD2 | 84 | | DO3 | PC10 | 79 |
-| DI4 | PC11 | 80 | | DO4 | PC12 | 81 |
+**Entradas digitales** (el buffer maneja el pin del MCU; el pin siempre es entrada)
+
+| Señal | Pin STM32 | Pin LQFP100 | Pin J1 | Funciones alternativas | EXTI |
+|---|---|---|---|---|---|
+| DI1 | PE5 | 4 | 5 | TIM3_CH4 (AF2, captura de entrada) | EXTI5 |
+| DI2 | PE1 | 98 | 6 | USART1_RX (AF7), TIM17_CH1 (AF4), TIM20_CH4 (AF6) | EXTI1 |
+| DI3 | PD2 | 84 | 7 | UART5_RX (AF5), TIM3_ETR (AF2, conteo de pulsos), TIM8_BKIN (AF4, corte de PWM por hardware) | EXTI2 |
+| DI4 | PC11 | 80 | 8 | UART4_RX (AF5), SPI3_MISO (AF6) | EXTI11 |
+
+**Salidas digitales** (el MCU maneja el buffer; el pin siempre es salida)
+
+| Señal | Pin STM32 | Pin LQFP100 | Pin J1 | Funciones alternativas |
+|---|---|---|---|---|
+| DO1 | PB9 | 96 | 2 | TIM4_CH4 (AF2), TIM8_CH3 (AF10), TIM17_CH1 (AF1), TIM1_CH3N (AF12), IR_OUT (AF6), COMP2_OUT (AF8) |
+| DO2 | PE0 | 97 | 1 | USART1_TX (AF7), TIM16_CH1 (AF4), TIM20_CH4N (AF3) |
+| DO3 | PC10 | 79 | 4 | UART4_TX (AF5), SPI3_SCK (AF6), TIM8_CH1N (AF4) |
+| DO4 | PC12 | 81 | 3 | UART5_TX (AF5), SPI3_MOSI (AF6), TIM8_CH3N (AF4) |
 
 | Habilitación (activa en bajo) | Pin STM32 | Controla |
 |---|---|---|
@@ -187,14 +198,31 @@ Poné **un solo jumper por canal**. Las entradas están protegidas por el zener 
 
 Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta impedancia.
 
+**Periféricos disponibles en J1:**
+
+| Periférico | Salida (DO) | Entrada (DI) | Notas |
+|---|---|---|---|
+| USART1 | TX = DO2, PE0 (J1.1) | RX = DI2, PE1 (J1.6) | La usa la consola CP2102 del firmware de pruebas |
+| UART4 | TX = DO3, PC10 (J1.4) | RX = DI4, PC11 (J1.8) | |
+| UART5 | TX = DO4, PC12 (J1.3) | RX = DI3, PD2 (J1.7) | |
+| SPI3 (solo maestro) | SCK = DO3, MOSI = DO4 | MISO = DI4 | Comparte pines con UART4 y con UART5_TX. CS por GPIO en DO1 o DO2 |
+| PWM | TIM8: DO1 (CH3), DO3 (CH1N), DO4 (CH3N). TIM4_CH4 / TIM17_CH1: DO1. TIM16_CH1: DO2 | — | DI3 (TIM8_BKIN) puede cortar las PWM de TIM8 por hardware |
+
+- Funciones del pin que **no** se pueden usar por J1: I2C (I2C3_SDA en PC11, I2C1_SDA en PB9), porque necesita una línea bidireccional open-drain y el buffer es unidireccional; los canales TIMx_CHxN en las DI (son salidas) y los ETR en las DO (son entradas); USART3_TX/RX (PB9, PC10, PC11), porque USART3 lo usa el LIN en PD8/PD9; FDCAN1_TX en PB9, porque FDCAN1 ya está en PA12.
+- Para UART o cualquier señal de 3,3 V en una DI, el jumper de ese canal tiene que estar en 3V3. En 12V o 24V, el divisor deja la señal por debajo del umbral de alto.
+- Las DO tienen 4,7 kΩ en serie: sirven para señal (UART, SPI, PWM, probado a 500 kHz en PC10), no para potencia.
+- Los EXTI de las cuatro DI (5, 1, 2 y 11) son líneas distintas, así que se pueden usar las cuatro interrupciones a la vez.
+
 ### Entradas analógicas (ADC12)
 
-| Señal | Pin STM32 | Canal ADC |
-|---|---|---|
-| AN1 | PB11 | ADC12_IN14 |
-| AN2 | PA1 | ADC12_IN2 |
-| AN3 | PC1 | ADC12_IN7 |
-| AN4 | PA0 | ADC12_IN1 |
+| Señal | Pin STM32 | Canal ADC | Rango | R serie | R a GND | Factor V_conector / V_pin |
+|---|---|---|---|---|---|---|
+| AN1 | PB11 | ADC12_IN14 | 0 – 3,3 V | R36 = ‹completar› | R35 = ‹completar› | ‹completar› |
+| AN2 | PA1 | ADC12_IN2 | 0 – 5 V | R28 = ‹completar› | R33 = ‹completar› | ‹completar› |
+| AN3 | PC1 | ADC12_IN7 | 0 – 12 V | R40 = ‹completar› | R39 = ‹completar› | ‹completar› |
+| AN4 | PA0 | ADC12_IN1 | 0 – 24 V | R37 = ‹completar› | R38 = ‹completar› | ‹completar› |
+
+Factor = (R serie + R a GND) / R a GND. Fondo de escala = 3,3 V × factor.
 
 ### CAN FD (U6 TCAN1046AV-Q1)
 
@@ -240,20 +268,23 @@ Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta im
 
 ## Firmware
 
-Los programas de prueba del bring-up están en [`firmware/`](firmware/). Hay uno por periférico, escritos a nivel de registros (sin HAL), y el que se graba se elige desde [`Src/main.c`](firmware/Src/main.c).
+Las pruebas del bring-up están en [`firmware/`](firmware/), escritas a nivel de registros (sin HAL). Se graba un único firmware, [`Universal.c`](firmware/Apps/Universal.c), igual en las dos placas: la prueba se elige desde una terminal serie (USART1 por J1, con un adaptador USB-UART) o, en la placa esclava, desde la maestra por CAN2. Los programas sueltos de cada prueba siguen en [`Apps/legacy/`](firmware/Apps/legacy/).
 
-| Programa | Qué prueba | Cómo se ve que funciona |
+| Prueba | Qué prueba | Cómo se ve que funciona |
 |---|---|---|
-| `LEDs.c` | LED1 (PF9) y LED2 (PF10) | Parpadean cada 500 ms |
-| `Digital.c` | Entrada DI4 (PC11) | Verde en alto, rojo en bajo |
-| `Digital_Salidas.c` | Salida PC10, con el buffer U5 habilitado | Salida en alto y LED verde |
-| `Digital_Loopback.c` | Lazo salida PC10 → entrada DI4 | El LED sigue el nivel leído |
-| `ADC.c` | AN1 – AN4 (ADC1) | Tensión en mV en `an_mv[]` y LEDs por umbral |
-| `CAN_FD.c` | FDCAN1 → FDCAN2, 500 kbit/s / 2 Mbit/s, 64 bytes | Verde alterna con cada trama correcta |
-| `LIN_Maestro.c` / `LIN_Esclavo.c` | LIN 2.x a 19200 baud entre dos placas | Verde alterna con cada trama correcta |
-| `PWM.c` | PWM de 500 kHz por PC10 (TIM8_CH1N) | Duty ajustable en vivo desde el debugger |
+| `leds` | LED1 (PF9) y LED2 (PF10) | Parpadean cada 500 ms |
+| `digital` | Entrada DI4 (PC11) | Verde en alto, rojo en bajo |
+| `salidas` | Salida DO3 (PC10) | Salida en alto y LED verde |
+| `loopback` | Lazo salida DO3 → entrada DI4 | La consola informa OK o FALLA en cada lectura |
+| `adc` | AN1 – AN4 (ADC1) | Tensión por la consola y LEDs por umbral. `an_mv[]` es la tensión en el pin del MCU: para obtener la del conector J4 hay que multiplicarla por el factor de cada canal (ver [Entradas analógicas](#entradas-analógicas-adc12)) |
+| `pwm` | PWM de 500 kHz por PC10 (TIM8_CH1N) | Duty ajustable con el comando `duty` |
+| `esp32` | USART2 hacia la ESP32 del zócalo | El LED de la ESP32 sigue al verde |
+| `can_fd` | FDCAN1 → FDCAN2, 500 kbit/s / 2 Mbit/s, 64 bytes | Verde alterna con cada trama correcta |
+| `can_maestro` / `can_esclavo` | CAN FD entre dos placas por CAN1 | Verde o juego de luces con cada trama correcta |
+| `wakeup` | Despertar desde Standby por CAN1 o CAN2 | Rojo 3 s, se duerme; despierta con el verde cada 250 ms |
+| `lin_maestro` / `lin_esclavo` | LIN 2.x a 19200 baud entre dos placas | Verde alterna con cada trama correcta |
 
-En el [README del firmware](firmware/README.md) están las conexiones de cada prueba y cómo compilar y grabar.
+En el [README del firmware](firmware/README.md) están los comandos, las conexiones de cada prueba, el protocolo CAN2 y cómo compilar y grabar.
 
 **Herramientas:** VS Code con la extensión STM32Cube (CMake + Ninja, GCC 14.3.1) y un ST-LINK conectado a J2. La placa no tiene USB propio; siempre se alimenta por J7.
 
@@ -263,7 +294,7 @@ Puntos que hay que configurar sí o sí en el código de inicialización:
 
 1. **Debug:** dejar el JTAG completo habilitado (PA15, PB3 y PB4 están cableados a J2).
 2. **Relojes:** los programas de prueba usan el HSI16 por defecto. Para la aplicación final están el HSE de 16 MHz (que ya usa `CAN_FD.c`) y el LSE de 32,768 kHz; si el LSE no arranca, ajustar `LSEDRV`.
-3. **Buffer de E/S:** PE8 y PE10 arrancan en alto. Después: fijar niveles seguros en las DO, bajar 1/OE y luego bajar 2/OE.
+3. **Buffer de E/S y consola:** PE8 y PE10 arrancan en alto. La consola (USART1) pasa por U5, así que el orden es: DO1 (PB9), DO3 (PC10) y DO4 (PC12) como salidas en bajo; USART1 habilitado (UE, TE, RE) con PE0/PE1 en AF7, para que el TX quede en reposo en alto; bajar PE8 (1/OE) y después bajar PE10 (2/OE). Desde ahí los /OE quedan en bajo: ninguna prueba los vuelve a subir.
 4. **CAN:** poner PD14 y PD15 en bajo para sacar los transceptores de standby.
 5. **LIN:** poner PD10 en alto antes de transmitir. USART3 en modo LIN (`LINEN`).
 6. **ESP32:** manejar PE7 como open-drain, porque el DevKit ya tiene su propio pull-up en EN.
