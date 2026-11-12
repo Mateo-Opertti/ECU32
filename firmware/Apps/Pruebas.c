@@ -280,7 +280,8 @@ static void cmd_plan(void)
           "  DIG-01     do <1|3|4> 1  /  do <n> 0. DO2 en reposo esta en alto; \"do 2 0 [s]\" la baja s segundos\n"
           "  DIG-02     correr es (avisa cada cambio de entrada) y di; rampa lenta para el umbral\n"
           "  DIG-03     pwm <n> 100000 50 en cada salida; frec on mide la frecuencia de las entradas\n"
-          "  AI-02      correr ai; divisor <c> <Rs> <Rg>; ref <c> <mV del multimetro> da el error en % FS\n"
+          "  AI-02      correr ai; divisor <c> <Rs> <Rg>; ref <c> <mV del multimetro> da el error en % FS;\n"
+          "             repetir con adc_conv 2 (ADC2) y adc_conv 1 (ADC1)\n"
           "  COM-02     puente CAN1-CAN2 en J3: can_modo clasico | fd; can_cantidad 100000; correr banco_can\n"
           "  COM-03     LIN entre placas: par lin (esta placa commander) y par lin_inv (al reves)\n"
           "  INT-01     puente CAN1-CAN2 y LIN a la otra placa: integral 10 [todas]; autoarranque integral\n"
@@ -306,6 +307,7 @@ static void ayuda_extra(void)
           "  di                          nivel de las 4 entradas\n"
           "  frec on|off                 frecuencia de las entradas (cuenta flancos 1 s)\n"
           "  promedio <1-256>            muestras promediadas por canal del ADC (256 por defecto)\n"
+          "  adc_conv 1|2                mide AN1..AN4 con el ADC1 o con el ADC2 (para probar los dos)\n"
           "  divisor <c> <Rs> <Rg>       carga el divisor de AN<c> en ohm (queda en la flash); factor: los muestra\n"
           "  ref <c> <mV>                error del ADC contra el multimetro, en % del fondo de escala\n"
           "  can_modo clasico|fd         CAN clasico 8 bytes o FD 64 bytes con BRS (banco_can, can_placas, integral)\n"
@@ -350,6 +352,20 @@ static int comando_extra(char **pal, uint32_t n)
         else {
             adc_promedio = (uint32_t)v;
             cprintf("ADC: promedio de %u muestras por canal\n", v);
+        }
+    } else if (texto_igual(c, "adc_conv")) {
+        int32_t v = n > 1 ? texto_numero(pal[1]) : -1;
+        if (v != 1 && v != 2) {
+            cprintf("Uso: adc_conv 1|2 (ahora ADC%u)\n", adc_conv);
+        } else {
+            adc_conv = (uint32_t)v;
+            uint32_t p = prueba_actual();
+            if (p == P_ADC || p == P_AI || p == P_COMBO_MAESTRO || p == P_COMBO_ESCLAVO || p == P_INTEGRAL) {
+                adc_hw_deinit();  // la prueba sigue, ahora con el otro convertidor
+                adc_hw_init();
+            }
+            cprintf("AN1..AN4 se miden con el ADC%u%s\n", adc_conv,
+                    adc_conv == 2 ? " (VDDA sigue midiendose con el ADC1: VREFINT solo esta en el ADC1)" : "");
         }
     } else if (texto_igual(c, "divisor")) cmd_divisor(pal, n);
     else if (texto_igual(c, "factor")) cmd_factor();

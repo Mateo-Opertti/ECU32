@@ -38,6 +38,9 @@ static uint32_t adc_sumas[5];
 static uint32_t adc_promedio = ADC_PROMEDIO;  // lecturas promediadas por canal (1 a 256)
 static int adc_usar_vref;                     // 1: mide VREFINT en cada tanda y corrige VDDA
 static uint32_t adc_vdda_mv = ADC_VDDA_MV;    // VDDA usada para pasar a mV (medida si adc_usar_vref)
+// Convertidor que mide AN1..AN4: 1 = ADC1 (por defecto), 2 = ADC2 (comando adc_conv de Pruebas).
+// VREFINT solo está conectado al ADC1: la VDDA se mide siempre con el ADC1
+static uint32_t adc_conv = 1;
 volatile uint32_t an_vref_raw;                // cuentas de VREFINT (promedio)
 
 // ---------------------------------------------------------------------------------------------
@@ -88,16 +91,67 @@ static void adc_imprimir(void)
         cputs("  ");
     }
     uint32_t c = adc_canal & 3U;
-    cprintf("| LEDs (AN%u): %s\n", c + 1, adc_leds_texto(an_mv[c]));
+    cprintf("| LEDs (AN%u): %s | ADC%u\n", c + 1, adc_leds_texto(an_mv[c]), adc_conv);
 }
 
 // ---------------------------------------------------------------------------------------------
 // Motor de medición
 
-static void adc_convertir(uint32_t canal)
+static uint32_t adc_activos;  // bit 0 = ADC1 prendido, bit 1 = ADC2 prendido
+
+static uint32_t adc_base_entradas(void) { return adc_conv == 2 ? ADC2_BASE : ADC1_BASE; }
+
+// Canal y convertidor de la medición número i de una tanda (0..3 = AN1..AN4, 4 = VREFINT)
+static uint32_t adc_canal_hw(uint32_t i)
 {
-    ADC1_SQR1 = canal << 6;  // una sola conversión (L = 0) del canal pedido
-    ADC1_CR |= ADC_CR_ADSTART;
+    return i < 4 ? adc_entradas[i].canal : ADC_CANAL_VREFINT;
+}
+
+static uint32_t adc_base_hw(uint32_t i)
+{
+    return i < 4 ? adc_base_entradas() : ADC1_BASE;
+}
+
+static void adc_convertir(uint32_t i)
+{
+    uint32_t b = adc_base_hw(i);
+    ADC_SQR1(b) = adc_canal_hw(i) << 6;  // una sola conversión (L = 0) del canal pedido
+    ADC_CR(b) |= ADC_CR_ADSTART;
+}
+
+// Prende un convertidor: regulador, calibración, muestreo largo y enable
+static void adc_prender(uint32_t b)
+{
+    // Sale de deep power-down, prende el regulador y espera su arranque (20 us)
+    ADC_CR(b) &= ~ADC_CR_DEEPPWD;
+    ADC_CR(b) |= ADC_CR_ADVREGEN;
+    for (volatile uint32_t i = 0; i < 1000; i++);
+
+    // Calibración en modo single-ended (unos pocos us)
+    ADC_CR(b) |= ADC_CR_ADCAL;
+    while (ADC_CR(b) & ADC_CR_ADCAL);
+
+    // Muestreo largo (640.5 ciclos) en todos los canales: sirve para fuentes de alta impedancia
+    ADC_SMPR1(b) = 0x3FFFFFFFU;
+    ADC_SMPR2(b) = 0x07FFFFFFU;
+
+    ADC_ISR(b) = ADC_ISR_ADRDY;  // se limpia escribiendo 1
+    ADC_CR(b) |= ADC_CR_ADEN;
+    while (!(ADC_ISR(b) & ADC_ISR_ADRDY));
+}
+
+static void adc_apagar(uint32_t b)
+{
+    if (ADC_CR(b) & ADC_CR_ADSTART) {
+        ADC_CR(b) |= ADC_CR_ADSTP;
+        while (ADC_CR(b) & ADC_CR_ADSTP);
+    }
+    if (ADC_CR(b) & ADC_CR_ADEN) {
+        ADC_CR(b) |= ADC_CR_ADDIS;
+        while (ADC_CR(b) & ADC_CR_ADEN);
+    }
+    ADC_CR(b) = 0;               // apaga el regulador
+    ADC_CR(b) = ADC_CR_DEEPPWD;  // deep power-down, como al reset
 }
 
 static void adc_hw_init(void)
@@ -107,40 +161,29 @@ static void adc_hw_init(void)
 
     for (uint32_t i = 0; i < 4; i++) gpio_analogico(adc_entradas[i].port, adc_entradas[i].pin);
 
-    // Reloj del ADC: HCLK / 1 (sincrónico), así no hace falta configurar el PLL
+    // Reloj del ADC: HCLK / 1 (sincrónico), así no hace falta configurar el PLL.
+    // CCR es común a ADC1 y ADC2: se escribe con los dos apagados
     ADC12_CCR = (ADC12_CCR & ~(3U << 16)) | (1U << 16);
     if (adc_usar_vref) ADC12_CCR |= ADC_CCR_VREFEN;
     else ADC12_CCR &= ~ADC_CCR_VREFEN;
     if (adc_promedio < 1) adc_promedio = 1;
     if (adc_promedio > 256) adc_promedio = 256;
+    if (adc_conv != 2) adc_conv = 1;
 
-    // Sale de deep power-down, prende el regulador y espera su arranque (20 us)
-    ADC1_CR &= ~ADC_CR_DEEPPWD;
-    ADC1_CR |= ADC_CR_ADVREGEN;
-    for (volatile uint32_t i = 0; i < 1000; i++);
-
-    // Calibración en modo single-ended (unos pocos us)
-    ADC1_CR |= ADC_CR_ADCAL;
-    while (ADC1_CR & ADC_CR_ADCAL);
-
-    // Muestreo largo (640.5 ciclos) en todos los canales: sirve para fuentes de alta impedancia
-    ADC1_SMPR1 = 0x3FFFFFFFU;
-    ADC1_SMPR2 = 0x07FFFFFFU;
-
-    ADC1_ISR = ADC_ISR_ADRDY;  // se limpia escribiendo 1
-    ADC1_CR |= ADC_CR_ADEN;
-    while (!(ADC1_ISR & ADC_ISR_ADRDY));
+    adc_activos = 0;
+    if (adc_conv == 1 || adc_usar_vref) {
+        adc_prender(ADC1_BASE);
+        adc_activos |= 1U;
+    }
+    if (adc_conv == 2) {
+        adc_prender(ADC2_BASE);
+        adc_activos |= 2U;
+    }
 
     for (uint32_t i = 0; i < 4; i++) an_raw[i] = an_mv[i] = 0;
     adc_midiendo = 0;
     adc_lecturas = 0;
     adc_t = ticks - ADC_PERIODO_MS;  // la primera tanda arranca enseguida
-}
-
-// Canal del ADC de la medición número i de una tanda (0..3 = AN1..AN4, 4 = VREFINT)
-static uint32_t adc_canal_hw(uint32_t i)
-{
-    return i < 4 ? adc_entradas[i].canal : ADC_CANAL_VREFINT;
 }
 
 // Avanza una conversión. Devuelve 1 cuando terminó una tanda de las 4 entradas (an_mv[] actualizado)
@@ -153,17 +196,17 @@ static int adc_medir_step(void)
             adc_t = ticks;
             adc_midiendo = 1;
             adc_i = adc_n = adc_suma = 0;
-            adc_convertir(adc_canal_hw(0));
+            adc_convertir(0);
         }
-    } else if (ADC1_ISR & ADC_ISR_EOC) {
-        adc_suma += ADC1_DR;  // leer DR limpia EOC
+    } else if (ADC_ISR(adc_base_hw(adc_i)) & ADC_ISR_EOC) {
+        adc_suma += ADC_DR(adc_base_hw(adc_i));  // leer DR limpia EOC
         if (++adc_n >= adc_promedio) {
             adc_sumas[adc_i] = adc_suma;
             adc_n = adc_suma = 0;
             adc_i++;
         }
         if (adc_i < total) {
-            adc_convertir(adc_canal_hw(adc_i));
+            adc_convertir(adc_i);
         } else {
             adc_midiendo = 0;
             // VDDA real a partir de VREFINT: VDDA = 3,0 V * VREFINT_CAL / lectura
@@ -184,16 +227,9 @@ static int adc_medir_step(void)
 
 static void adc_hw_deinit(void)
 {
-    if (ADC1_CR & ADC_CR_ADSTART) {
-        ADC1_CR |= ADC_CR_ADSTP;
-        while (ADC1_CR & ADC_CR_ADSTP);
-    }
-    if (ADC1_CR & ADC_CR_ADEN) {
-        ADC1_CR |= ADC_CR_ADDIS;
-        while (ADC1_CR & ADC_CR_ADEN);
-    }
-    ADC1_CR = 0;               // apaga el regulador
-    ADC1_CR = ADC_CR_DEEPPWD;  // deep power-down, como al reset
+    if (adc_activos & 1U) adc_apagar(ADC1_BASE);
+    if (adc_activos & 2U) adc_apagar(ADC2_BASE);
+    adc_activos = 0;
     RCC_AHB2ENR &= ~RCC_ADC12EN;
 }
 

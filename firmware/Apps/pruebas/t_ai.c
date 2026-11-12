@@ -49,7 +49,7 @@ static void ai_imprimir(void)
         ai_imprimir_pct(mv, ai_fs_mv[i]);
         cputs(" %)  ");
     }
-    cprintf("| VDDA %u mV, prom %u\n", adc_vdda_mv, adc_promedio);
+    cprintf("| ADC%u, VDDA %u mV, prom %u\n", adc_conv, adc_vdda_mv, adc_promedio);
 }
 
 static void ai_init(void)

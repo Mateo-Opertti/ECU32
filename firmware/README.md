@@ -292,6 +292,7 @@ Diferencias con Universal: el ADC promedia 256 muestras y mide VDDA con VREFINT,
 | `di` | Nivel de las 4 entradas |
 | `frec on\|off` | Frecuencia de cada entrada, contando flancos de subida en ventanas de 1 s |
 | `promedio <1-256>` | Muestras promediadas por canal del ADC |
+| `adc_conv 1\|2` | Mide AN1..AN4 con el ADC1 (por defecto) o con el ADC2. Los dos convertidores pueden medir esos pines (son ADC12_INx), así se prueban los dos. La VDDA se mide siempre con el ADC1, porque VREFINT solo está conectado ahí. Si hay una prueba usando el ADC, cambia en el momento |
 | `divisor <c> <Rs> <Rg>` | Carga el divisor del canal `c` en ohm. El factor queda en la flash; sin cargar se usa el nominal (fondo de escala / 3,3 V) |
 | `factor` | Muestra el factor de cada canal y si es nominal o medido |
 | `ref <c> <mV>` | Compara la lectura con el multímetro y da el error en % del fondo de escala (criterio ≤ 1 %) |
@@ -313,7 +314,7 @@ Diferencias con Universal: el ADC promedia 256 muestras y mide VDDA con VREFINT,
 | DIG-01 | Carga de 825 Ω en la salida | `do 1 1`, `do 1 0`, `do 3 1`… DO2: medir VOH en reposo y `do 2 0 30` para VOL |
 | DIG-02 | Fuente en la entrada y jumper en cada posición | `correr es`: avisa cada cambio de entrada; `di` muestra los niveles. Con una rampa lenta, el aviso marca el umbral |
 | DIG-03 | Carga de 4 mA en la salida; cuadrada de 100 kHz en la entrada | `pwm 1 100000 50` (y 3, 4); `frec on` mide las entradas de a una |
-| AI-02 | Fuente y multímetro en la entrada | `divisor <c> <Rs> <Rg>` una vez por canal; `correr ai`; `ref <c> <mV del multímetro>` en 0, 50 y 100 % FS |
+| AI-02 | Fuente y multímetro en la entrada | `divisor <c> <Rs> <Rg>` una vez por canal; `correr ai`; `ref <c> <mV del multímetro>` en 0, 50 y 100 % FS. Repetir con `adc_conv 2` para probar también el ADC2 |
 | COM-02 | CANH1–CANH2 y CANL1–CANL2 en J3, las dos terminaciones; **sin** CAN2 a la otra placa | `can_modo clasico`, `correr banco_can`; después `can_modo fd`, `correr banco_can` (100 000 tramas por sentido) |
 | COM-03 | LIN (J3-1) y GND entre placas, SW3 cerrado en la commander | `par lin` (esta placa commander), después `par lin_inv`. `estado` da los errores por tipo |
 | INT-01 | Puente CAN1–CAN2 en J3, LIN a la otra placa, cargas en las salidas | `integral 10` (o `integral 10 todas`) a 8, 12, 24 y 28 V. Arranques en frío: `autoarranque integral` (y `autoarranque lin_esclavo` en la otra) |
