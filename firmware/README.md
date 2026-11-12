@@ -308,6 +308,8 @@ Diferencias con Universal: el ADC promedia 256 muestras y mide VDDA con VREFINT,
 
 ### Qué correr para cada prueba del plan
 
+La lista completa, en orden y con casillas para tildar en las dos placas, está en [`CHECKLIST_PRUEBAS.md`](CHECKLIST_PRUEBAS.md).
+
 | Prueba | Cableado | Comandos |
 |---|---|---|
 | ALI-03 | ST-LINK en J2 | Grabar este firmware y depurar (breakpoint en `main`) |
