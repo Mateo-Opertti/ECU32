@@ -14,11 +14,11 @@ Comandos y conexiones en detalle: [README del firmware](README.md#firmware-prueb
 
 ## 0. Preparación
 
-- [ ] Firmware Pruebas grabado en A y en B (`Src/main.c` con `#include "../Apps/Pruebas.c"`)
-- [ ] Sketch [`ESP32_Pruebas`](ESP32/ESP32_Pruebas/ESP32_Pruebas.ino) grabado en la ESP32 (queda **desenchufada** hasta la sección 9)
-- [ ] Consola: CP2102 TX → J1-6 (DI2), RX → J1-1 (DO2), GND común, jumper de DI2 en 3V3, terminal a 115200 8N1
-- [ ] `rol maestro` en A (B queda ESCLAVA)
-- [ ] CAN2 entre placas (J3-3 con J3-3, J3-2 con J3-2, GND) y `esclava estado` contesta ACK
+- [x] Firmware Pruebas grabado en A y en B (`Src/main.c` con `#include "../Apps/Pruebas.c"`)
+- [x] Sketch [`ESP32_Pruebas`](ESP32/ESP32_Pruebas/ESP32_Pruebas.ino) grabado en la ESP32 (queda **desenchufada** hasta la sección 9)
+- [x] Consola: CP2102 TX → J1-6 (DI2), RX → J1-1 (DO2), GND común, jumper de DI2 en 3V3, terminal a 115200 8N1
+- [x] `rol maestro` en A (B queda ESCLAVA)
+- [x] CAN2 entre placas (J3-3 con J3-3, J3-2 con J3-2, GND) y `esclava estado` contesta ACK
 - [ ] Divisores de cada canal cargados en A y en B: `divisor 1 <Rs> <Rg>` … `divisor 4 <Rs> <Rg>` (verificar con `factor`)
 
 ## 1. Verificaciones documentales y por simulación
@@ -35,20 +35,20 @@ Comandos y conexiones en detalle: [README del firmware](README.md#firmware-prueb
 
 **INS-01 · Inspección visual y cortocircuitos en rieles** (CE-14)
 - Sin firmware. Soldaduras, polaridades, fusible, VBAT unido a VDD, resistencia a GND de VIN, VINP, 5 V, 3V3 y VDDA.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 **INS-02 · Cantidad de canales y testpoints** (CE-15, CE-19)
-- Sin firmware. 4 AN, 4 DI, 4 DO, 2 CAN, 1 LIN; testpoint por cada E/S y por cada riel.
-- [ ] Placa A
-- [ ] Placa B
+- Sin firmware. 4 AN, 4 DI, 4 DO, 2 CAN, 1 LIN; testpoints por cada señal inaccesible y por cada riel.
+- [x] Placa A
+- [x] Placa B
 
 ## 3. Alimentación y programación
 
 **ALI-01 · Primera energización** (CE-06)
 - Límite de 100 mA, subir VIN de 0 a 12 V despacio. 3V3 entre 2,97 V y 3,63 V.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 **ALI-02 · Riel de 3,3 V en rango de entrada y carga** (CE-06)
 - VIN a 8, 12, 24 y 28 V; carga en 3V3 hasta 1,5 veces el consumo. 3V3 entre 2,97 V y 3,63 V.
@@ -57,13 +57,13 @@ Comandos y conexiones en detalle: [README del firmware](README.md#firmware-prueb
 
 **ALI-03 · Programación y depuración por SWD** (CE-20)
 - ST-LINK en J2: leer el ID, grabar Pruebas y depurar con un breakpoint en `main`.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 ## 4. Entradas y salidas digitales
 
 **DIG-01 · Salidas: funcionamiento y 4 mA** (CE-16, CE-24)
-- Cableado: carga de 825 Ω de la salida a GND (VOH) o a 3,3 V (VOL).
+- Cableado: carga de 820 Ω de la salida a GND (VOH) o a 3,3 V (VOL).
 - Comandos: `do 1 1`, `do 1 0`, `do 3 1`, `do 3 0`, `do 4 1`, `do 4 0`. DO2: VOH con la consola quieta (en reposo está en alto) y `do 2 0 30` para VOL.
 - Criterio: cambia solo la salida pedida; VOH ≥ 2,4 V y VOL ≤ 0,4 V a 4 mA (multímetro).
 - [ ] Placa A
