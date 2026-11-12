@@ -103,6 +103,7 @@
 #define FDCAN_DBTP(b)   REG((b) + 0x00C)
 #define FDCAN_CCCR(b)   REG((b) + 0x018)
 #define FDCAN_NBTP(b)   REG((b) + 0x01C)
+#define FDCAN_ECR(b)    REG((b) + 0x040)  // contadores de error: TEC [7:0], REC [14:8]
 #define FDCAN_PSR(b)    REG((b) + 0x044)
 #define FDCAN_TDCR(b)   REG((b) + 0x048)
 #define FDCAN_RXGFC(b)  REG((b) + 0x080)
@@ -118,6 +119,8 @@
 #define CCCR_FDOE     (1U << 8)
 #define CCCR_BRSE     (1U << 9)
 #define TXFQS_TFQF    (1U << 21)
+#define PSR_EP        (1U << 5)   // error pasivo
+#define PSR_BO        (1U << 7)   // bus off
 
 // Message RAM (SRAMCAN): 0x350 bytes por instancia, layout fijo en el G4
 #define SRAMCAN_BASE  0x4000A400UL

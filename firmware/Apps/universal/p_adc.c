@@ -1,7 +1,7 @@
 // ADC: entradas AN1..AN4 con el ADC1
 // - Cada 100 ms lee las 4 entradas (16 lecturas promediadas por canal) y guarda la tensión en an_mv[]
 // - Una conversión por step(): no se queda esperando el EOC
-// - Una vez por segundo imprime por la consola la tensión de las 4 entradas en voltios
+// - Una vez por segundo (si "resumen on") imprime por la consola la tensión de las 4 entradas en voltios
 //   (por ejemplo "AN1 1.10 V") y qué LEDs prende la entrada elegida
 // - Los LEDs muestran la entrada elegida con "canal <1-4>":
 //     menos de 1.1 V -> rojo, 1.1 V a 2.2 V -> rojo y verde, más de 2.2 V -> verde
@@ -126,8 +126,10 @@ static void adc_step(void)
 
     if ((ticks - adc_t_imprimir) >= ADC_IMPRIMIR_MS) {
         adc_t_imprimir += ADC_IMPRIMIR_MS;
-        cputs("adc: ");
-        adc_imprimir();
+        if (resumen_activo) {
+            cputs("adc: ");
+            adc_imprimir();
+        }
     }
 }
 

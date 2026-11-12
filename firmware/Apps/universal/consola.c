@@ -6,7 +6,7 @@
 
 #define CONSOLA_BAUD  115200U
 #define RX_TAM        128U   // potencias de 2
-#define TX_TAM        2048U
+#define TX_TAM        4096U
 #define LINEA_MAX     64U
 
 static volatile uint8_t rx_buf[RX_TAM];
@@ -166,6 +166,39 @@ static void cprintf(const char *fmt, ...)
         if (*fmt == '\0') break;
     }
     va_end(ap);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Ayudas para que las pruebas informen por la consola
+
+static int traza_activa;        // "traza on": cada trama CAN/LIN en hex
+static int resumen_activo = 1;  // "resumen off": calla los reportes periódicos (los eventos salen igual)
+
+// Bytes en hex separados por espacios; si son más de 12 muestra los primeros 8 y los últimos 2
+static void cput_bytes(const uint8_t *d, uint32_t n)
+{
+    for (uint32_t i = 0; i < n; i++) {
+        if (n > 12 && i == 8) {
+            cputs(" ..");
+            i = n - 2;
+        }
+        cprintf(" %02x", d[i]);
+    }
+}
+
+// Como mucho un evento por segundo de cada tipo: si algo falla 10 veces por segundo,
+// se ve una línea con el detalle y el resto queda en los contadores del resumen
+typedef struct {
+    uint32_t t;
+    int usado;
+} limite_t;
+
+static int limite_ok(limite_t *l)
+{
+    if (l->usado && (ticks - l->t) < 1000U) return 0;
+    l->usado = 1;
+    l->t = ticks;
+    return 1;
 }
 
 // Devuelve la línea completa (sin el fin de línea) o NULL si todavía no hay una. Hace eco

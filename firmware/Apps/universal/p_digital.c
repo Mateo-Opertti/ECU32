@@ -1,5 +1,5 @@
 // Digital: entrada DI4 (PC11) -> LEDs. Alto: verde (PF10). Bajo: rojo (PF9)
-// Por la consola: cada vez que cambia DI4 y una vez por segundo, el nivel de DI4 y de las otras
+// Por la consola: cada vez que cambia DI4 y una vez por segundo (si "resumen on"), el nivel de DI4 y de las otras
 // entradas (DI1 = PE5, DI3 = PD2). DI2 no se muestra: es el RX de la consola
 // U5 ya está habilitado desde el arranque (2/OE = PE10 en bajo)
 
@@ -33,7 +33,7 @@ static void digital_step(void)
 
     int cambio = alto != dig_ultimo;
     uint32_t dt = ticks - dig_t;
-    if ((cambio && dt >= DIG_MIN_MS) || dt >= DIG_IMPRIMIR_MS) {
+    if ((cambio && dt >= DIG_MIN_MS) || (resumen_activo && dt >= DIG_IMPRIMIR_MS)) {
         if (cambio && dig_ultimo != 2) dig_cambios++;
         digital_imprimir(alto, cambio && dig_ultimo != 2);
         dig_ultimo = alto;

@@ -1,5 +1,6 @@
 // Digital_Salidas: DO3 (PC10) en alto y el LED verde prendido mientras corre
-// Por la consola, una vez por segundo: lo que se le ordenó a DO3 y lo que lee el pin PC10.
+// Por la consola, una vez por segundo: lo que se le ordenó a DO3 y lo que lee el pin PC10
+// (con "resumen off" solo se informan las fallas).
 // Si el pin no sube, la salida está en corto o con demasiada carga (se cuenta como error).
 // Es el nivel en el pin del MCU: lo que sale por J1 después de U5 hay que medirlo con el tester
 // U5 ya está habilitado desde el arranque (1/OE = PE8 y 2/OE = PE10 en bajo)
@@ -25,7 +26,7 @@ static void salidas_step(void)
     uint32_t pin = (uint32_t)gpio_leer(DO3_PORT, DO3);
     if (pin) sal_ok++;
     else sal_err++;
-    cprintf("salidas: DO3 (PC10) ordenado = 1, el pin lee %u  %s\n",
+    if (resumen_activo || !pin) cprintf("salidas: DO3 (PC10) ordenado = 1, el pin lee %u  %s\n",
             pin, pin ? "OK" : "FALLA (el pin no sube: corto o mucha carga)");
 }
 

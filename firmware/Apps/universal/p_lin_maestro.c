@@ -6,8 +6,16 @@
 // LEDs: el verde (PF10) alterna con cada respuesta correcta del esclavo,
 //       el rojo (PF9) se prende si la respuesta llega mal o pasan 500 ms sin una buena
 // En la placa maestra va SW3 cerrado (pull-up de master LIN)
+//
+// Consola:
+// - cada 1 s (si "resumen on"): tramas 0x10 mandadas y respuestas 0x11 buenas por segundo,
+//   errores, última respuesta buena y errores de eco
+// - en el momento: el esclavo deja de responder o vuelve, y el motivo de cada falla
+//   (break, eco, timeout, checksum o datos)
+// - con "traza on": cada trama 0x10 mandada y cada respuesta 0x11
 
 #define LM_PERIODO_MS 50U
+#define LM_RESUMEN_MS 1000U
 
 enum { LM_ESPERA, LM_BREAK, LM_TX, LM_RX };
 
@@ -19,6 +27,14 @@ static uint32_t lm_estado, lm_t0, lm_t_ok;
 static uint8_t lm_cont;
 static int lm_toca_respuesta, lm_error;
 
+// Consola
+static limite_t lm_lim;
+static int lm_caido;
+static uint32_t lm_err_caida;
+static uint8_t lm_ultima[LIN_LEN + 1];
+static int lm_hay_ultima;
+static uint32_t lm_t_res, lm_tx_res, lm_ok_res;
+
 static void lm_init(void)
 {
     lin_hw_init();
@@ -28,6 +44,12 @@ static void lm_init(void)
     lm_toca_respuesta = 0;
     lm_error = 0;
     lm_t0 = lm_t_ok = ticks;
+
+    lm_lim.usado = 0;
+    lm_caido = 0;
+    lm_hay_ultima = 0;
+    lm_t_res = ticks;
+    lm_tx_res = lm_ok_res = 0;
 }
 
 // Fin de una trama. ok solo importa en la 0x11
@@ -39,6 +61,10 @@ static void lm_fin(int ok)
             lm_t_ok = ticks;
             lm_error = 0;
             led_alternar(LED_VERDE);
+            if (lm_caido) {
+                cprintf("lin_maestro: el esclavo volvio (%u pedidos sin respuesta buena)\n", lm_resp_err - lm_err_caida);
+                lm_caido = 0;
+            }
         } else {
             lm_resp_err++;
             lm_error = 1;
@@ -52,6 +78,7 @@ static void lm_fin(int ok)
 static void lm_step(void)
 {
     int r;
+    uint8_t id = lm_toca_respuesta ? LIN_ID_ESCLAVO : LIN_ID_MAESTRO;
 
     switch (lm_estado) {
     case LM_ESPERA:
@@ -66,7 +93,6 @@ static void lm_step(void)
     case LM_BREAK:
         if ((USART_ISR(USART3_BASE) & ISR_LBDF) && !(USART_ISR(USART3_BASE) & ISR_SBKF)) {
             lin_flush();  // descarta el 0x00 con error de framing que deja el break
-            uint8_t id = lm_toca_respuesta ? LIN_ID_ESCLAVO : LIN_ID_MAESTRO;
             uint8_t pid = lin_pid(id);
             lin.tx[0] = LIN_SYNC;
             lin.tx[1] = pid;
@@ -79,6 +105,10 @@ static void lm_step(void)
             lin_empezar_tx();
             lm_estado = LM_TX;
         } else if ((ticks - lin.t) > LIN_BYTE_TIMEOUT_MS) {
+            if (limite_ok(&lm_lim)) {
+                cputs("lin_maestro: no se pudo mandar el break (el USART3 no ve su propio break: "
+                      "revisar EN = PD10 y el transceptor)\n");
+            }
             lm_fin(0);
         }
         break;
@@ -86,10 +116,15 @@ static void lm_step(void)
     case LM_TX:
         r = lin_tx_step();
         if (r < 0) {
+            if (limite_ok(&lm_lim)) lin_explicar_eco("lin_maestro");
             lm_fin(0);
         } else if (r > 0) {
             if (!lm_toca_respuesta) {
                 lm_tx_count++;
+                if (traza_activa) {
+                    lin_traza(LIN_ID_MAESTRO, "tx", &lin.tx[2], LIN_LEN);
+                    cputs("\n");
+                }
                 lm_fin(1);
             } else {
                 lin_empezar_rx(LIN_LEN + 1);  // el esclavo completa con datos y checksum
@@ -101,18 +136,64 @@ static void lm_step(void)
     default:  // LM_RX
         r = lin_rx_step();
         if (r < 0) {
+            if (limite_ok(&lm_lim)) {
+                cprintf("lin_maestro: el esclavo no responde a 0x11 (llegaron %u de %u bytes)\n", lin.irx, LIN_LEN + 1);
+            }
             lm_fin(0);
         } else if (r > 0) {
             const uint8_t *d = lin.rx;
-            int ok = d[LIN_LEN] == lin_checksum(lin_pid(LIN_ID_ESCLAVO), d, LIN_LEN) &&
-                     d[0] == lm_cont && d[1] == (uint8_t)~d[0] && d[2] == 0xA5 && d[3] == 0x5A;
-            lm_fin(ok);
+            uint8_t chk = lin_checksum(lin_pid(LIN_ID_ESCLAVO), d, LIN_LEN);
+            int chk_ok = d[LIN_LEN] == chk;
+            int datos_ok = d[0] == lm_cont && d[1] == (uint8_t)~d[0] && d[2] == 0xA5 && d[3] == 0x5A;
+            if (traza_activa) {
+                lin_traza(LIN_ID_ESCLAVO, "rx", d, LIN_LEN);
+                cputs(chk_ok && datos_ok ? "  OK\n" : "  MAL\n");
+            }
+            if (!chk_ok) {
+                if (limite_ok(&lm_lim)) {
+                    cprintf("lin_maestro: respuesta 0x11 con checksum mal: llego 0x%02x, se esperaba 0x%02x\n",
+                            d[LIN_LEN], chk);
+                }
+            } else if (!datos_ok) {
+                if (limite_ok(&lm_lim)) {
+                    cputs("lin_maestro: respuesta 0x11 con datos mal:");
+                    cput_bytes(d, LIN_LEN);
+                    cprintf(", se esperaba %02x %02x A5 5A\n", lm_cont, (uint8_t)~lm_cont);
+                }
+            } else {
+                for (uint32_t i = 0; i <= LIN_LEN; i++) lm_ultima[i] = d[i];
+                lm_hay_ultima = 1;
+            }
+            lm_fin(chk_ok && datos_ok);
         }
         break;
     }
 
+    if (!lm_caido && (ticks - lm_t_ok) > LIN_RX_TIMEOUT_MS) {
+        lm_caido = 1;
+        lm_err_caida = lm_resp_err;
+        cputs("lin_maestro: sin respuesta buena del esclavo hace 500 ms: revisar el cable LIN (J3-1) y GND, "
+              "SW3 cerrado en esta placa y que la otra corra lin_esclavo\n");
+    }
+
     if (lm_error || (ticks - lm_t_ok) > LIN_RX_TIMEOUT_MS) leds(1, 0);
     else gpio_poner(LED_PORT, LED_ROJO, 0);
+
+    if ((ticks - lm_t_res) >= LM_RESUMEN_MS) {
+        lm_t_res += LM_RESUMEN_MS;
+        if (resumen_activo) {
+            cprintf("lin_maestro: 0x10 enviadas %u/s  0x11 OK %u/s  err %u total",
+                    lm_tx_count - lm_tx_res, lm_resp_ok - lm_ok_res, lm_resp_err);
+            if (lm_hay_ultima) {
+                cputs(" | ultima respuesta");
+                cput_bytes(lm_ultima, LIN_LEN);
+                cputs(" chk OK");
+            }
+            cprintf(" | eco err %u\n", lin_eco_err);
+        }
+        lm_tx_res = lm_tx_count;
+        lm_ok_res = lm_resp_ok;
+    }
 }
 
 static void lm_deinit(void)

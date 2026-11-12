@@ -57,11 +57,14 @@ Una línea por comando, terminada en Enter (`\r` o `\n`), sin distinguir mayúsc
 | `rol [maestro\|esclava]` | Sin argumento muestra el rol; con argumento lo cambia y lo guarda en la flash |
 | `esclava correr <n\|nombre>` | Solo en el MAESTRO. Le pide la prueba a la esclava por CAN2 y muestra la respuesta, o `sin respuesta` |
 | `esclava parar` / `esclava estado` | Solo en el MAESTRO. Ídem para parar o consultar |
+| `esclava resumen on\|off` / `esclava traza on\|off` | Solo en el MAESTRO. Prende o apaga el resumen o la traza en la esclava |
 | `par can` | Solo en el MAESTRO. `can_maestro` en esta placa y `can_esclavo` en la esclava |
 | `par lin` | Solo en el MAESTRO. `lin_maestro` en esta placa y `lin_esclavo` en la esclava |
 | `par wakeup` | Solo en el MAESTRO. La esclava corre `wakeup` y, 3,5 s después de su ACK (cuando ya se durmió), esta placa arranca `can_maestro` para despertarla |
 | `duty <0-100>` | Duty del PWM en %. Se puede cambiar con la prueba corriendo |
 | `canal <1-4>` | Entrada AN que muestra el ADC en los LEDs |
+| `resumen on\|off` | Reporte de cada prueba una vez por segundo (arranca en on). Sin argumento muestra cómo está |
+| `traza on\|off` | Cada trama CAN y LIN en hex, para depurar (arranca en off). Sin argumento muestra cómo está |
 
 ## Pruebas
 
@@ -82,6 +85,55 @@ Una línea por comando, terminada en Enter (`\r` o `\n`), sin distinguir mayúsc
 | 13 | `lin_esclavo` | `LIN_Esclavo.c` | Ídem. ID 0x11: esclavo → maestro | El verde alterna con cada trama correcta. El rojo indica error o 500 ms sin una buena |
 
 El rol de control (MAESTRO / ESCLAVA) no tiene que ver con las pruebas: cualquier placa puede correr cualquier prueba, incluidas `can_maestro` y `can_esclavo`.
+
+## Qué informan las pruebas por la consola
+
+Hay tres niveles:
+
+| Nivel | Cuándo sale | Se controla con |
+|---|---|---|
+| **Resumen** | Una línea por segundo por prueba | `resumen on\|off` (arranca en on) |
+| **Avisos** | Apenas pasa algo; como mucho uno por segundo de cada tipo | Siempre activos |
+| **Traza** | Cada trama CAN o LIN, en hex | `traza on\|off` (arranca en off) |
+
+**Resumen de las pruebas de CAN y LIN:**
+
+```
+can_maestro: tx 10/s  resp OK 10/s  err 0 total  RTT 412 us | CAN1 TEC 0 REC 0, error activo
+can_esclavo: rx OK 10/s  err 0 total  resp 10/s  seq 137  patron escalera paso 2 | CAN1 TEC 0 REC 0, error activo
+can_fd: tx 10/s  rx OK 10/s  err 0 total | CAN1 TEC 0 REC 0, error activo | CAN2 TEC 0 REC 0, error activo
+lin_maestro: 0x10 enviadas 10/s  0x11 OK 10/s  err 0 total | ultima respuesta 25 DA A5 5A chk OK | eco err 0
+lin_esclavo: 0x10 OK 10/s (contador 25)  0x11 respondidas 10/s  err 0 total | eco err 0
+```
+
+- **RTT:** tiempo entre que el maestro manda la trama y recibe la respuesta, en µs.
+- **TEC / REC:** contadores de error de transmisión y recepción del FDCAN. Si suben, el bus se está degradando. Con más de 127 el nodo pasa a error pasivo y con más de 255, a bus off.
+- **Patrón y paso** de `can_esclavo`: el paso del juego de luces que corresponde al último seq recibido.
+
+**Avisos**, por ejemplo:
+
+```
+can_maestro: sin respuesta hace 500 ms y nadie confirma las tramas: revisar cable CAN1, terminacion (SW2) y que la otra placa corra can_esclavo
+can_maestro: el esclavo volvio (12 tramas sin respuesta)
+can_maestro: respuesta mal: byte 12 = 0x3A, se esperaba 0xC5
+can_maestro: CAN1 pasa de error activo a error pasivo (ultimo error: ACK (nadie confirma), TEC 128 REC 0, error pasivo)
+can_esclavo: salto de secuencia: llego 40, se esperaba 37 (se perdieron tramas o se reinicio el maestro)
+lin_maestro: respuesta 0x11 con checksum mal: llego 0x4B, se esperaba 0x4C
+lin_maestro: el esclavo no responde a 0x11 (llegaron 0 de 5 bytes)
+lin_maestro: no volvio el eco del byte 0 (0x55): el bus no se mueve (EN = PD10, transceptor o bus a GND)
+lin_esclavo: sync invalido: llego 0x00, se esperaba 0x55 (bit rate distinto o ruido)
+```
+
+**Traza:**
+
+```
+CAN1 tx 0x100 [64] 25 26 27 28 29 2A 2B 2C .. 63 64
+CAN1 rx 0x101 [64] DA D9 D8 D7 D6 D5 D4 D3 .. 9C 9B  RTT 405 us
+LIN 0x10 tx: 25 26 27 28  chk 1E
+LIN 0x11 rx: 25 DA A5 5A  chk 4C  OK
+```
+
+`resumen off` también calla los reportes periódicos de `digital`, `salidas`, `loopback` y `adc`. Los cambios de DI4 y las fallas siguen saliendo. En la esclava, todo esto llega a la consola del maestro con `[esclava]`. Para prenderlo o apagarlo allá se usa `esclava resumen on|off` y `esclava traza on|off`.
 
 ## Salida de la esclava en la consola del maestro
 
@@ -106,8 +158,8 @@ La esclava también sigue imprimiendo por su propia consola, por si tiene un CP2
 - **LEDs, Digital, Salidas, PWM, ADC:** `correr <nombre>` y mirar los LEDs, el multímetro o el osciloscopio. Con el PWM corriendo, `duty 10`, `duty 90`, etc. Con el ADC corriendo, `canal 1` a `canal 4`.
 - **Loopback:** con el cable puesto, todas las líneas tienen que decir `OK`. Sacando el cable, las lecturas con DO3 en alto tienen que dar `FALLA`.
 - **ESP32:** `correr esp32` en la placa con el módulo (por consola o con `esclava correr esp32`).
-- **CAN entre placas:** `par can` desde el maestro. `estado` y `esclava estado` muestran los contadores de las dos puntas.
-- **LIN:** `par lin` desde el maestro (con SW3 cerrado en el maestro).
+- **CAN entre placas:** `par can` desde el maestro. Cada segundo llega el resumen de las dos puntas (el de la esclava con `[esclava]`), y cualquier falla aparece como aviso. `traza on` muestra cada trama.
+- **LIN:** `par lin` desde el maestro (con SW3 cerrado en el maestro). Igual que CAN: resumen de las dos puntas, avisos y `traza on`.
 - **CAN FD local:** sacar el cable de CAN2 entre placas, poner el puente CAN1–CAN2 y ejecutar `correr can_fd` en la consola de esa placa. Mientras corre, la consola avisa que el enlace CAN2 está suspendido. Con `parar` el enlace vuelve.
 - **Wake-up:** `par wakeup` desde el maestro, con CAN1 unido entre las placas. La esclava muestra el rojo 3 s y se duerme; a los 3,5 s el maestro arranca `can_maestro`, que la despierta, y el verde de la esclava empieza a alternar cada 250 ms. Al despertar, la consola de la esclava imprime `Reset: salio de Standby, lo desperto WKUP3 (CAN1)`. Para repetir: `par wakeup` de nuevo. El rojo del maestro queda prendido, porque la esclava despierta no contesta las tramas: es lo esperado.
 - **Wake-up por CAN2:** `esclava correr wakeup`, esperar a que se duerma y mandar `esclava estado`. El primer intento la despierta por WKUP2 y uno de los reintentos recibe el ACK con la prueba `wakeup` despierta.
@@ -120,8 +172,8 @@ CAN FD sin cambio de bitrate: toda la trama va a 500 kbit/s, el mismo bit timing
 
 | Byte | Contenido |
 |---|---|
-| 0 | Comando: 1 = correr, 2 = parar, 3 = estado |
-| 1 | Número de prueba (para correr) |
+| 0 | Comando: 1 = correr, 2 = parar, 3 = estado, 4 = traza, 5 = resumen |
+| 1 | Número de prueba (correr) o 1 = on / 0 = off (traza, resumen) |
 | 2 | Número de secuencia |
 | 3 – 7 | 0 |
 

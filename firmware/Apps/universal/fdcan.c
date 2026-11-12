@@ -134,6 +134,70 @@ static int fdcan_recibir(uint32_t base, can_trama_t *t)
     return 1;
 }
 
+// ---------------------------------------------------------------------------------------------
+// Diagnóstico para la consola
+
+static const char *const can_estado_txt[3] = { "error activo", "error pasivo", "BUS OFF" };
+
+static const char *can_lec_texto(uint32_t lec)
+{
+    static const char *const t[8] = {
+        "ninguno", "stuff", "form", "ACK (nadie confirma)", "bit recesivo", "bit dominante", "CRC", "ninguno"
+    };
+    return t[lec & 7U];
+}
+
+static uint32_t can_estado(uint32_t psr)
+{
+    return (psr & PSR_BO) ? 2U : (psr & PSR_EP) ? 1U : 0U;
+}
+
+// "TEC 0 REC 0, error activo"
+static void can_imprimir_bus(uint32_t base, uint32_t psr)
+{
+    uint32_t ecr = FDCAN_ECR(base);
+    cprintf("TEC %u REC %u, %s", ecr & 0xFFU, (ecr >> 8) & 0x7FU, can_estado_txt[can_estado(psr)]);
+}
+
+typedef struct {
+    uint32_t estado, busoff, lec;
+} can_mon_t;
+
+static void can_mon_init(can_mon_t *m, uint32_t busoff)
+{
+    m->estado = 0;
+    m->busoff = busoff;
+    m->lec = 0;
+}
+
+// Avisa cuando el nodo cambia de estado (activo / pasivo / bus off) o se reinicia por bus off
+static void can_monitor(const char *prueba, const char *bus, uint32_t base, uint32_t psr,
+                        uint32_t busoff, can_mon_t *m)
+{
+    uint32_t lec = psr & 7U;
+    if (lec != 0 && lec != 7) m->lec = lec;
+
+    if (busoff != m->busoff) {
+        m->busoff = busoff;
+        cprintf("%s: %s en BUS OFF, se reinicio el nodo (vez %u)\n", prueba, bus, busoff);
+    }
+    uint32_t e = can_estado(psr);
+    if (e != m->estado) {
+        cprintf("%s: %s pasa de %s a %s (ultimo error: %s, ", prueba, bus,
+                can_estado_txt[m->estado], can_estado_txt[e], can_lec_texto(m->lec));
+        can_imprimir_bus(base, psr);
+        cputs(")\n");
+        m->estado = e;
+    }
+}
+
+// "CAN1 tx 0x100 [64] 25 26 ... 64" (sin fin de línea, para que la prueba agregue lo suyo)
+static void can_traza(const char *bus, const char *dir, uint32_t id, const uint8_t *d, uint32_t len)
+{
+    cprintf("%s %s 0x%x [%u]", bus, dir, id & 0x1FFFFFFFU, len);
+    cput_bytes(d, len);
+}
+
 // CAN1 para las pruebas: transceiver en modo normal, pines en AF9 e instancia andando
 static void can1_activar(uint32_t modo)
 {

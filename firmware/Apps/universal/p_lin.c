@@ -21,6 +21,7 @@ static struct {
     uint8_t rx[8];
     uint32_t nrx, irx;
     uint32_t t;  // último movimiento, para los timeouts
+    int eco_leido;  // cuando falla un eco: el byte que volvió, o -1 si no volvió nada
 } lin;
 
 static void lin_hw_init(void)
@@ -101,11 +102,13 @@ static int lin_tx_step(void)
             lin.eco_pendiente = 0;
             if (c != lin.tx[lin.itx]) {
                 lin_eco_err++;
+                lin.eco_leido = c;
                 return -1;
             }
             if (++lin.itx == lin.ntx) return 1;
         } else if ((ticks - lin.t) > LIN_BYTE_TIMEOUT_MS) {
             lin_eco_err++;
+            lin.eco_leido = -1;
             return -1;
         }
     } else if (USART_ISR(USART3_BASE) & ISR_TXE) {
@@ -114,6 +117,26 @@ static int lin_tx_step(void)
         lin.t = ticks;
     }
     return 0;
+}
+
+// Explica por la consola por qué falló lin_tx_step
+static void lin_explicar_eco(const char *prueba)
+{
+    if (lin.eco_leido < 0) {
+        cprintf("%s: no volvio el eco del byte %u (0x%02x): el bus no se mueve (EN = PD10, transceptor o bus a GND)\n",
+                prueba, lin.itx, lin.tx[lin.itx]);
+    } else {
+        cprintf("%s: eco distinto en el byte %u: se mando 0x%02x y se leyo 0x%02x (choque con otro nodo o ruido)\n",
+                prueba, lin.itx, lin.tx[lin.itx], (uint32_t)lin.eco_leido);
+    }
+}
+
+// "LIN 0x10 tx: 25 26 27 28  chk 1E" (d = datos + checksum, sin fin de línea)
+static void lin_traza(uint8_t id, const char *dir, const uint8_t *d, uint32_t n_datos)
+{
+    cprintf("LIN 0x%02x %s:", id, dir);
+    cput_bytes(d, n_datos);
+    cprintf("  chk %02x", d[n_datos]);
 }
 
 // Devuelve 0 mientras sigue, 1 si llegaron los nrx bytes, -1 si pasaron 5 ms sin el siguiente

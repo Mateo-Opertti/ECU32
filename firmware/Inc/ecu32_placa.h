@@ -54,6 +54,18 @@
 
 extern volatile uint32_t ticks;  // ms desde el arranque (SysTick)
 
+// Microsegundos desde el arranque, con el contador del SysTick. Vuelve a 0 cada ~71 min:
+// sirve para restar tiempos cortos (por ejemplo, el tiempo de ida y vuelta de una trama)
+static inline uint32_t micros(void)
+{
+    uint32_t t, c;
+    do {
+        t = ticks;
+        c = SYST_CVR;
+    } while (t != ticks);  // si justo pasó un ms, se vuelve a leer
+    return t * 1000U + (SYST_RVR - c) / (CPU_HZ / 1000000U);
+}
+
 static inline void gpio_poner(uint32_t base, uint32_t pin, int alto)
 {
     GPIO_BSRR(base) = alto ? (1U << pin) : (1U << (pin + 16));

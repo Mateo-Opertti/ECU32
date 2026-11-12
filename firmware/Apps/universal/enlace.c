@@ -3,7 +3,8 @@
 // Se usa FD y no CAN clásico para que la respuesta a "estado" (20 bytes) entre en una sola trama
 //
 // Comando, ID 0x700, maestro -> esclava, 8 bytes:
-//   [0] comando (1 correr, 2 parar, 3 estado)  [1] número de prueba  [2] secuencia  [3..7] 0
+//   [0] comando (1 correr, 2 parar, 3 estado, 4 traza, 5 resumen)
+//   [1] número de prueba (correr) o 1 = on / 0 = off (traza, resumen)  [2] secuencia  [3..7] 0
 // Respuesta, ID 0x701, esclava -> maestro, 20 bytes:
 //   [0] ACK (0x06) o NACK (0x15)  [1] secuencia del comando  [2] rol  [3] prueba actual (0 = ninguna)
 //   [4] código de error  [5] bit 0: hay contadores  [6..7] 0
@@ -22,6 +23,8 @@
 #define ENL_CMD_CORRER   1U
 #define ENL_CMD_PARAR    2U
 #define ENL_CMD_ESTADO   3U
+#define ENL_CMD_TRAZA    4U
+#define ENL_CMD_RESUMEN  5U
 #define ENL_ACK          0x06U
 #define ENL_NACK         0x15U
 #define ENL_LEN_CMD      8U
@@ -268,6 +271,12 @@ static void enlace_atender(const can_trama_t *t)
     } else if (cmd == ENL_CMD_PARAR) {
         cputs("[CAN2] el maestro pide: parar\n");
         prueba_parar();
+    } else if (cmd == ENL_CMD_TRAZA) {
+        traza_activa = n != 0;
+        cprintf("[CAN2] el maestro pide: traza %s\n", n ? "on" : "off");
+    } else if (cmd == ENL_CMD_RESUMEN) {
+        resumen_activo = n != 0;
+        cprintf("[CAN2] el maestro pide: resumen %s\n", n ? "on" : "off");
     } else if (cmd != ENL_CMD_ESTADO) {
         err = ERR_COMANDO;
     }

@@ -253,18 +253,39 @@ static uint32_t buscar_prueba(const char *s)
 
 static void cmd_ayuda(void)
 {
-    cputs("Comandos:\n"
-          "  ayuda                        esta lista\n"
-          "  lista                        pruebas numeradas\n"
-          "  correr <n|nombre>            para la prueba actual y arranca otra\n"
-          "  parar                        para la prueba y deja la placa en estado seguro\n"
-          "  estado                       rol, prueba, tiempo y contadores\n"
-          "  rol [maestro|esclava]        muestra o cambia el rol (queda guardado)\n"
-          "  esclava correr <n|nombre>    (MAESTRO) le pide a la esclava por CAN2\n"
-          "  esclava parar | estado\n"
-          "  par <can|lin|wakeup>         (MAESTRO) Maestro aca y Esclavo en la otra placa\n"
-          "  duty <0-100>                 duty del PWM en %\n"
-          "  canal <1-4>                  entrada AN que muestra el ADC en los LEDs\n");
+    cputs("Comandos (una linea y Enter; mayusculas o minusculas da igual)\n"
+          "\n"
+          "PRUEBAS EN ESTA PLACA\n"
+          "  lista                       pruebas numeradas\n"
+          "  correr <n|nombre>           para la prueba actual y arranca otra (ej: correr 9, correr can_maestro)\n"
+          "  parar                       para la prueba y deja la placa en estado seguro\n"
+          "  estado                      rol, prueba, tiempo, contadores, estado del bus y opciones\n"
+          "  duty <0-100>                duty del PWM en % (prueba pwm)\n"
+          "  canal <1-4>                 entrada AN que muestra el ADC en los LEDs (prueba adc)\n"
+          "\n"
+          "QUE INFORMAN LAS PRUEBAS POR ESTA CONSOLA\n"
+          "  resumen on|off              reporte cada 1 s: tramas/s, OK, errores y estado del bus en CAN y LIN,\n"
+          "                              voltios en adc, niveles en digital/salidas/loopback. Arranca en on\n"
+          "  traza on|off                ademas, cada trama CAN y LIN en hex (para depurar). Arranca en off\n"
+          "  Los avisos de fallas salen siempre, apenas pasan: sin respuesta, trama mal (y que byte),\n"
+          "  checksum mal, eco mal, error pasivo, BUS OFF... (como mucho uno por segundo de cada tipo)\n"
+          "  Sin argumento, \"resumen\" y \"traza\" muestran como estan\n"
+          "\n"
+          "ROL Y LA OTRA PLACA (por CAN2)\n"
+          "  rol [maestro|esclava]       muestra o cambia el rol (queda guardado en la flash)\n"
+          "  esclava correr <n|nombre>   (MAESTRO) arranca una prueba en la esclava\n"
+          "  esclava parar               (MAESTRO) para la prueba de la esclava\n"
+          "  esclava estado              (MAESTRO) rol, prueba, tiempo y contadores de la esclava\n"
+          "  esclava resumen on|off      (MAESTRO) prende o apaga el resumen en la esclava\n"
+          "  esclava traza on|off        (MAESTRO) prende o apaga la traza en la esclava\n"
+          "  par <can|lin|wakeup>        (MAESTRO) version Maestro aca y version Esclavo en la otra placa\n"
+          "  Todo lo que imprime la esclava aparece en esta consola con \"[esclava]\"\n"
+          "\n"
+          "EJEMPLO: CAN entre placas mirando las dos puntas\n"
+          "  par can                     arranca las dos; cada 1 s llega el resumen de esta placa y de la esclava\n"
+          "  traza on                    ademas muestra cada trama de esta placa\n"
+          "  traza off / resumen off     calla la consola para escribir tranquilo (las fallas siguen saliendo)\n"
+          "  parar  y  esclava parar     termina\n");
 }
 
 static void cmd_lista(void)
@@ -296,7 +317,8 @@ static void cmd_estado(void)
     cprintf("Enlace CAN2: %s, bus off %u, pedidos sin respuesta %u\n",
             enlace_activo ? "activo" : "suspendido", enl_busoff, enl_sin_resp);
     cprintf("Reloj FDCAN: %s\n", hse_ok ? "HSE 16 MHz" : "PCLK1 (no arranco el HSE)");
-    cprintf("Consola: %u bytes con error descartados, %u perdidos\n", cons_err_rx, cons_perdidos);
+    cprintf("Consola: resumen %s, traza %s; %u bytes con error descartados, %u perdidos\n",
+            resumen_activo ? "on" : "off", traza_activa ? "on" : "off", cons_err_rx, cons_perdidos);
     if (rol_actual == ROL_ESCLAVA) cprintf("Reenvio al maestro por CAN2: %u bytes perdidos\n", fwd_perdidos);
     else cprintf("Texto de la esclava: %u tramas perdidas\n", txt_perdidas);
 }
@@ -318,9 +340,40 @@ static void cmd_rol(const char *arg)
     else cprintf("ERROR al grabar la flash. Rol actual: %s\n", rol_nombre(rol_actual));
 }
 
+// "on" -> 1, "off" -> 0, otra cosa -> -1
+static int texto_on_off(const char *s)
+{
+    if (s && texto_igual(s, "on")) return 1;
+    if (s && texto_igual(s, "off")) return 0;
+    return -1;
+}
+
+// "resumen on|off" y "traza on|off" en esta placa
+static void cmd_on_off(const char *nombre, int *opcion, const char *arg)
+{
+    if (!arg) {
+        cprintf("%s: %s (cambiar con \"%s on\" o \"%s off\")\n", nombre, *opcion ? "on" : "off", nombre, nombre);
+        return;
+    }
+    int v = texto_on_off(arg);
+    if (v < 0) {
+        cprintf("Uso: %s on|off\n", nombre);
+        return;
+    }
+    *opcion = v;
+    cprintf("%s %s\n", nombre, v ? "on" : "off");
+}
+
 static void cmd_esclava(const char *sub, const char *arg)
 {
-    if (sub && texto_igual(sub, "correr")) {
+    if (sub && (texto_igual(sub, "traza") || texto_igual(sub, "resumen"))) {
+        int v = texto_on_off(arg);
+        if (v < 0) {
+            cprintf("Uso: esclava %s on|off\n", sub);
+            return;
+        }
+        enlace_pedir(texto_igual(sub, "traza") ? ENL_CMD_TRAZA : ENL_CMD_RESUMEN, (uint32_t)v, ACCION_NINGUNA);
+    } else if (sub && texto_igual(sub, "correr")) {
         uint32_t n = buscar_prueba(arg);
         if (!n) {
             cputs("Prueba desconocida (ver \"lista\")\n");
@@ -332,7 +385,7 @@ static void cmd_esclava(const char *sub, const char *arg)
     } else if (sub && texto_igual(sub, "estado")) {
         enlace_pedir(ENL_CMD_ESTADO, 0, ACCION_NINGUNA);
     } else {
-        cputs("Uso: esclava <correr <n|nombre>|parar|estado>\n");
+        cputs("Uso: esclava correr <n|nombre> | parar | estado | resumen on|off | traza on|off\n");
     }
 }
 
@@ -389,6 +442,10 @@ static void comando(char *l)
         cmd_esclava(pal[1], pal[2]);
     } else if (texto_igual(pal[0], "par")) {
         cmd_par(pal[1]);
+    } else if (texto_igual(pal[0], "resumen")) {
+        cmd_on_off("resumen", &resumen_activo, pal[1]);
+    } else if (texto_igual(pal[0], "traza")) {
+        cmd_on_off("traza", &traza_activa, pal[1]);
     } else if (texto_igual(pal[0], "duty")) {
         int32_t d = pal[1] ? texto_numero(pal[1]) : -1;
         if (d < 0 || d > 100) {

@@ -1,6 +1,6 @@
 // Digital_Loopback: lazo salida -> entrada, con un cable de DO3 (PC10) a DI4 (PC11)
 // Cada 500 ms cambia DO3, a los 5 ms lee DI4 y compara. Ya no hace falta usar breakpoints:
-// cada lectura se informa por la consola y se cuenta como OK o error
+// cada lectura se informa por la consola y se cuenta como OK o error ("resumen off": solo las fallas)
 // LEDs: siguen el nivel leído, como en la app original (bajo = rojo, alto = verde)
 
 #define LOOP_PERIODO_MS  500
@@ -30,7 +30,7 @@ static void loop_step(void)
         int ok = leido == loop_nivel;
         if (ok) loop_ok++;
         else loop_err++;
-        cprintf("loopback: DO3 (PC10) = %u (el pin lee %u)  DI4 (PC11) = %u  %s\n",
+        if (resumen_activo || !ok) cprintf("loopback: DO3 (PC10) = %u (el pin lee %u)  DI4 (PC11) = %u  %s\n",
                 loop_nivel, (uint32_t)gpio_leer(DO3_PORT, DO3), leido, ok ? "OK" : "FALLA");
     }
 
