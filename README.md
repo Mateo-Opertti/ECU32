@@ -272,7 +272,12 @@ Factor = (R serie + R a GND) / R a GND. Fondo de escala = 3,3 V × factor.
 
 ## Firmware
 
-Las pruebas del bring-up están en [`firmware/`](firmware/), escritas a nivel de registros (sin HAL). Se graba un único firmware, [`Universal.c`](firmware/Apps/Universal.c), igual en las dos placas: la prueba se elige desde una terminal serie (USART1 por J1, con un adaptador USB-UART) o, en la placa esclava, desde la maestra por CAN2. Los programas sueltos de cada prueba siguen en [`Apps/legacy/`](firmware/Apps/legacy/).
+Las pruebas del bring-up están en [`firmware/`](firmware/), escritas a nivel de registros (sin HAL). Se graba un único firmware, igual en las dos placas: la prueba se elige desde una terminal serie (USART1 por J1, con un adaptador USB-UART) o, en la placa esclava, desde la maestra por CAN2. Hay dos firmwares para elegir:
+
+- [`Pruebas.c`](firmware/Apps/Pruebas.c): todo lo necesario para ejecutar el plan de pruebas. El comando `plan` indica qué correr para cada prueba (DIG, AI, COM, INT, EXT, ESP).
+- [`Universal.c`](firmware/Apps/Universal.c): las pruebas de bring-up.
+
+Los programas sueltos de cada prueba siguen en [`Apps/legacy/`](firmware/Apps/legacy/).
 
 | Prueba | Qué prueba | Cómo se ve que funciona |
 |---|---|---|

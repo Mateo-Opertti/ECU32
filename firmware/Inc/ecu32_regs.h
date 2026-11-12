@@ -175,6 +175,49 @@
 #define FCR_LOCK      (1U << 31)
 #define ECCR_ECCD     (1U << 31)  // error de ECC doble (dispara NMI)
 
+// Timers con los mismos offsets: TIM4 (PCLK1), TIM8 y TIM16 (PCLK2)
+#define TIM4_BASE     0x40000800UL
+#define TIM16_BASE    0x40014400UL
+#define TIM_CR1(b)    REG((b) + 0x00)
+#define TIM_EGR(b)    REG((b) + 0x14)
+#define TIM_CCMR1(b)  REG((b) + 0x18)
+#define TIM_CCMR2(b)  REG((b) + 0x1C)
+#define TIM_CCER(b)   REG((b) + 0x20)
+#define TIM_PSC(b)    REG((b) + 0x28)
+#define TIM_ARR(b)    REG((b) + 0x2C)
+#define TIM_CCR1(b)   REG((b) + 0x34)
+#define TIM_CCR3(b)   REG((b) + 0x3C)
+#define TIM_CCR4(b)   REG((b) + 0x40)
+#define TIM_BDTR(b)   REG((b) + 0x44)
+#define RCC_TIM4EN    (1U << 2)    // APB1ENR1
+#define RCC_TIM16EN   (1U << 17)   // APB2ENR
+#define RCC_SYSCFGEN  (1U << 0)    // APB2ENR
+
+// EXTI y SYSCFG (líneas de interrupción de los pines)
+#define EXTI_BASE     0x40010400UL
+#define EXTI_IMR1     REG(EXTI_BASE + 0x00)
+#define EXTI_RTSR1    REG(EXTI_BASE + 0x08)
+#define EXTI_FTSR1    REG(EXTI_BASE + 0x0C)
+#define EXTI_PR1      REG(EXTI_BASE + 0x14)
+#define SYSCFG_EXTICR(n) REG(0x40010000UL + 0x08 + 4 * (n))  // n = 0..3: líneas 4n..4n+3
+#define EXTI1_IRQn      7
+#define EXTI2_IRQn      8
+#define EXTI9_5_IRQn    23
+#define EXTI15_10_IRQn  40
+#define USART2_IRQn     38
+
+// CRC (CRC-32 con polinomio 0x04C11DB7, valor inicial 0xFFFFFFFF, sin reflejar)
+#define RCC_AHB1ENR   REG(RCC_BASE + 0x48)
+#define RCC_CRCEN     (1U << 12)
+#define CRC_DR        REG(0x40023000UL)
+#define CRC_DR8       (*(volatile uint8_t *)0x40023000UL)
+#define CRC_CR        REG(0x40023008UL)
+
+// VREFINT: canal 18 del ADC1, calibrado de fábrica con VDDA = 3,0 V
+#define ADC_CCR_VREFEN  (1U << 22)
+#define ADC_CANAL_VREFINT 18U
+#define VREFINT_CAL   (*(volatile uint16_t *)0x1FFF75AAUL)
+
 // TIM8 (reloj: PCLK2)
 #define TIM8_BASE     0x40013400UL
 #define TIM8_CR1      REG(TIM8_BASE + 0x00)

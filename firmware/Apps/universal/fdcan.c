@@ -93,15 +93,17 @@ static void fdcan_iniciar(uint32_t base, uint32_t modo)
 }
 
 // Devuelve 1 si la trama quedó en cola, 0 si el TX FIFO está lleno
-static int fdcan_enviar(uint32_t base, uint32_t id, const uint8_t *data, uint32_t len, int brs)
+// fd = 0: trama CAN clásica (hasta 8 bytes, sin BRS)
+static int fdcan_enviar_ex(uint32_t base, uint32_t id, const uint8_t *data, uint32_t len, int fd, int brs)
 {
     if (FDCAN_TXFQS(base) & TXFQS_TFQF) return 0;
+    if (!fd && len > 8) len = 8;
 
     uint32_t dlc = len_a_dlc(len);
     uint32_t idx = (FDCAN_TXFQS(base) >> 16) & 3U;
     volatile uint32_t *e = (volatile uint32_t *)(MRAM(base) + MRAM_TXBUF + idx * MRAM_ELEM);
     e[0] = id << 18;  // ID estándar de 11 bits
-    e[1] = ELEM_FDF | (brs ? ELEM_BRS : 0) | (dlc << 16);
+    e[1] = (fd ? ELEM_FDF : 0) | (fd && brs ? ELEM_BRS : 0) | (dlc << 16);
     for (uint32_t i = 0; i < (dlc_a_len[dlc] + 3U) / 4; i++) {
         uint32_t w = 0;
         for (uint32_t k = 0; k < 4; k++) {
@@ -112,6 +114,12 @@ static int fdcan_enviar(uint32_t base, uint32_t id, const uint8_t *data, uint32_
     }
     FDCAN_TXBAR(base) = 1U << idx;
     return 1;
+}
+
+// Trama CAN FD (brs = 1: fase de datos a 2 Mbit/s)
+static int fdcan_enviar(uint32_t base, uint32_t id, const uint8_t *data, uint32_t len, int brs)
+{
+    return fdcan_enviar_ex(base, id, data, len, 1, brs);
 }
 
 // Devuelve 1 si sacó una trama del RX FIFO0, 0 si no había nada

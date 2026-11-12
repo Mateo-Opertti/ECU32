@@ -18,6 +18,8 @@ enum { LE_ESPERA, LE_SYNC, LE_PID, LE_DATOS, LE_RESPUESTA };
 static volatile uint32_t le_rx_ok;      // tramas 0x10 recibidas bien
 static volatile uint32_t le_rx_err;     // tramas que llegaron mal (sync, datos o checksum)
 static volatile uint32_t le_resp_count; // respuestas 0x11 enviadas
+// Errores por tipo (COM-03 pide 0 de checksum, sync y respuesta ausente)
+static volatile uint32_t le_e_sync, le_e_incompleta, le_e_chk, le_e_datos, le_e_eco;
 
 static uint32_t le_estado, le_t_ok;
 static uint8_t le_ultimo;
@@ -32,6 +34,7 @@ static void le_init(void)
 {
     lin_hw_init();
     le_rx_ok = le_rx_err = le_resp_count = 0;
+    le_e_sync = le_e_incompleta = le_e_chk = le_e_datos = le_e_eco = 0;
     le_estado = LE_ESPERA;
     le_ultimo = 0;
     le_error = 0;
@@ -67,9 +70,11 @@ static void le_step(void)
     case LE_SYNC:
         r = lin_rx_step();
         if (r < 0) {
+            le_e_sync++;
             if (limite_ok(&le_lim)) cputs("lin_esclavo: llego un break sin sync detras\n");
             le_mal();
         } else if (r > 0 && lin.rx[0] != LIN_SYNC) {
+            le_e_sync++;
             if (limite_ok(&le_lim)) {
                 cprintf("lin_esclavo: sync invalido: llego 0x%02x, se esperaba 0x55 (bit rate distinto o ruido)\n",
                         lin.rx[0]);
@@ -108,6 +113,7 @@ static void le_step(void)
     case LE_DATOS:
         r = lin_rx_step();
         if (r < 0) {
+            le_e_incompleta++;
             if (limite_ok(&le_lim)) {
                 cprintf("lin_esclavo: trama 0x10 incompleta: llegaron %u de %u bytes\n", lin.irx, LIN_LEN + 1);
             }
@@ -136,6 +142,8 @@ static void le_step(void)
                 }
                 le_estado = LE_ESPERA;
             } else {
+                if (!chk_ok) le_e_chk++;
+                else le_e_datos++;
                 if (limite_ok(&le_lim)) {
                     if (!chk_ok) {
                         cprintf("lin_esclavo: trama 0x10 con checksum mal: llego 0x%02x, se esperaba 0x%02x\n",
@@ -160,8 +168,9 @@ static void le_step(void)
                     lin_traza(LIN_ID_ESCLAVO, "tx", lin.tx, LIN_LEN);
                     cputs("\n");
                 }
-            } else if (limite_ok(&le_lim)) {
-                lin_explicar_eco("lin_esclavo");
+            } else {
+                le_e_eco++;
+                if (limite_ok(&le_lim)) lin_explicar_eco("lin_esclavo");
             }
             le_estado = LE_ESPERA;
         }
@@ -195,7 +204,9 @@ static void le_deinit(void)
 
 static void le_estado_imprimir(void)
 {
-    cprintf("  respuestas 0x11 enviadas %u, errores de eco %u\n", le_resp_count, lin_eco_err);
+    cprintf("  %u baud, respuestas 0x11 enviadas %u\n", lin_baud, le_resp_count);
+    cprintf("  errores: sync %u, trama incompleta %u, checksum %u, datos %u, eco %u\n",
+            le_e_sync, le_e_incompleta, le_e_chk, le_e_datos, le_e_eco);
 }
 
 static const prueba_t p_lin_esclavo = {

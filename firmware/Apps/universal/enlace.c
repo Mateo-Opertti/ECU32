@@ -3,8 +3,10 @@
 // Se usa FD y no CAN clásico para que la respuesta a "estado" (20 bytes) entre en una sola trama
 //
 // Comando, ID 0x700, maestro -> esclava, 8 bytes:
-//   [0] comando (1 correr, 2 parar, 3 estado, 4 traza, 5 resumen)
-//   [1] número de prueba (correr) o 1 = on / 0 = off (traza, resumen)  [2] secuencia  [3..7] 0
+//   [0] comando (1 correr, 2 parar, 3 estado, 4 traza, 5 resumen, 6 parámetro)
+//   [1] número de prueba (correr), 1 = on / 0 = off (traza, resumen) o clave (parámetro)
+//   [2] secuencia  [3..6] valor del parámetro (little endian)  [7] 0
+// El maestro puede encolar varios pedidos (por ejemplo parámetros y después "correr"): salen de a uno
 // Respuesta, ID 0x701, esclava -> maestro, 20 bytes:
 //   [0] ACK (0x06) o NACK (0x15)  [1] secuencia del comando  [2] rol  [3] prueba actual (0 = ninguna)
 //   [4] código de error  [5] bit 0: hay contadores  [6..7] 0
@@ -25,6 +27,8 @@
 #define ENL_CMD_ESTADO   3U
 #define ENL_CMD_TRAZA    4U
 #define ENL_CMD_RESUMEN  5U
+#define ENL_CMD_PARAM    6U
+#define ENL_COLA         8U     // pedidos que pueden esperar su turno
 #define ENL_ACK          0x06U
 #define ENL_NACK         0x15U
 #define ENL_LEN_CMD      8U
@@ -47,18 +51,26 @@
 
 // Acciones a hacer en el maestro cuando llega el ACK
 #define ACCION_NINGUNA     0U
-#define ACCION_PAR_WAKEUP  1U
+#define ACCION_PAR_WAKEUP  1U   // arranca CAN_Maestro acá 3,5 s después del ACK
+#define ACCION_PAR_LOCAL   2U   // arranca la prueba "local" acá 100 ms después del ACK
 
 static int enlace_activo;
 volatile uint32_t enl_busoff;     // veces que FDCAN2 cayó en bus off
 volatile uint32_t enl_sin_resp;   // pedidos del maestro que se quedaron sin respuesta
 
+typedef struct {
+    uint8_t cmd, prueba;
+    uint32_t valor, accion, local;
+} enl_pedido_t;
+
 static struct {
     int pendiente;
     uint8_t cmd, prueba, seq;
-    uint32_t intentos, t_envio, accion;
+    uint32_t valor, intentos, t_envio, accion, local;
 } pedido;
 static uint8_t seq_sig;
+static enl_pedido_t cola[ENL_COLA];
+static uint32_t cola_in, cola_out;
 
 static struct {
     int valida;
@@ -117,11 +129,12 @@ static void enlace_suspender(void)
     if (!enlace_activo) return;
     fdcan_detener(FDCAN2_BASE);
     enlace_activo = 0;
-    if (pedido.pendiente) {
+    if (pedido.pendiente || cola_in != cola_out) {
         pedido.pendiente = 0;
-        cputs("esclava: pedido cancelado\n");
+        cola_out = cola_in;
+        cputs("esclava: pedidos cancelados\n");
     }
-    cputs("AVISO: enlace CAN2 suspendido mientras corre CAN_FD (la esclava no recibe comandos)\n");
+    cputs("AVISO: enlace CAN2 suspendido mientras la prueba usa FDCAN2 (la esclava no recibe comandos)\n");
     consola_reenviar = 0;
     fwd_out = fwd_in;  // lo que faltaba mandar ya no puede salir
     fwd_lineas = 0;
@@ -214,35 +227,64 @@ static void enlace_texto_recibido(const can_trama_t *t)
 static void enlace_mandar_pedido(void)
 {
     uint8_t d[ENL_LEN_CMD] = { pedido.cmd, pedido.prueba, pedido.seq, 0, 0, 0, 0, 0 };
+    put32(&d[3], pedido.valor);
     FDCAN_TXBCR(FDCAN2_BASE) = FDCAN_TXBRP(FDCAN2_BASE);  // descarta un intento anterior que no salió
     fdcan_enviar(FDCAN2_BASE, ENLACE_ID_CMD, d, ENL_LEN_CMD, 0);
     pedido.intentos++;
     pedido.t_envio = ticks;
 }
 
-// Solo en el MAESTRO. Devuelve 1 si el pedido salió
-static int enlace_pedir(uint32_t cmd, uint32_t prueba, uint32_t accion)
+static void enlace_empezar(const enl_pedido_t *p)
+{
+    pedido.pendiente = 1;
+    pedido.cmd = p->cmd;
+    pedido.prueba = p->prueba;
+    pedido.valor = p->valor;
+    pedido.accion = p->accion;
+    pedido.local = p->local;
+    pedido.seq = seq_sig++;
+    pedido.intentos = 0;
+    enlace_mandar_pedido();
+}
+
+// Terminó un pedido (con respuesta o sin): sale el siguiente de la cola
+static void enlace_siguiente(void)
+{
+    pedido.pendiente = 0;
+    if (cola_out != cola_in) {
+        enl_pedido_t p = cola[cola_out % ENL_COLA];
+        cola_out++;
+        enlace_empezar(&p);
+    }
+}
+
+// Solo en el MAESTRO. Si hay un pedido esperando respuesta, este queda en cola. Devuelve 1 si se aceptó
+static int enlace_pedir_ex(uint32_t cmd, uint32_t prueba, uint32_t valor, uint32_t accion, uint32_t local)
 {
     if (rol_actual != ROL_MAESTRO) {
         cputs("Solo el MAESTRO manda comandos a la esclava (ver \"rol\")\n");
         return 0;
     }
     if (!enlace_activo) {
-        cputs("El enlace CAN2 esta suspendido mientras corre CAN_FD\n");
+        cputs("El enlace CAN2 esta suspendido mientras corre una prueba que usa FDCAN2\n");
         return 0;
     }
-    if (pedido.pendiente) {
-        cputs("Todavia se espera la respuesta del pedido anterior\n");
+    enl_pedido_t p = { (uint8_t)cmd, (uint8_t)prueba, valor, accion, local };
+    if (!pedido.pendiente) {
+        enlace_empezar(&p);
+    } else if (cola_in - cola_out < ENL_COLA) {
+        cola[cola_in % ENL_COLA] = p;
+        cola_in++;
+    } else {
+        cputs("Hay demasiados pedidos esperando respuesta de la esclava\n");
         return 0;
     }
-    pedido.pendiente = 1;
-    pedido.cmd = (uint8_t)cmd;
-    pedido.prueba = (uint8_t)prueba;
-    pedido.seq = seq_sig++;
-    pedido.intentos = 0;
-    pedido.accion = accion;
-    enlace_mandar_pedido();
     return 1;
+}
+
+static int enlace_pedir(uint32_t cmd, uint32_t prueba, uint32_t accion)
+{
+    return enlace_pedir_ex(cmd, prueba, 0, accion, 0);
 }
 
 // Esclava: ejecuta el comando y arma la respuesta
@@ -277,6 +319,8 @@ static void enlace_atender(const can_trama_t *t)
     } else if (cmd == ENL_CMD_RESUMEN) {
         resumen_activo = n != 0;
         cprintf("[CAN2] el maestro pide: resumen %s\n", n ? "on" : "off");
+    } else if (cmd == ENL_CMD_PARAM) {
+        err = param_remoto(n, get32(&t->data[3]));
     } else if (cmd != ENL_CMD_ESTADO) {
         err = ERR_COMANDO;
     }
@@ -312,13 +356,17 @@ static void enlace_respuesta(const can_trama_t *t)
         cprintf("esclava: respuesta fuera de tiempo (secuencia %u), se ignora\n", r[1]);
         return;
     }
-    pedido.pendiente = 0;
+    uint32_t accion = pedido.accion, local = pedido.local, cmd = pedido.cmd;
+    enlace_siguiente();
 
     if (r[0] != ENL_ACK) {
         cprintf("esclava: NACK (%s)\n", enlace_error_texto(r[4]));
         if (r[4] == ERR_ES_MAESTRO) cputs("AVISO: hay dos maestros en el bus. Cambia el rol de una con \"rol esclava\"\n");
         return;
     }
+    if (cmd == ENL_CMD_PARAM) return;  // los parámetros se confirman en silencio
+    if (accion == ACCION_PAR_WAKEUP) par_local_ack(P_CAN_MAESTRO, PAR_WAKEUP_ESPERA_MS, 1);
+    else if (accion == ACCION_PAR_LOCAL) par_local_ack(local, 100, 0);
     cprintf("esclava: ACK  rol %s  prueba ", rol_nombre(r[2]));
     if (r[3] == 0) {
         cputs("ninguna\n");
@@ -327,7 +375,6 @@ static void enlace_respuesta(const can_trama_t *t)
         if (r[5] & 1U) cprintf("  OK %u  error %u", get32(&r[12]), get32(&r[16]));
         cputs("\n");
     }
-    if (pedido.accion == ACCION_PAR_WAKEUP) par_wakeup_ack();
 }
 
 static void enlace_step(void)
@@ -361,7 +408,9 @@ static void enlace_step(void)
             pedido.pendiente = 0;
             enl_sin_resp++;
             FDCAN_TXBCR(FDCAN2_BASE) = FDCAN_TXBRP(FDCAN2_BASE);
-            cputs("esclava: sin respuesta\n");
+            if (cola_in != cola_out) cputs("esclava: sin respuesta (se cancelan los pedidos que seguian)\n");
+            else cputs("esclava: sin respuesta\n");
+            cola_out = cola_in;
         }
     }
 }

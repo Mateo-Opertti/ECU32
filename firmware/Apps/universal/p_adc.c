@@ -32,6 +32,13 @@ static volatile uint32_t adc_lecturas;  // tandas de 4 entradas completas
 static uint32_t adc_t, adc_t_imprimir;
 static int adc_midiendo;
 static uint32_t adc_i, adc_n, adc_suma;
+static uint32_t adc_sumas[5];
+
+// Opciones del motor (Universal usa los valores por defecto; Pruebas.c los cambia)
+static uint32_t adc_promedio = ADC_PROMEDIO;  // lecturas promediadas por canal (1 a 256)
+static int adc_usar_vref;                     // 1: mide VREFINT en cada tanda y corrige VDDA
+static uint32_t adc_vdda_mv = ADC_VDDA_MV;    // VDDA usada para pasar a mV (medida si adc_usar_vref)
+volatile uint32_t an_vref_raw;                // cuentas de VREFINT (promedio)
 
 // ---------------------------------------------------------------------------------------------
 // Ayudas de presentación
@@ -102,6 +109,10 @@ static void adc_hw_init(void)
 
     // Reloj del ADC: HCLK / 1 (sincrónico), así no hace falta configurar el PLL
     ADC12_CCR = (ADC12_CCR & ~(3U << 16)) | (1U << 16);
+    if (adc_usar_vref) ADC12_CCR |= ADC_CCR_VREFEN;
+    else ADC12_CCR &= ~ADC_CCR_VREFEN;
+    if (adc_promedio < 1) adc_promedio = 1;
+    if (adc_promedio > 256) adc_promedio = 256;
 
     // Sale de deep power-down, prende el regulador y espera su arranque (20 us)
     ADC1_CR &= ~ADC_CR_DEEPPWD;
@@ -126,28 +137,44 @@ static void adc_hw_init(void)
     adc_t = ticks - ADC_PERIODO_MS;  // la primera tanda arranca enseguida
 }
 
+// Canal del ADC de la medición número i de una tanda (0..3 = AN1..AN4, 4 = VREFINT)
+static uint32_t adc_canal_hw(uint32_t i)
+{
+    return i < 4 ? adc_entradas[i].canal : ADC_CANAL_VREFINT;
+}
+
 // Avanza una conversión. Devuelve 1 cuando terminó una tanda de las 4 entradas (an_mv[] actualizado)
 static int adc_medir_step(void)
 {
+    uint32_t total = adc_usar_vref ? 5U : 4U;
+
     if (!adc_midiendo) {
         if ((ticks - adc_t) >= ADC_PERIODO_MS) {
             adc_t = ticks;
             adc_midiendo = 1;
             adc_i = adc_n = adc_suma = 0;
-            adc_convertir(adc_entradas[0].canal);
+            adc_convertir(adc_canal_hw(0));
         }
     } else if (ADC1_ISR & ADC_ISR_EOC) {
         adc_suma += ADC1_DR;  // leer DR limpia EOC
-        if (++adc_n == ADC_PROMEDIO) {
-            an_raw[adc_i] = adc_suma / ADC_PROMEDIO;
-            an_mv[adc_i] = an_raw[adc_i] * ADC_VDDA_MV / 4095;
+        if (++adc_n >= adc_promedio) {
+            adc_sumas[adc_i] = adc_suma;
             adc_n = adc_suma = 0;
             adc_i++;
         }
-        if (adc_i < 4) {
-            adc_convertir(adc_entradas[adc_i].canal);
+        if (adc_i < total) {
+            adc_convertir(adc_canal_hw(adc_i));
         } else {
             adc_midiendo = 0;
+            // VDDA real a partir de VREFINT: VDDA = 3,0 V * VREFINT_CAL / lectura
+            if (adc_usar_vref && adc_sumas[4]) {
+                an_vref_raw = adc_sumas[4] / adc_promedio;
+                adc_vdda_mv = (uint32_t)((3000ULL * VREFINT_CAL * adc_promedio) / adc_sumas[4]);
+            }
+            for (uint32_t i = 0; i < 4; i++) {
+                an_raw[i] = adc_sumas[i] / adc_promedio;
+                an_mv[i] = (uint32_t)(((uint64_t)adc_sumas[i] * adc_vdda_mv) / (4095ULL * adc_promedio));
+            }
             adc_lecturas++;
             return 1;
         }

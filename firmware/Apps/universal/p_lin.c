@@ -12,6 +12,7 @@
 #define LIN_RX_TIMEOUT_MS   500U
 
 static volatile uint32_t lin_eco_err;  // bytes propios que no se leyeron bien en el bus
+static uint32_t lin_baud = LIN_BAUD;   // Pruebas.c la puede cambiar (el plan pide 20 kbit/s)
 
 // Bytes a mandar (con verificación del eco) y bytes a recibir
 static struct {
@@ -34,7 +35,7 @@ static void lin_hw_init(void)
     gpio_salida(LIN_PORT, LIN_EN, 1);  // transceiver habilitado
 
     USART_CR1(USART3_BASE) = 0;
-    USART_BRR(USART3_BASE) = (PCLK1_HZ + LIN_BAUD / 2) / LIN_BAUD;
+    USART_BRR(USART3_BASE) = (PCLK1_HZ + lin_baud / 2) / lin_baud;
     USART_CR2(USART3_BASE) = CR2_LINEN | CR2_LBDL;  // 8N1, modo LIN
     USART_CR1(USART3_BASE) = CR1_TE | CR1_RE | CR1_UE;
     lin_eco_err = 0;

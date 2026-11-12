@@ -22,6 +22,8 @@ enum { LM_ESPERA, LM_BREAK, LM_TX, LM_RX };
 static volatile uint32_t lm_tx_count;  // tramas 0x10 enviadas
 static volatile uint32_t lm_resp_ok;   // respuestas 0x11 del esclavo correctas
 static volatile uint32_t lm_resp_err;  // respuestas que no llegaron o llegaron mal
+// Errores por tipo (COM-03 pide 0 de checksum, sync y respuesta ausente)
+static volatile uint32_t lm_e_break, lm_e_eco, lm_e_sin_resp, lm_e_chk, lm_e_datos;
 
 static uint32_t lm_estado, lm_t0, lm_t_ok;
 static uint8_t lm_cont;
@@ -39,6 +41,7 @@ static void lm_init(void)
 {
     lin_hw_init();
     lm_tx_count = lm_resp_ok = lm_resp_err = 0;
+    lm_e_break = lm_e_eco = lm_e_sin_resp = lm_e_chk = lm_e_datos = 0;
     lm_estado = LM_ESPERA;
     lm_cont = 0;
     lm_toca_respuesta = 0;
@@ -105,6 +108,7 @@ static void lm_step(void)
             lin_empezar_tx();
             lm_estado = LM_TX;
         } else if ((ticks - lin.t) > LIN_BYTE_TIMEOUT_MS) {
+            lm_e_break++;
             if (limite_ok(&lm_lim)) {
                 cputs("lin_maestro: no se pudo mandar el break (el USART3 no ve su propio break: "
                       "revisar EN = PD10 y el transceptor)\n");
@@ -116,6 +120,7 @@ static void lm_step(void)
     case LM_TX:
         r = lin_tx_step();
         if (r < 0) {
+            lm_e_eco++;
             if (limite_ok(&lm_lim)) lin_explicar_eco("lin_maestro");
             lm_fin(0);
         } else if (r > 0) {
@@ -136,6 +141,7 @@ static void lm_step(void)
     default:  // LM_RX
         r = lin_rx_step();
         if (r < 0) {
+            lm_e_sin_resp++;
             if (limite_ok(&lm_lim)) {
                 cprintf("lin_maestro: el esclavo no responde a 0x11 (llegaron %u de %u bytes)\n", lin.irx, LIN_LEN + 1);
             }
@@ -150,11 +156,13 @@ static void lm_step(void)
                 cputs(chk_ok && datos_ok ? "  OK\n" : "  MAL\n");
             }
             if (!chk_ok) {
+                lm_e_chk++;
                 if (limite_ok(&lm_lim)) {
                     cprintf("lin_maestro: respuesta 0x11 con checksum mal: llego 0x%02x, se esperaba 0x%02x\n",
                             d[LIN_LEN], chk);
                 }
             } else if (!datos_ok) {
+                lm_e_datos++;
                 if (limite_ok(&lm_lim)) {
                     cputs("lin_maestro: respuesta 0x11 con datos mal:");
                     cput_bytes(d, LIN_LEN);
@@ -203,7 +211,9 @@ static void lm_deinit(void)
 
 static void lm_estado_imprimir(void)
 {
-    cprintf("  tramas 0x10 enviadas %u, errores de eco %u\n", lm_tx_count, lin_eco_err);
+    cprintf("  %u baud, tramas 0x10 enviadas %u\n", lin_baud, lm_tx_count);
+    cprintf("  errores: sin respuesta %u, checksum %u, datos %u, eco %u, break %u\n",
+            lm_e_sin_resp, lm_e_chk, lm_e_datos, lm_e_eco, lm_e_break);
 }
 
 static const prueba_t p_lin_maestro = {

@@ -4,7 +4,12 @@ Programas de prueba para el bring-up de ECU32 (STM32G491VCT6).
 
 El proyecto es CMake + Ninja y se usa con la extensión **STM32Cube para VS Code**. No usa HAL: los periféricos se configuran escribiendo directo en los registros (RM0440) y todo corre con el reloj por defecto, HSI16 = 16 MHz.
 
-El firmware que se graba es **[`Apps/Universal.c`](Apps/Universal.c)**: un solo programa, igual en las dos placas, que corre cualquiera de las pruebas y se maneja desde una terminal serie o desde la otra placa por CAN2, sin regrabar. Los programas sueltos anteriores, uno por prueba, siguen en [`Apps/legacy/`](Apps/legacy/) (ver [Programas sueltos](#programas-sueltos)).
+Hay dos firmwares completos, que se eligen en [`Src/main.c`](Src/main.c). Los dos se graban igual en las dos placas y se manejan desde una terminal serie o, en la esclava, desde la otra placa por CAN2, sin regrabar:
+
+- **[`Apps/Pruebas.c`](Apps/Pruebas.c)**, el que queda activo: todo lo de Universal más lo que pide el plan de pruebas (`plan_pruebas_ecu.pdf`). Ver [Firmware Pruebas](#firmware-pruebas-plan-de-pruebas).
+- **[`Apps/Universal.c`](Apps/Universal.c)**: las 15 pruebas de bring-up, sin los modos de ensayo del plan.
+
+Las dos placas tienen que llevar el mismo firmware. Los programas sueltos anteriores, uno por prueba, siguen en [`Apps/legacy/`](Apps/legacy/) (ver [Programas sueltos](#programas-sueltos)).
 
 ## Conexiones
 
@@ -181,10 +186,13 @@ CAN FD sin cambio de bitrate: toda la trama va a 500 kbit/s, el mismo bit timing
 
 | Byte | Contenido |
 |---|---|
-| 0 | Comando: 1 = correr, 2 = parar, 3 = estado, 4 = traza, 5 = resumen |
-| 1 | Número de prueba (correr) o 1 = on / 0 = off (traza, resumen) |
+| 0 | Comando: 1 = correr, 2 = parar, 3 = estado, 4 = traza, 5 = resumen, 6 = parámetro |
+| 1 | Número de prueba (correr), 1 = on / 0 = off (traza, resumen) o clave (parámetro) |
 | 2 | Número de secuencia |
-| 3 – 7 | 0 |
+| 3 – 6 | Valor del parámetro (little endian) |
+| 7 | 0 |
+
+El maestro puede encolar hasta 8 pedidos (por ejemplo, varios parámetros y después `correr`): salen de a uno, cada uno cuando llega la respuesta del anterior.
 
 **Respuesta, ID 0x701 (esclava → maestro), 20 bytes:**
 
@@ -232,7 +240,7 @@ La esclava manda cada línea apenas termina (`\n`), o un pedazo si junta 61 cara
 
 **Wake-up y Standby:** el Standby borra la RAM, corta la consola y el enlace CAN2 (los /OE vuelven a alto por R53/R54) y despierta con un reset. Antes de dormir, la prueba guarda en `TAMP_BKP0R` que estaba corriendo y pone los dos transceptores CAN en standby, con WKUP3 (PE6, desde RXD1) y WKUP2 (PC13, desde RXD2) habilitados. Al arrancar, el firmware imprime la causa del reset (`PWR_SR1`: SBF y WUFx, y `RCC_CSR`). Si lo despertó un WKUP, vuelve a `wakeup` ya despierta y con la consola recuperada. Si en cambio la placa se resetea mientras duerme, arranca sin prueba. La app original se volvía a dormir, y eso dejaba solo 3 s para mandar un comando o conectar el ST-LINK.
 
-**Rol en flash:** el G491 tiene un solo banco con páginas de 2 KB. La última, la página 127 (0x0803F800 – 0x0803FFFF), está reservada en [`stm32g491xc_flash.ld`](stm32g491xc_flash.ld) y el programa no puede ocupar esa zona. Cada cambio de rol graba el siguiente doble-word libre y la página se borra recién cuando se llena, cada 256 cambios. Mientras se borra, el CPU se frena unos 22 ms, porque ejecuta desde la misma flash.
+**Rol y parámetros en flash:** el G491 tiene un solo banco con páginas de 2 KB. La última, la página 127 (0x0803F800 – 0x0803FFFF), está reservada en [`stm32g491xc_flash.ld`](stm32g491xc_flash.ld) y el programa no puede ocupar esa zona. Ahí van el rol y, en el firmware Pruebas, los factores de los divisores del ADC y el autoarranque. Cada cambio graba el siguiente doble-word libre. La página se borra recién cuando se llena, cada 256 cambios, y entonces se reescribe lo vigente. Mientras se borra, el CPU se frena unos 22 ms, porque ejecuta desde la misma flash.
 
 ## Arranque
 
@@ -255,29 +263,112 @@ Al parar una prueba, su `deinit()` apaga sus periféricos y transceptores. Despu
 
 Al grabar solo se borran las páginas que ocupa el programa, así que el rol se mantiene. Un borrado completo de la flash (*full chip erase*) también borra el rol y la placa vuelve a ser ESCLAVA.
 
+## Firmware Pruebas (plan de pruebas)
+
+[`Apps/Pruebas.c`](Apps/Pruebas.c) tiene las 15 pruebas de Universal, con los mismos números, y agrega lo que el plan de pruebas le pide al firmware (tabla 1 del plan). El comando **`plan`** muestra en la consola qué correr para cada prueba del plan, y `ayuda` explica cada comando nuevo.
+
+Diferencias con Universal: el ADC promedia 256 muestras y mide VDDA con VREFINT, y el LIN arranca a 20 kbit/s.
+
+### Pruebas nuevas
+
+| # | Nombre | Plan | Qué hace |
+|---|---|---|---|
+| 16 | `es` | DIG-01/02/03 | Salidas en nivel o PWM configurable, entradas con aviso de cada cambio y frecuencia medida |
+| 17 | `ai` | AI-02 | Las 4 entradas en voltios **del conector** y en % del fondo de escala, con promedio de N y VDDA por VREFINT |
+| 18 | `banco_can` | COM-02, VR | CAN1 ↔ CAN2 en la misma placa (puente en J3), los dos sentidos a la vez, clásico o FD, N tramas. Informe PASA/FALLA. Solo local |
+| 19 | `can_placas` | EXT-02 | Las dos placas transmiten a la vez por CAN1 y CAN2 con IDs distintos (0x120 el MAESTRO, 0x121 la ESCLAVA): arbitraje sin pérdidas |
+| 20 | `gateway` | EXT-03 | Reenvía lo que llega por CAN1 en CAN clásico (0x130) a CAN2 como CAN FD con BRS (0x131) |
+| 21 | `gw_fuente` | EXT-03 | Manda por CAN1 y mide en CAN2 las pérdidas y la latencia ida y vuelta (mínima, promedio y máxima) |
+| 22 | `esp_uart` | ESP-01/02/03 | Enlace con la ESP32: eco, 1 MB con CRC-32 en cada sentido a 115 200 y 921 600 baud, líneas auxiliares, reset y Wi-Fi continuo |
+| 23 | `integral` | INT-01/02, PRO-09, EXT-06 | Todo a la vez durante N minutos: PWM de 100 kHz en las salidas, entradas, ADC, CAN1 ↔ CAN2 y LIN contra la otra placa. Informe PASA/FALLA. Solo local |
+
+### Comandos nuevos
+
+| Comando | Qué hace |
+|---|---|
+| `plan` | Qué correr para cada prueba del plan |
+| `do <1-4> <0\|1> [s]` | Fija una salida. DO2 es el TX de la consola: en reposo ya está en alto (sirve para medir VOH); `do 2 0 [s]` la presta `s` segundos (10 por defecto) y mientras tanto la consola no imprime |
+| `pwm <1-4> <Hz> [duty] [s]` / `pwm <n> off` | PWM en una salida: DO1 con TIM4, DO3 y DO4 con TIM8 (comparten frecuencia), DO2 con TIM16 (prestada `s` segundos) |
+| `di` | Nivel de las 4 entradas |
+| `frec on\|off` | Frecuencia de cada entrada, contando flancos de subida en ventanas de 1 s |
+| `promedio <1-256>` | Muestras promediadas por canal del ADC |
+| `divisor <c> <Rs> <Rg>` | Carga el divisor del canal `c` en ohm. El factor queda en la flash; sin cargar se usa el nominal (fondo de escala / 3,3 V) |
+| `factor` | Muestra el factor de cada canal y si es nominal o medido |
+| `ref <c> <mV>` | Compara la lectura con el multímetro y da el error en % del fondo de escala (criterio ≤ 1 %) |
+| `can_modo clasico\|fd` | CAN clásico de 8 bytes o CAN FD de 64 bytes con BRS (FD por defecto) |
+| `can_tasa <n\|max>` | Tramas por segundo por sentido; `max` = lo más rápido posible (carga de bus alta) |
+| `can_cantidad <n>` | Tramas por sentido antes de terminar (100 000 por defecto; 0 = sin fin) |
+| `lin_baud <n>` | Velocidad LIN (20 000 por defecto) |
+| `integral [min] [todas]` | Corre la integral `min` minutos (10 por defecto); `todas` también pone PWM en DO2 |
+| `esp ping\|baud <n>\|eco [n]\|enviar [bytes]\|recibir [bytes]\|lineas\|reset\|wifi on\|off` | Operaciones con la ESP32 (arranca `esp_uart` si hace falta) |
+| `autoarranque <prueba\|no>` | Prueba que arranca sola al encender (queda en la flash); sirve para los arranques en frío de INT-01 |
+| `par canx` / `par gateway` / `par lin_inv` | (MAESTRO) CAN entre placas, gateway (esta placa gateway, la otra fuente) y LIN con los roles invertidos |
+| `esclava sync` | (MAESTRO) Le pasa a la esclava `can_*`, `lin_baud` e `integral`. Al cambiarlos en el MAESTRO se copian solos |
+
+### Qué correr para cada prueba del plan
+
+| Prueba | Cableado | Comandos |
+|---|---|---|
+| ALI-03 | ST-LINK en J2 | Grabar este firmware y depurar (breakpoint en `main`) |
+| DIG-01 | Carga de 825 Ω en la salida | `do 1 1`, `do 1 0`, `do 3 1`… DO2: medir VOH en reposo y `do 2 0 30` para VOL |
+| DIG-02 | Fuente en la entrada y jumper en cada posición | `correr es`: avisa cada cambio de entrada; `di` muestra los niveles. Con una rampa lenta, el aviso marca el umbral |
+| DIG-03 | Carga de 4 mA en la salida; cuadrada de 100 kHz en la entrada | `pwm 1 100000 50` (y 3, 4); `frec on` mide las entradas de a una |
+| AI-02 | Fuente y multímetro en la entrada | `divisor <c> <Rs> <Rg>` una vez por canal; `correr ai`; `ref <c> <mV del multímetro>` en 0, 50 y 100 % FS |
+| COM-02 | CANH1–CANH2 y CANL1–CANL2 en J3, las dos terminaciones; **sin** CAN2 a la otra placa | `can_modo clasico`, `correr banco_can`; después `can_modo fd`, `correr banco_can` (100 000 tramas por sentido) |
+| COM-03 | LIN (J3-1) y GND entre placas, SW3 cerrado en la commander | `par lin` (esta placa commander), después `par lin_inv`. `estado` da los errores por tipo |
+| INT-01 | Puente CAN1–CAN2 en J3, LIN a la otra placa, cargas en las salidas | `integral 10` (o `integral 10 todas`) a 8, 12, 24 y 28 V. Arranques en frío: `autoarranque integral` (y `autoarranque lin_esclavo` en la otra) |
+| INT-02 | Ídem | `can_tasa max`, `integral` y medir la corriente de entrada |
+| EXT-02 | CAN1–CAN1 y CAN2–CAN2 entre placas, terminación en las puntas | `can_modo fd`, `par canx`. Las dos placas informan al terminar |
+| EXT-03 | Ídem | `par gateway`: esta placa reenvía y la otra mide pérdidas y latencia |
+| EXT-04 | Como COM-03 | `par lin` y `par lin_inv`, 30 min cada uno, a 12 V y 24 V |
+| EXT-06 | Como INT-01, con el gabinete cerrado | `integral 60` |
+| ESP-01 / ESP-03 | ESP32 en J5/J6 con el sketch [`ESP32_Pruebas`](ESP32/ESP32_Pruebas/ESP32_Pruebas.ino) | `esp wifi on` y medir los rieles y el consumo |
+| ESP-02 | Ídem | `esp ping`, `esp eco`, `esp enviar`, `esp recibir`, `esp baud 921600` y repetir, `esp lineas` |
+| VR (PRO) | Según el canal | CAN: `can_cantidad 1000`, `correr banco_can`. LIN: `par lin` hasta 1000 respuestas (`estado`) |
+| PRO-00 / PRO-09 | — | `correr ai` (ADC a 50 % FS), `do` (VOH a 4 mA), `integral` |
+
+Las demás pruebas del plan (DOC, INS, ALI-01/02, AI-01, COM-01, EXT-05, ESP-04 y las mediciones de los ensayos de protección) se hacen con instrumental y no necesitan nada especial del firmware.
+
+### Limitaciones
+
+- **DO2 y DI2 son la consola.** DO2 se presta por un tiempo fijo y después vuelve sola. Para probar DI2 hay que desconectar el TX del CP2102; mientras tanto la consola sigue imprimiendo, pero no recibe.
+- **DO3 y DO4 comparten el TIM8**, así que en PWM van a la misma frecuencia (el duty sí es independiente).
+- **Frecuencia en las entradas:** se mide contando flancos con EXTI, una interrupción por flanco. A 100 kHz conviene medir de a una entrada por vez.
+- **FDCAN2:** `banco_can`, `can_placas`, `gateway`, `gw_fuente` e `integral` usan FDCAN2, así que el enlace CAN2 se suspende mientras corren. Las de dos placas terminan solas, al llegar a la cantidad pedida o cuando la otra placa deja de transmitir. Al terminar vuelve el enlace y la esclava manda su informe.
+- **ESP32:** `esp reset` hace un pulso en EN (PE7, open-drain) y deja los dos lados a 115 200. Sirve si quedaron en velocidades distintas.
+
 ## Programas sueltos
 
-[`Src/main.c`](Src/main.c) incluye `Apps/Universal.c`. Para volver a uno de los programas anteriores, que tienen cada uno su propio `main()`, comentar esa línea y descomentar el `#include` de [`Apps/legacy/`](Apps/legacy/) que corresponda (uno solo a la vez). Esos programas no tienen consola ni enlace, y siguen manejando los /OE por su cuenta.
+[`Src/main.c`](Src/main.c) incluye `Apps/Pruebas.c` (o `Apps/Universal.c`). Para volver a uno de los programas anteriores, que tienen cada uno su propio `main()`, comentar esa línea y descomentar el `#include` de [`Apps/legacy/`](Apps/legacy/) que corresponda (uno solo a la vez). Esos programas no tienen consola ni enlace, y siguen manejando los /OE por su cuenta.
 
 ## Estructura
 
 ```
 firmware/
 ├── Apps/
-│   ├── Universal.c            main(), arranque, loop, tabla de pruebas y comandos
+│   ├── Pruebas.c              Firmware del plan de pruebas: tabla de pruebas y comandos extra
+│   ├── Universal.c            Firmware de bring-up: tabla de pruebas
 │   ├── universal/
+│   │   ├── nucleo_def.c       Tipos y declaraciones comunes a los dos firmwares
+│   │   ├── nucleo.c           Arranque, manejo de pruebas, comandos y loop principal
 │   │   ├── consola.c          USART1 por interrupción, buffers circulares y cprintf
 │   │   ├── fdcan.c            Reloj FDCAN común y driver de FDCAN1/FDCAN2
 │   │   ├── enlace.c           Protocolo de control por CAN2
-│   │   ├── rol.c              Rol en la última página de flash
+│   │   ├── rol.c              Rol y parámetros en la última página de flash
 │   │   └── p_*.c              Una prueba por archivo: init(), step() y deinit()
+│   ├── pruebas/
+│   │   ├── t_es.c             es: salidas, PWM, entradas y frecuencia
+│   │   ├── t_ai.c             ai: ADC en voltios del conector
+│   │   ├── t_can.c            banco_can, can_placas, gateway y gw_fuente
+│   │   ├── t_esp.c            esp_uart: enlace con la ESP32
+│   │   └── t_integral.c       integral: todo a la vez
 │   └── legacy/                Los programas sueltos anteriores, sin cambios
-├── ESP32/                     Sketch de Arduino para la ESP32 del zócalo
+├── ESP32/                     Sketches de Arduino para la ESP32 del zócalo (LED serie y ESP32_Pruebas)
 ├── Inc/
 │   ├── ecu32_regs.h           Registros del STM32G491 (RM0440)
 │   └── ecu32_placa.h          Pines de la placa y helpers de GPIO
 ├── Src/
-│   ├── main.c                 Incluye Universal.c (o un programa de legacy/)
+│   ├── main.c                 Incluye Pruebas.c (o Universal.c, o un programa de legacy/)
 │   ├── startup_stm32g491xx.S
 │   ├── syscall.c, sysmem.c
 ├── cmake/                     Toolchain y flags (generados por STM32Cube)
