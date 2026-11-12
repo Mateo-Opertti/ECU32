@@ -157,7 +157,7 @@ Las columnas siguen el orden físico de cada bornera. Las señales de J1 pasan p
 | J3 | CAN1, CAN2 | Niveles CAN FD estándar | ESD2CAN36-Q1 por bus |
 | J3 | LIN | Nivel de batería (bus LIN estándar) | Propia del TLIN4029A-Q1 |
 
-### Selección de tensión de las entradas digitales (jumpers)
+### Selección de tensión de las entradas digitales
 
 Cada entrada digital tiene, cerca de J1, una columna de jumpers con tres posiciones: **3V3**, **12V** y **24V**. La serigrafía de cada columna indica el pin del MCU:
 
@@ -173,9 +173,9 @@ Cada entrada digital tiene, cerca de J1, una columna de jumpers con tres posicio
 
 Poné **un solo jumper por canal**. Las entradas están protegidas por el zener de 4,7 V aunque el jumper no coincida con la tensión aplicada, pero la lectura sólo es correcta si la posición del jumper corresponde a la señal.
 
-### Entradas y salidas digitales (U5 SN74LV244A)
+### Entradas y salidas digitales
 
-**Entradas digitales** (el buffer maneja el pin del MCU; el pin siempre es entrada)
+**Entradas digitales:** el buffer maneja el pin del MCU, así que el pin siempre es entrada.
 
 | Señal | Pin STM32 | Pin LQFP100 | Pin J1 | Funciones alternativas | EXTI |
 |---|---|---|---|---|---|
@@ -184,7 +184,7 @@ Poné **un solo jumper por canal**. Las entradas están protegidas por el zener 
 | DI3 | PD2 | 84 | 7 | UART5_RX (AF5), TIM3_ETR (AF2, conteo de pulsos), TIM8_BKIN (AF4, corte de PWM por hardware) | EXTI2 |
 | DI4 | PC11 | 80 | 8 | UART4_RX (AF5), SPI3_MISO (AF6) | EXTI11 |
 
-**Salidas digitales** (el MCU maneja el buffer; el pin siempre es salida)
+**Salidas digitales:** el MCU maneja el buffer, así que el pin siempre es salida.
 
 | Señal | Pin STM32 | Pin LQFP100 | Pin J1 | Funciones alternativas |
 |---|---|---|---|---|
@@ -215,7 +215,7 @@ Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta im
 - Las DO tienen 4,7 kΩ en serie: sirven para señal (UART, SPI, PWM, probado a 500 kHz en PC10), no para potencia.
 - Los EXTI de las cuatro DI (5, 1, 2 y 11) son líneas distintas, así que se pueden usar las cuatro interrupciones a la vez.
 
-### Entradas analógicas (ADC12)
+### Entradas analógicas
 
 | Señal | Pin STM32 | Canal ADC | Rango | R serie | R a GND | Factor V_conector / V_pin |
 |---|---|---|---|---|---|---|
@@ -228,7 +228,7 @@ Factor = (R serie + R a GND) / R a GND. Fondo de escala = 3,3 V × factor.
 
 > **El esquemático no está actualizado.** Los divisores de AN1 y AN2 se cambiaron en la placa armada (AN1 quedó de 0 a 3,3 V y AN2 de 0 a 5 V), pero el PDF del esquemático todavía muestra los valores anteriores. Para los rangos vale esta tabla.
 
-### CAN FD (U6 TCAN1046AV-Q1)
+### CAN FD
 
 | Señal | CAN1 | CAN2 |
 |---|---|---|
@@ -237,7 +237,7 @@ Factor = (R serie + R a GND) / R a GND. Fondo de escala = 3,3 V × factor.
 | STB (alto = standby) | PD14 | PD15 |
 | Wake-up | PE6 (WKUP3) | PC13 (WKUP2) |
 
-### LIN (U7 TLIN4029A-Q1)
+### LIN
 
 | Señal | Pin STM32 | Función |
 |---|---|---|
@@ -280,7 +280,7 @@ Las pruebas del bring-up están en [`firmware/`](firmware/), escritas a nivel de
 | `digital` | Entrada DI4 (PC11) | Verde en alto, rojo en bajo |
 | `salidas` | Salida DO3 (PC10) | Salida en alto y LED verde |
 | `loopback` | Lazo salida DO3 → entrada DI4 | La consola informa OK o FALLA en cada lectura |
-| `adc` | AN1 – AN4 (ADC1) | Tensión por la consola y LEDs por umbral. `an_mv[]` es la tensión en el pin del MCU: para obtener la del conector J4 hay que multiplicarla por el factor de cada canal (ver [Entradas analógicas](#entradas-analógicas-adc12)) |
+| `adc` | AN1 – AN4 (ADC1) | Tensión por la consola y LEDs por umbral. `an_mv[]` es la tensión en el pin del MCU: para obtener la del conector J4 hay que multiplicarla por el factor de cada canal (ver [Entradas analógicas](#entradas-analógicas)) |
 | `pwm` | PWM de 500 kHz por PC10 (TIM8_CH1N) | Duty ajustable con el comando `duty` |
 | `esp32` | USART2 hacia la ESP32 del zócalo | El LED de la ESP32 sigue al verde |
 | `can_fd` | FDCAN1 → FDCAN2, 500 kbit/s / 2 Mbit/s, 64 bytes | Verde alterna con cada trama correcta |

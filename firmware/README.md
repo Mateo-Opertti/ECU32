@@ -8,7 +8,7 @@ El firmware que se graba es **[`Apps/Universal.c`](Apps/Universal.c)**: un solo 
 
 ## Conexiones
 
-### Consola (adaptador USB-UART CP2102)
+### Consola
 
 La consola es el USART1 a **115200 8N1**, con niveles de 3,3 V. Entra por la bornera J1 a través del buffer U5:
 
@@ -23,7 +23,7 @@ La consola es el USART1 a **115200 8N1**, con niveles de 3,3 V. Entra por la bor
 - Con un solo CP2102 alcanza: va en la placa MAESTRO y la ESCLAVA se maneja por CAN2.
 - En la placa que queda sin CP2102, DI2 queda al aire con el jumper en 3V3 y puede meter ruido en la consola. Conviene poner ese jumper en 12V: la entrada queda en bajo por la resistencia a GND. La consola descarta igual los bytes con error de trama o ruido y solo procesa líneas completas.
 
-### CAN2 entre placas (enlace de control)
+### CAN2 entre placas
 
 J3-3 (CAN2_H) con J3-3, J3-2 (CAN2_L) con J3-2 y GND común, con una terminación de 120 Ω en cada punta del bus.
 
@@ -34,7 +34,7 @@ J3-3 (CAN2_H) con J3-3, J3-2 (CAN2_L) con J3-2 y GND común, con una terminació
 - **LIN (`lin_maestro` / `lin_esclavo`):** unir el pin LIN de J3 y GND entre las placas. En la placa que corre `lin_maestro`, SW3 cerrado (pull-up de master).
 - **Loopback (`loopback`):** un cable de DO3 (J1-4, PC10) a DI4 (J1-8, PC11), con el jumper de DI4 en 3V3.
 - **ESP32 (`esp32`):** módulo DevKit V1 en J5/J6, sin cables extra. El sketch [`ESP32_LED_Serial.ino`](ESP32/ESP32_LED_Serial/ESP32_LED_Serial.ino) se graba por USB desde Arduino, con la placa **DOIT ESP32 DEVKIT V1**.
-- **ADC (`adc`):** cada entrada de J4 tiene su propio rango: AN1 de 0 a 3,3 V, AN2 de 0 a 5 V, AN3 de 0 a 12 V y AN4 de 0 a 24 V. La consola muestra la tensión en el pin del MCU (0 a 3,3 V): para la del conector hay que multiplicarla por el factor de cada canal (ver el [README principal](../README.md#entradas-analógicas-adc12)).
+- **ADC (`adc`):** cada entrada de J4 tiene su propio rango: AN1 de 0 a 3,3 V, AN2 de 0 a 5 V, AN3 de 0 a 12 V y AN4 de 0 a 24 V. La consola muestra la tensión en el pin del MCU (0 a 3,3 V): para la del conector hay que multiplicarla por el factor de cada canal (ver el [README principal](../README.md#entradas-analógicas)).
 
 ## Primer uso
 
@@ -288,4 +288,4 @@ firmware/
 └── .vscode/                   Configuración de debug e IntelliSense
 ```
 
-Las notas de arranque del hardware (STB de CAN, EN de LIN, etc.) están en el [README principal](../README.md#firmware-notas-de-arranque).
+Las notas de arranque del hardware (STB de CAN, EN de LIN, etc.) están en el [README principal](../README.md#notas-de-arranque).
