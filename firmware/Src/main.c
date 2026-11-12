@@ -1,14 +1,18 @@
-// Selector de programa: descomentá la app que quieras grabar (solo una a la vez)
-//#include "../Apps/LEDs.c"
-//#include "../Apps/Digital.c"
-//#include "../Apps/Digital_Salidas.c"
-//#include "../Apps/Digital_Loopback.c"
-//#include "../Apps/CAN_FD.c"
-//#include "../Apps/CAN_Maestro.c"
-//#include "../Apps/CAN_Esclavo.c"
-//#include "../Apps/CAN_Esclavo_WakeUp.c"
-//#include "../Apps/ADC.c"
-//#include "../Apps/LIN_Maestro.c"
-//#include "../Apps/LIN_Esclavo.c"
-//#include "../Apps/ESP32_Serial.c"
-#include "../Apps/PWM.c"
+// Selector de programa: dejá un solo #include sin comentar
+// Universal.c es el firmware completo: elige la prueba por consola o por CAN2 sin regrabar
+#include "../Apps/Universal.c"
+
+// Programas sueltos anteriores (uno por prueba), por si hace falta volver a alguno
+//#include "../Apps/legacy/LEDs.c"
+//#include "../Apps/legacy/Digital.c"
+//#include "../Apps/legacy/Digital_Salidas.c"
+//#include "../Apps/legacy/Digital_Loopback.c"
+//#include "../Apps/legacy/CAN_FD.c"
+//#include "../Apps/legacy/CAN_Maestro.c"
+//#include "../Apps/legacy/CAN_Esclavo.c"
+//#include "../Apps/legacy/CAN_Esclavo_WakeUp.c"
+//#include "../Apps/legacy/ADC.c"
+//#include "../Apps/legacy/LIN_Maestro.c"
+//#include "../Apps/legacy/LIN_Esclavo.c"
+//#include "../Apps/legacy/ESP32_Serial.c"
+//#include "../Apps/legacy/PWM.c"
