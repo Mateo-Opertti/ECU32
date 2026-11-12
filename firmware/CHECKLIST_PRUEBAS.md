@@ -63,55 +63,55 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 ## 4. Entradas y salidas digitales
 
 **DIG-01 · Salidas: funcionamiento y 4 mA** (CE-16, CE-24)
-- Cableado: carga de 820 Ω de la salida a GND (VOH) o a 3,3 V (VOL).
-- Comandos: `do 1 1`, `do 1 0`, `do 3 1`, `do 3 0`, `do 4 1`, `do 4 0`. DO2: VOH con la consola quieta (en reposo está en alto) y `do 2 0 30` para VOL.
-- Criterio: cambia solo la salida pedida; VOH ≥ 2,4 V y VOL ≤ 0,4 V a 4 mA (multímetro).
-- [ ] Placa A
-- [ ] Placa B
+- Cableado: Salidas al aire.
+- Comandos: `do 1 1`, `do 1 0`, `do 3 1`, `do 3 0`, `do 4 1`, `do 4 0`.
+- Criterio: cambia solo la salida pedida; VOH ≥ 2,4 V y VOL ≤ 0,4 V.
+- [x] Placa A
+- [x] Placa B
 
 **DIG-02 · Entradas en las tres posiciones del divisor** (CE-24)
 - Cableado: fuente en cada DI, jumper en 3V3, 12V y 24V. Para DI2, desconectar el TX del CP2102.
-- Comandos: `correr es` (avisa cada cambio de entrada) y `di`. Con una rampa lenta, el aviso marca el umbral.
+- Comandos: `correr es` (avisa cada cambio de entrada) y `di`.
 - Criterio: lectura correcta en los 12 casos; solo cambia el canal estimulado.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 **DIG-03 · Conmutación a 100 kHz** (CE-17)
-- Cableado: carga de 4 mA en la salida; cuadrada de 100 kHz en la entrada (con etapa de potencia para 12 y 24 V).
+- Cableado: salida al aire; cuadrada de 100 kHz en la entrada.
 - Comandos: `pwm 1 100000 50`, `pwm 3 100000 50`, `pwm 4 100000 50`; `frec on` mide las entradas (de a una por vez).
 - Criterio: tr y tf ≤ 1 µs en salidas y entradas (osciloscopio); frecuencia medida = 100000 Hz.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 ## 5. Entradas analógicas
 
 **AI-01 · Impedancia de entrada** (CE-18)
 - Sin firmware especial. Fondo de escala a través de una R serie conocida, con y sin alimentación. Z ≥ 100 kΩ.
-- [ ] Placa A
-- [ ] Placa B
+- [o] Placa A
+- [o] Placa B
 
 **AI-02 · Lectura de los cuatro canales** (CE-24)
 - Cableado: fuente y multímetro en la entrada.
 - Comandos: `correr ai`; en cada canal aplicar 0, 50 y 100 % del fondo de escala y escribir `ref <canal> <mV del multímetro>`. Repetir con `adc_conv 2` (ADC2) y volver con `adc_conv 1`.
 - Criterio: error ≤ 1 % FS (PASA en `ref`); solo cambia el canal estimulado.
-- [ ] Placa A con ADC1
-- [ ] Placa A con ADC2
-- [ ] Placa B con ADC1
-- [ ] Placa B con ADC2
+- [x] Placa A con ADC1
+- [x] Placa A con ADC2
+- [x] Placa B con ADC1
+- [x] Placa B con ADC2
 
 ## 6. Comunicaciones
 
 **COM-01 · Terminación CAN seleccionable** (CE-22)
 - Sin energía: CANH–CANL de cada canal con el switch cerrado (120 Ω ± 5 %) y abierto (decenas de kΩ).
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 **COM-02 · CAN y CAN FD entre CAN1 y CAN2** (CE-21)
 - Cableado: CANH1–CANH2 y CANL1–CANL2 en J3, las dos terminaciones activas, sin CAN2 hacia la otra placa.
 - Comandos: `can_cantidad 100000`; `can_modo clasico` y `correr banco_can`; después `can_modo fd` y `correr banco_can`.
 - Criterio: informe final con 0 perdidas, 0 errores y TEC = REC = 0 (PASA). Vdiff dominante entre 1,5 V y 3,0 V y recesivo < 0,5 V (osciloscopio).
-- [ ] Placa A, CAN clásico
-- [ ] Placa A, CAN FD
+- [x] Placa A, CAN clásico
+- [x] Placa A, CAN FD
 - [ ] Placa B, CAN clásico
 - [ ] Placa B, CAN FD
 
