@@ -1,6 +1,8 @@
 # Checklist del plan de pruebas
 
-Orden de ejecución y forma de correr cada prueba de `plan_pruebas_ecu.pdf` con el firmware **Pruebas** ([`Apps/Pruebas.c`](Apps/Pruebas.c)). Las casillas se tildan en GitHub al terminar cada prueba con resultado conforme. Los valores medidos van en la hoja de registro del plan (anexo B).
+> **Para tildar las pruebas usar el [Issue #1](https://github.com/Mateo-Opertti/ECU32/issues/1)**, que tiene esta misma lista y donde las casillas se marcan con un clic. Este archivo queda como referencia.
+
+Orden de ejecución y forma de correr cada prueba de `plan_pruebas_ecu.pdf` con el firmware **Pruebas** ([`Apps/Pruebas.c`](Apps/Pruebas.c)). Una casilla se tilda cuando la prueba terminó con resultado conforme. Los valores medidos van en la hoja de registro del plan (anexo B).
 
 - **Placa A:** rol MAESTRO, con el adaptador CP2102 de la consola.
 - **Placa B:** rol ESCLAVA. Se maneja desde A por CAN2. Las pruebas **solo locales** (`banco_can`, `integral`) se corren con el CP2102 conectado a la placa que se prueba.
