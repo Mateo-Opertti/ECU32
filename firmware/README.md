@@ -60,6 +60,7 @@ Una línea por comando, terminada en Enter (`\r` o `\n`), sin distinguir mayúsc
 | `esclava resumen on\|off` / `esclava traza on\|off` | Solo en el MAESTRO. Prende o apaga el resumen o la traza en la esclava |
 | `par can` | Solo en el MAESTRO. `can_maestro` en esta placa y `can_esclavo` en la esclava |
 | `par lin` | Solo en el MAESTRO. `lin_maestro` en esta placa y `lin_esclavo` en la esclava |
+| `par combo` | Solo en el MAESTRO. `combo_maestro` en esta placa y `combo_esclavo` en la esclava |
 | `par wakeup` | Solo en el MAESTRO. La esclava corre `wakeup` y, 3,5 s después de su ACK (cuando ya se durmió), esta placa arranca `can_maestro` para despertarla |
 | `duty <0-100>` | Duty del PWM en %. Se puede cambiar con la prueba corriendo |
 | `canal <1-4>` | Entrada AN que muestra el ADC en los LEDs |
@@ -83,6 +84,8 @@ Una línea por comando, terminada en Enter (`\r` o `\n`), sin distinguir mayúsc
 | 11 | `wakeup` | `CAN_Esclavo_WakeUp.c` | Despertar desde Standby por actividad en CAN1 (WKUP3, PE6) o en CAN2 (WKUP2, PC13) | Rojo 3 s y se duerme con los LEDs apagados. Al despertar, el verde alterna cada 250 ms |
 | 12 | `lin_maestro` | `LIN_Maestro.c` | LIN 2.x a 19200 baud entre dos placas, USART3 en modo LIN, checksum mejorado. ID 0x10: maestro → esclavo | El verde alterna con cada respuesta correcta. El rojo indica error o 500 ms sin una buena |
 | 13 | `lin_esclavo` | `LIN_Esclavo.c` | Ídem. ID 0x11: esclavo → maestro | El verde alterna con cada trama correcta. El rojo indica error o 500 ms sin una buena |
+| 14 | `combo_maestro` | — (nueva) | ADC + LIN + LEDs entre dos placas. Commander LIN: manda sus AN1–AN4 (ID 0x20) y pide los de la otra placa (ID 0x21), alternando cada 50 ms | Los LEDs muestran la entrada de la **otra** placa elegida con `canal`: < 1,1 V rojo, 1,1 – 2,2 V los dos, > 2,2 V verde. Sin LIN, los dos titilan cada 100 ms |
+| 15 | `combo_esclavo` | — (nueva) | Ídem, del lado que responde por LIN | Ídem |
 
 El rol de control (MAESTRO / ESCLAVA) no tiene que ver con las pruebas: cualquier placa puede correr cualquier prueba, incluidas `can_maestro` y `can_esclavo`.
 
@@ -160,6 +163,12 @@ La esclava también sigue imprimiendo por su propia consola, por si tiene un CP2
 - **ESP32:** `correr esp32` en la placa con el módulo (por consola o con `esclava correr esp32`).
 - **CAN entre placas:** `par can` desde el maestro. Cada segundo llega el resumen de las dos puntas (el de la esclava con `[esclava]`), y cualquier falla aparece como aviso. `traza on` muestra cada trama.
 - **LIN:** `par lin` desde el maestro (con SW3 cerrado en el maestro). Igual que CAN: resumen de las dos puntas, avisos y `traza on`.
+- **Combo (ADC + LIN + LEDs + CAN2):** con el cableado de LIN, `par combo` desde el maestro. Mové la tensión de una entrada AN de una placa, por ejemplo con un potenciómetro, y cambian los LEDs de la **otra**. Cada segundo, el maestro imprime las tensiones de las dos puntas: las suyas y las que recibe por LIN. La esclava manda su propio resumen por CAN2, que aparece con `[esclava]`:
+  ```
+  combo_maestro: aca 1.10 0.00 2.31 0.00 V | esclava 0.52 3.30 0.00 0.00 V | LIN tx 10/s rx OK 10/s err 0 | LEDs: esclava AN1 = rojo
+  [esclava] combo_esclavo: aca 0.52 3.30 0.00 0.00 V | maestro 1.10 0.00 2.31 0.00 V | LIN tx 10/s rx OK 10/s err 0 | LEDs: maestro AN1 = rojo y verde
+  ```
+  `canal <1-4>` elige qué entrada de la otra placa se ve en los LEDs; en la esclava queda AN1. Si se desconecta el LIN, los dos LEDs de cada placa titilan juntos y aparece un aviso.
 - **CAN FD local:** sacar el cable de CAN2 entre placas, poner el puente CAN1–CAN2 y ejecutar `correr can_fd` en la consola de esa placa. Mientras corre, la consola avisa que el enlace CAN2 está suspendido. Con `parar` el enlace vuelve.
 - **Wake-up:** `par wakeup` desde el maestro, con CAN1 unido entre las placas. La esclava muestra el rojo 3 s y se duerme; a los 3,5 s el maestro arranca `can_maestro`, que la despierta, y el verde de la esclava empieza a alternar cada 250 ms. Al despertar, la consola de la esclava imprime `Reset: salio de Standby, lo desperto WKUP3 (CAN1)`. Para repetir: `par wakeup` de nuevo. El rojo del maestro queda prendido, porque la esclava despierta no contesta las tramas: es lo esperado.
 - **Wake-up por CAN2:** `esclava correr wakeup`, esperar a que se duerma y mandar `esclava estado`. El primer intento la despierta por WKUP2 y uno de los reintentos recibe el ACK con la prueba `wakeup` despierta.

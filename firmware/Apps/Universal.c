@@ -45,7 +45,8 @@ typedef struct {
 
 enum {
     P_NINGUNA, P_LEDS, P_DIGITAL, P_SALIDAS, P_LOOPBACK, P_ADC, P_PWM, P_ESP32,
-    P_CAN_FD, P_CAN_MAESTRO, P_CAN_ESCLAVO, P_WAKEUP, P_LIN_MAESTRO, P_LIN_ESCLAVO, P_TOTAL
+    P_CAN_FD, P_CAN_MAESTRO, P_CAN_ESCLAVO, P_WAKEUP, P_LIN_MAESTRO, P_LIN_ESCLAVO,
+    P_COMBO_MAESTRO, P_COMBO_ESCLAVO, P_TOTAL
 };
 
 // Implementadas más abajo; las usan el enlace y algunas pruebas
@@ -81,6 +82,7 @@ static int wakeup_desperto;
 #include "universal/p_lin.c"
 #include "universal/p_lin_maestro.c"
 #include "universal/p_lin_esclavo.c"
+#include "universal/p_combo.c"
 
 static const prueba_t *const pruebas[P_TOTAL] = {
     [P_LEDS]     = &p_leds,
@@ -96,6 +98,8 @@ static const prueba_t *const pruebas[P_TOTAL] = {
     [P_WAKEUP]      = &p_wakeup,
     [P_LIN_MAESTRO] = &p_lin_maestro,
     [P_LIN_ESCLAVO] = &p_lin_esclavo,
+    [P_COMBO_MAESTRO] = &p_combo_maestro,
+    [P_COMBO_ESCLAVO] = &p_combo_esclavo,
 };
 
 static uint32_t actual;     // prueba corriendo (P_NINGUNA = ninguna)
@@ -278,7 +282,9 @@ static void cmd_ayuda(void)
           "  esclava estado              (MAESTRO) rol, prueba, tiempo y contadores de la esclava\n"
           "  esclava resumen on|off      (MAESTRO) prende o apaga el resumen en la esclava\n"
           "  esclava traza on|off        (MAESTRO) prende o apaga la traza en la esclava\n"
-          "  par <can|lin|wakeup>        (MAESTRO) version Maestro aca y version Esclavo en la otra placa\n"
+          "  par <can|lin|combo|wakeup>  (MAESTRO) version Maestro aca y version Esclavo en la otra placa\n"
+          "                              combo: cada placa le pasa sus AN a la otra por LIN y los LEDs de\n"
+          "                              cada una muestran la entrada de la OTRA (elegida con \"canal\")\n"
           "  Todo lo que imprime la esclava aparece en esta consola con \"[esclava]\"\n"
           "\n"
           "EJEMPLO: CAN entre placas mirando las dos puntas\n"
@@ -295,7 +301,7 @@ static void cmd_lista(void)
         cprintf("%2u  %s", i, pruebas[i]->nombre);
         uint32_t largo = 0;
         while (pruebas[i]->nombre[largo]) largo++;
-        while (largo++ < 13) cputc(' ');
+        while (largo++ < 15) cputc(' ');
         cputs(pruebas[i]->descripcion);
         if (pruebas[i]->flags & PRUEBA_SOLO_LOCAL) cputs(" [solo local]");
         cputs("\n");
@@ -399,12 +405,14 @@ static void cmd_par(const char *arg)
         if (enlace_pedir(ENL_CMD_CORRER, P_CAN_ESCLAVO, ACCION_NINGUNA)) prueba_correr(P_CAN_MAESTRO, 0);
     } else if (arg && texto_igual(arg, "lin")) {
         if (enlace_pedir(ENL_CMD_CORRER, P_LIN_ESCLAVO, ACCION_NINGUNA)) prueba_correr(P_LIN_MAESTRO, 0);
+    } else if (arg && texto_igual(arg, "combo")) {
+        if (enlace_pedir(ENL_CMD_CORRER, P_COMBO_ESCLAVO, ACCION_NINGUNA)) prueba_correr(P_COMBO_MAESTRO, 0);
     } else if (arg && texto_igual(arg, "wakeup")) {
         // CAN_Maestro arranca recién cuando la esclava confirma y se duerme
         prueba_parar();
         enlace_pedir(ENL_CMD_CORRER, P_WAKEUP, ACCION_PAR_WAKEUP);
     } else {
-        cputs("Uso: par <can|lin|wakeup>\n");
+        cputs("Uso: par <can|lin|combo|wakeup>\n");
     }
 }
 

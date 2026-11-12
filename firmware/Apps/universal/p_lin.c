@@ -15,10 +15,10 @@ static volatile uint32_t lin_eco_err;  // bytes propios que no se leyeron bien e
 
 // Bytes a mandar (con verificación del eco) y bytes a recibir
 static struct {
-    uint8_t tx[8];
+    uint8_t tx[12];  // hasta sync + PID + 8 datos + checksum
     uint32_t ntx, itx;
     int eco_pendiente;
-    uint8_t rx[8];
+    uint8_t rx[12];
     uint32_t nrx, irx;
     uint32_t t;  // último movimiento, para los timeouts
     int eco_leido;  // cuando falla un eco: el byte que volvió, o -1 si no volvió nada

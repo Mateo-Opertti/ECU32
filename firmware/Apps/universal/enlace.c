@@ -35,7 +35,7 @@
 #define ENL_AVISO_MS     2000U  // como mucho un aviso de "dos maestros" cada 2 s
 #define TXT_MAX          61U    // caracteres por trama de texto (64 - 3 de cabecera)
 #define TXT_ESPERA_MS    20U    // un pedazo de línea sin '\n' sale igual a los 20 ms
-#define TXT_LINEA_MAX    160U   // largo máximo de una línea armada en el maestro
+#define TXT_LINEA_MAX    200U   // largo máximo de una línea armada en el maestro
 #define TXT_CORTE_MS     100U   // el maestro imprime una línea incompleta si no llega el resto
 
 // Códigos de error de la respuesta
