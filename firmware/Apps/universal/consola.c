@@ -74,7 +74,7 @@ void USART1_IRQHandler(void)
 // enlace.c lo manda por CAN2 (ID 0x702). El maestro lo imprime en su consola con "[esclava]".
 // Funciona para cualquier prueba, presente o futura, siempre que imprima con cputc/cputs/cprintf:
 // nunca escribir directo en el USART1
-#define FWD_TAM       1024U
+#define FWD_TAM       4096U
 static uint8_t fwd_buf[FWD_TAM];
 static uint32_t fwd_in, fwd_out;
 static uint32_t fwd_t;              // cuándo entró el byte más viejo que falta mandar

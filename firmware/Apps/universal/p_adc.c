@@ -34,11 +34,11 @@ static int adc_midiendo;
 static uint32_t adc_i, adc_n, adc_suma;
 static uint32_t adc_sumas[5];
 
-// Opciones del motor (Universal usa los valores por defecto; Pruebas.c los cambia)
+// Opciones del motor (Universal.c las ajusta al arrancar y con comandos)
 static uint32_t adc_promedio = ADC_PROMEDIO;  // lecturas promediadas por canal (1 a 256)
 static int adc_usar_vref;                     // 1: mide VREFINT en cada tanda y corrige VDDA
 static uint32_t adc_vdda_mv = ADC_VDDA_MV;    // VDDA usada para pasar a mV (medida si adc_usar_vref)
-// Convertidor que mide AN1..AN4: 1 = ADC1 (por defecto), 2 = ADC2 (comando adc_conv de Pruebas).
+// Convertidor que mide AN1..AN4: 1 = ADC1 (por defecto), 2 = ADC2 (comando adc_conv).
 // VREFINT solo está conectado al ADC1: la VDDA se mide siempre con el ADC1
 static uint32_t adc_conv = 1;
 volatile uint32_t an_vref_raw;                // cuentas de VREFINT (promedio)

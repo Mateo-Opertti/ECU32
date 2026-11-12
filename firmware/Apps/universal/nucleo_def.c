@@ -1,8 +1,8 @@
-// Núcleo común de los firmwares Universal y Pruebas: tipos, declaraciones y puntos de extensión
+// Núcleo del firmware Universal: tipos, declaraciones y puntos de extensión
 // Se incluye antes del enlace y de las pruebas. La implementación está en nucleo.c, que cada
 // firmware incluye después de definir su tabla de pruebas y sus funciones "extra"
 
-#define PRUEBA_SOLO_LOCAL (1U << 0)  // solo desde la consola de la placa, nunca por CAN2
+#define PRUEBA_SOLO_LOCAL (1U << 0)  // usa FDCAN2: por CAN2 se pide como línea ("esclava correr ...")
 
 typedef struct {
     const char *nombre;       // nombre corto para la consola
@@ -17,8 +17,8 @@ typedef struct {
     uint32_t flags;
 } prueba_t;
 
-// Pruebas comunes a los dos firmwares, con el mismo número en los dos.
-// Pruebas.c agrega las suyas a partir de P_BASE_TOTAL
+// Pruebas de bring-up, con número fijo.
+// Universal.c agrega las del plan de pruebas a partir de P_BASE_TOTAL
 enum {
     P_NINGUNA, P_LEDS, P_DIGITAL, P_SALIDAS, P_LOOPBACK, P_ADC, P_PWM, P_ESP32,
     P_CAN_FD, P_CAN_MAESTRO, P_CAN_ESCLAVO, P_WAKEUP, P_LIN_MAESTRO, P_LIN_ESCLAVO,
@@ -41,6 +41,7 @@ static int texto_igual(const char *a, const char *b);
 static int32_t texto_numero(const char *s);
 static int texto_on_off(const char *s);
 static uint32_t buscar_prueba(const char *s);
+static void comando(char *l);  // ejecuta una línea de consola (también la que llega del maestro)
 #define PAR_WAKEUP_ESPERA_MS 3500  // "par wakeup": la esclava muestra el rojo 3 s antes de dormirse
 
 // Puntos de extensión: los define cada firmware (Universal los deja vacíos)

@@ -1,4 +1,4 @@
-// Núcleo común de los firmwares Universal y Pruebas: arranque de la placa, manejo de pruebas,
+// Núcleo del firmware Universal: arranque de la placa, manejo de pruebas,
 // comando "par", consola y loop principal. Cada firmware lo incluye después de su tabla de
 // pruebas y de sus funciones "extra" (ver nucleo_def.c)
 
@@ -180,6 +180,9 @@ static void cmd_ayuda(void)
           "\n"
           "ROL Y LA OTRA PLACA (por CAN2)\n"
           "  rol [maestro|esclava]       muestra o cambia el rol (queda guardado en la flash)\n"
+          "  esclava <comando>           (MAESTRO) ejecuta CUALQUIER comando en la esclava, como si se\n"
+          "                              escribiera en su consola (ej: esclava do 1 1, esclava ref 2 2500,\n"
+          "                              esclava esp ping, esclava correr banco_can). Su salida llega aca\n"
           "  esclava correr <n|nombre>   (MAESTRO) arranca una prueba en la esclava\n"
           "  esclava parar               (MAESTRO) para la prueba de la esclava\n"
           "  esclava estado              (MAESTRO) rol, prueba, tiempo y contadores de la esclava\n"
@@ -274,9 +277,30 @@ static void cmd_on_off(const char *nombre, int *opcion, const char *arg)
     cprintf("%s %s\n", nombre, v ? "on" : "off");
 }
 
+// Junta pal[desde..n-1] en una línea separada por espacios
+static void juntar(char *buf, uint32_t tam, char **pal, uint32_t desde, uint32_t n)
+{
+    uint32_t k = 0;
+    for (uint32_t i = desde; i < n && pal[i]; i++) {
+        if (k && k < tam - 1) buf[k++] = ' ';
+        for (const char *s = pal[i]; *s && k < tam - 1; s++) buf[k++] = *s;
+    }
+    buf[k] = '\0';
+}
+
 static void cmd_esclava(char **pal, uint32_t n)
 {
     const char *sub = pal[1], *arg = pal[2];
+    char linea[LINEA_MAX + 1];
+    if (!sub) {
+        cputs("Uso: esclava <cualquier comando>   (ej: esclava do 1 1, esclava ref 2 2500, esclava estado)\n");
+        return;
+    }
+    if (texto_igual(sub, "ejecutar")) {  // forma explícita: esclava ejecutar <comando>
+        juntar(linea, sizeof(linea), pal, 2, n);
+        if (linea[0]) enlace_pedir_linea(linea);
+        return;
+    }
     if (sub && (texto_igual(sub, "traza") || texto_igual(sub, "resumen"))) {
         int v = texto_on_off(arg);
         if (v < 0) {
@@ -290,13 +314,23 @@ static void cmd_esclava(char **pal, uint32_t n)
             cputs("Prueba desconocida (ver \"lista\")\n");
             return;
         }
-        enlace_pedir(ENL_CMD_CORRER, p, ACCION_NINGUNA);
+        if (pruebas[p]->flags & PRUEBA_SOLO_LOCAL) {
+            // Usa FDCAN2: se manda como línea, la esclava contesta el ACK y recién después la corre
+            juntar(linea, sizeof(linea), pal, 1, n);
+            enlace_pedir_linea(linea);
+            cprintf("%s usa CAN2: el enlace con la esclava se corta mientras corre y vuelve al terminar\n",
+                    pruebas[p]->nombre);
+        } else {
+            enlace_pedir(ENL_CMD_CORRER, p, ACCION_NINGUNA);
+        }
     } else if (sub && texto_igual(sub, "parar")) {
         enlace_pedir(ENL_CMD_PARAR, 0, ACCION_NINGUNA);
     } else if (sub && texto_igual(sub, "estado")) {
         enlace_pedir(ENL_CMD_ESTADO, 0, ACCION_NINGUNA);
-    } else if (!sub || !comando_extra(pal, n)) {
-        cputs("Uso: esclava correr <n|nombre> | parar | estado | resumen on|off | traza on|off\n");
+    } else if (!comando_extra(pal, n)) {
+        // Cualquier otro comando se ejecuta en la esclava tal cual
+        juntar(linea, sizeof(linea), pal, 1, n);
+        enlace_pedir_linea(linea);
     }
 }
 

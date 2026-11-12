@@ -6,6 +6,10 @@
 //   [0] comando (1 correr, 2 parar, 3 estado, 4 traza, 5 resumen, 6 parámetro)
 //   [1] número de prueba (correr), 1 = on / 0 = off (traza, resumen) o clave (parámetro)
 //   [2] secuencia  [3..6] valor del parámetro (little endian)  [7] 0
+// Línea de consola, ID 0x700, maestro -> esclava, hasta 64 bytes ("esclava <comando>"):
+//   [0] 7  [1] cantidad de caracteres (hasta 60)  [2] secuencia  [3..] la línea
+//   La esclava contesta el ACK y después la ejecuta como si se hubiera escrito en su consola;
+//   lo que imprima llega al maestro por el texto 0x702
 // El maestro puede encolar varios pedidos (por ejemplo parámetros y después "correr"): salen de a uno
 // Respuesta, ID 0x701, esclava -> maestro, 20 bytes:
 //   [0] ACK (0x06) o NACK (0x15)  [1] secuencia del comando  [2] rol  [3] prueba actual (0 = ninguna)
@@ -28,6 +32,8 @@
 #define ENL_CMD_TRAZA    4U
 #define ENL_CMD_RESUMEN  5U
 #define ENL_CMD_PARAM    6U
+#define ENL_CMD_LINEA    7U
+#define ENL_LINEA_MAX    60U    // caracteres de una línea de consola mandada a la esclava
 #define ENL_COLA         8U     // pedidos que pueden esperar su turno
 #define ENL_ACK          0x06U
 #define ENL_NACK         0x15U
@@ -61,12 +67,14 @@ volatile uint32_t enl_sin_resp;   // pedidos del maestro que se quedaron sin res
 typedef struct {
     uint8_t cmd, prueba;
     uint32_t valor, accion, local;
+    char texto[ENL_LINEA_MAX + 1];
 } enl_pedido_t;
 
 static struct {
     int pendiente;
     uint8_t cmd, prueba, seq;
     uint32_t valor, intentos, t_envio, accion, local;
+    char texto[ENL_LINEA_MAX + 1];
 } pedido;
 static uint8_t seq_sig;
 static enl_pedido_t cola[ENL_COLA];
@@ -226,10 +234,17 @@ static void enlace_texto_recibido(const can_trama_t *t)
 
 static void enlace_mandar_pedido(void)
 {
-    uint8_t d[ENL_LEN_CMD] = { pedido.cmd, pedido.prueba, pedido.seq, 0, 0, 0, 0, 0 };
-    put32(&d[3], pedido.valor);
+    uint8_t d[64] = { pedido.cmd, pedido.prueba, pedido.seq, 0, 0, 0, 0, 0 };
+    uint32_t len = ENL_LEN_CMD;
+    if (pedido.cmd == ENL_CMD_LINEA) {
+        for (uint32_t i = 0; i < pedido.prueba; i++) d[3 + i] = (uint8_t)pedido.texto[i];
+        len = 3U + pedido.prueba;
+        if (len < ENL_LEN_CMD) len = ENL_LEN_CMD;
+    } else {
+        put32(&d[3], pedido.valor);
+    }
     FDCAN_TXBCR(FDCAN2_BASE) = FDCAN_TXBRP(FDCAN2_BASE);  // descarta un intento anterior que no salió
-    fdcan_enviar(FDCAN2_BASE, ENLACE_ID_CMD, d, ENL_LEN_CMD, 0);
+    fdcan_enviar(FDCAN2_BASE, ENLACE_ID_CMD, d, len, 0);
     pedido.intentos++;
     pedido.t_envio = ticks;
 }
@@ -242,6 +257,7 @@ static void enlace_empezar(const enl_pedido_t *p)
     pedido.valor = p->valor;
     pedido.accion = p->accion;
     pedido.local = p->local;
+    for (uint32_t i = 0; i <= ENL_LINEA_MAX; i++) pedido.texto[i] = p->texto[i];
     pedido.seq = seq_sig++;
     pedido.intentos = 0;
     enlace_mandar_pedido();
@@ -259,7 +275,8 @@ static void enlace_siguiente(void)
 }
 
 // Solo en el MAESTRO. Si hay un pedido esperando respuesta, este queda en cola. Devuelve 1 si se aceptó
-static int enlace_pedir_ex(uint32_t cmd, uint32_t prueba, uint32_t valor, uint32_t accion, uint32_t local)
+static int enlace_pedir_texto(uint32_t cmd, uint32_t prueba, uint32_t valor, uint32_t accion, uint32_t local,
+                              const char *texto)
 {
     if (rol_actual != ROL_MAESTRO) {
         cputs("Solo el MAESTRO manda comandos a la esclava (ver \"rol\")\n");
@@ -269,7 +286,8 @@ static int enlace_pedir_ex(uint32_t cmd, uint32_t prueba, uint32_t valor, uint32
         cputs("El enlace CAN2 esta suspendido mientras corre una prueba que usa FDCAN2\n");
         return 0;
     }
-    enl_pedido_t p = { (uint8_t)cmd, (uint8_t)prueba, valor, accion, local };
+    enl_pedido_t p = { (uint8_t)cmd, (uint8_t)prueba, valor, accion, local, { 0 } };
+    for (uint32_t i = 0; texto && texto[i] && i < ENL_LINEA_MAX; i++) p.texto[i] = texto[i];
     if (!pedido.pendiente) {
         enlace_empezar(&p);
     } else if (cola_in - cola_out < ENL_COLA) {
@@ -282,15 +300,34 @@ static int enlace_pedir_ex(uint32_t cmd, uint32_t prueba, uint32_t valor, uint32
     return 1;
 }
 
+static int enlace_pedir_ex(uint32_t cmd, uint32_t prueba, uint32_t valor, uint32_t accion, uint32_t local)
+{
+    return enlace_pedir_texto(cmd, prueba, valor, accion, local, 0);
+}
+
 static int enlace_pedir(uint32_t cmd, uint32_t prueba, uint32_t accion)
 {
     return enlace_pedir_ex(cmd, prueba, 0, accion, 0);
+}
+
+// "esclava <línea>": la esclava la ejecuta como si se hubiera escrito en su consola
+static int enlace_pedir_linea(const char *linea)
+{
+    uint32_t n = 0;
+    while (linea[n]) n++;
+    if (n > ENL_LINEA_MAX) {
+        cprintf("La linea para la esclava puede tener hasta %u caracteres\n", ENL_LINEA_MAX);
+        return 0;
+    }
+    return enlace_pedir_texto(ENL_CMD_LINEA, n, 0, ACCION_NINGUNA, 0, linea);
 }
 
 // Esclava: ejecuta el comando y arma la respuesta
 static void enlace_atender(const can_trama_t *t)
 {
     uint8_t cmd = t->data[0], n = t->data[1], seq = t->data[2];
+    char linea_remota[ENL_LINEA_MAX + 1];
+    int hay_linea = 0;
 
     // Mismo comando repetido: el maestro no vio el ACK. Se reenvía la respuesta sin ejecutarlo de nuevo
     if (ultima.valida && ultima.seq == seq && ultima.cmd == cmd && ultima.prueba == n &&
@@ -321,6 +358,14 @@ static void enlace_atender(const can_trama_t *t)
         cprintf("[CAN2] el maestro pide: resumen %s\n", n ? "on" : "off");
     } else if (cmd == ENL_CMD_PARAM) {
         err = param_remoto(n, get32(&t->data[3]));
+    } else if (cmd == ENL_CMD_LINEA) {
+        // Se ejecuta después de mandar el ACK (si la línea apaga el enlace, el ACK ya salió)
+        uint32_t k = n;
+        if (k > ENL_LINEA_MAX) k = ENL_LINEA_MAX;
+        if (k > t->len - 3U) k = t->len - 3U;
+        for (uint32_t i = 0; i < k; i++) linea_remota[i] = (char)t->data[3 + i];
+        linea_remota[k] = '\0';
+        hay_linea = 1;
     } else if (cmd != ENL_CMD_ESTADO) {
         err = ERR_COMANDO;
     }
@@ -345,6 +390,11 @@ static void enlace_atender(const can_trama_t *t)
     ultima.prueba = n;
     ultima.seq = seq;
     ultima.t = ticks;
+
+    if (hay_linea) {
+        cprintf("[CAN2] el maestro pide: %s\n", linea_remota);
+        comando(linea_remota);  // su salida le llega al maestro como texto 0x702
+    }
 }
 
 // Maestro: muestra la respuesta del pedido en curso
@@ -364,7 +414,7 @@ static void enlace_respuesta(const can_trama_t *t)
         if (r[4] == ERR_ES_MAESTRO) cputs("AVISO: hay dos maestros en el bus. Cambia el rol de una con \"rol esclava\"\n");
         return;
     }
-    if (cmd == ENL_CMD_PARAM) return;  // los parámetros se confirman en silencio
+    if (cmd == ENL_CMD_PARAM || cmd == ENL_CMD_LINEA) return;  // la salida de la línea llega como texto
     if (accion == ACCION_PAR_WAKEUP) par_local_ack(P_CAN_MAESTRO, PAR_WAKEUP_ESPERA_MS, 1);
     else if (accion == ACCION_PAR_LOCAL) par_local_ack(local, 100, 0);
     cprintf("esclava: ACK  rol %s  prueba ", rol_nombre(r[2]));

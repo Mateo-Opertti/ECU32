@@ -12,7 +12,7 @@
 #define LIN_RX_TIMEOUT_MS   500U
 
 static volatile uint32_t lin_eco_err;  // bytes propios que no se leyeron bien en el bus
-static uint32_t lin_baud = LIN_BAUD;   // Pruebas.c la puede cambiar (el plan pide 20 kbit/s)
+static uint32_t lin_baud = LIN_BAUD;   // Universal.c arranca en 20 kbit/s (lo pide el plan); comando lin_baud
 
 // Bytes a mandar (con verificación del eco) y bytes a recibir
 static struct {

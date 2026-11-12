@@ -272,10 +272,9 @@ Factor = (R serie + R a GND) / R a GND. Fondo de escala = 3,3 V × factor.
 
 ## Firmware
 
-Las pruebas del bring-up están en [`firmware/`](firmware/), escritas a nivel de registros (sin HAL). Se graba un único firmware, igual en las dos placas: la prueba se elige desde una terminal serie (USART1 por J1, con un adaptador USB-UART) o, en la placa esclava, desde la maestra por CAN2. Hay dos firmwares para elegir:
+Las pruebas están en [`firmware/`](firmware/), escritas a nivel de registros (sin HAL). Se graba un único firmware, [`Universal.c`](firmware/Apps/Universal.c), igual en las dos placas. Tiene las pruebas de bring-up y todo lo necesario para ejecutar el plan de pruebas: el comando `plan` indica qué correr para cada prueba (DIG, AI, COM, INT, EXT, ESP).
 
-- [`Pruebas.c`](firmware/Apps/Pruebas.c): todo lo necesario para ejecutar el plan de pruebas. El comando `plan` indica qué correr para cada prueba (DIG, AI, COM, INT, EXT, ESP).
-- [`Universal.c`](firmware/Apps/Universal.c): las pruebas de bring-up.
+La prueba se elige desde una terminal serie (USART1 por J1, con un adaptador USB-UART). La placa esclava se maneja entera desde la maestra por CAN2: `esclava <comando>` ejecuta cualquier comando en la esclava y su salida aparece en la consola de la maestra. La lista para tildar está en [`CHECKLIST_PRUEBAS.md`](firmware/CHECKLIST_PRUEBAS.md) y en el [Issue #1](https://github.com/Mateo-Opertti/ECU32/issues/1).
 
 Los programas sueltos de cada prueba siguen en [`Apps/legacy/`](firmware/Apps/legacy/).
 

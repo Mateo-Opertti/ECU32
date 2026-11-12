@@ -2,19 +2,19 @@
 
 > **Para tildar las pruebas usar el [Issue #1](https://github.com/Mateo-Opertti/ECU32/issues/1)**, que tiene esta misma lista y donde las casillas se marcan con un clic. Este archivo queda como referencia.
 
-Orden de ejecución y forma de correr cada prueba de `plan_pruebas_ecu.pdf` con el firmware **Pruebas** ([`Apps/Pruebas.c`](Apps/Pruebas.c)). Una casilla se tilda cuando la prueba terminó con resultado conforme. Los valores medidos van en la hoja de registro del plan (anexo B).
+Orden de ejecución y forma de correr cada prueba de `plan_pruebas_ecu.pdf` con el firmware **Universal** ([`Apps/Universal.c`](Apps/Universal.c)). Una casilla se tilda cuando la prueba terminó con resultado conforme. Los valores medidos van en la hoja de registro del plan (anexo B).
 
 - **Placa A:** rol MAESTRO, con el adaptador CP2102 de la consola.
-- **Placa B:** rol ESCLAVA. Se maneja desde A por CAN2. Las pruebas **solo locales** (`banco_can`, `integral`) se corren con el CP2102 conectado a la placa que se prueba.
+- **Placa B:** rol ESCLAVA. Todo se le manda desde la consola de A anteponiendo `esclava` al comando (`esclava do 1 1`, `esclava correr ai`, `esclava correr banco_can`…); su salida aparece en A con `[esclava]`. Mientras B corre una prueba que usa CAN2 (`banco_can`, `integral`) no recibe comandos: esas terminan solas y después llega su informe.
 - En la consola, `plan` muestra un resumen de esta lista y `estado` da los contadores de la prueba que está corriendo.
 
-Comandos y conexiones en detalle: [README del firmware](README.md#firmware-pruebas-plan-de-pruebas).
+Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-pruebas).
 
 ---
 
 ## 0. Preparación
 
-- [x] Firmware Pruebas grabado en A y en B (`Src/main.c` con `#include "../Apps/Pruebas.c"`)
+- [x] Firmware Universal grabado en A y en B (`Src/main.c` con `#include "../Apps/Universal.c"`)
 - [x] Sketch [`ESP32_Pruebas`](ESP32/ESP32_Pruebas/ESP32_Pruebas.ino) grabado en la ESP32 (queda **desenchufada** hasta la sección 9)
 - [x] Consola: CP2102 TX → J1-6 (DI2), RX → J1-1 (DO2), GND común, jumper de DI2 en 3V3, terminal a 115200 8N1
 - [x] `rol maestro` en A (B queda ESCLAVA)
@@ -56,7 +56,7 @@ Comandos y conexiones en detalle: [README del firmware](README.md#firmware-prueb
 - [ ] Placa B
 
 **ALI-03 · Programación y depuración por SWD** (CE-20)
-- ST-LINK en J2: leer el ID, grabar Pruebas y depurar con un breakpoint en `main`.
+- ST-LINK en J2: leer el ID, grabar Universal y depurar con un breakpoint en `main`.
 - [x] Placa A
 - [x] Placa B
 
