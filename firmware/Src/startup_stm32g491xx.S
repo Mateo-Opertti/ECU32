@@ -226,11 +226,11 @@ g_pfnVectors:
   .word	0                          			/* Reserved                        */
   .word	0                          			/* Reserved                        */
   .word	0                          			/* Reserved                        */
+  .word	FDCAN2_IT0_IRQHandler      			/* FDCAN2 interrupt 0 (IRQ 86)     */
   .word	0                          			/* Reserved                        */
   .word	0                          			/* Reserved                        */
   .word	0                          			/* Reserved                        */
-  .word	0                          			/* Reserved                        */
-  .word	RNG_IRQHandler             			/* RNG                             */
+  .word	RNG_IRQHandler            			/* RNG                             */
   .word	LPUART_IRQHandler          			/* LPUART                          */
   .word	I2C3_EV_IRQHandler         			/* I2C3_EV                         */
   .word	I2C3_ER_IRQHandler         			/* I2C3_ER                         */
@@ -521,6 +521,9 @@ g_pfnVectors:
 
 	.weak	FMAC_IRQHandler
 	.thumb_set FMAC_IRQHandler,Default_Handler
+
+	.weak	FDCAN2_IT0_IRQHandler
+	.thumb_set FDCAN2_IT0_IRQHandler,Default_Handler
 
 	.weak	SystemInit
 

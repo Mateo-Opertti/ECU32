@@ -64,6 +64,9 @@ static void bc_flujo(uint32_t i, const char *nombre, uint32_t txb, uint32_t txid
 
 static void bc_motor_init(const char *prueba, uint32_t n_flujos, uint32_t espera_tx)
 {
+    // Recepción por interrupción en las dos instancias (ya iniciadas): el FIFO del hardware es de 3
+    fdcan_rx_irq(FDCAN1_BASE, 1);
+    fdcan_rx_irq(FDCAN2_BASE, 1);
     bc_prueba = prueba;
     bc_n = n_flujos;
     bc_espera_tx = espera_tx;
@@ -225,6 +228,12 @@ static void bc_informe(uint32_t esperadas)
     cprintf("  CAN1: TEC %u REC %u, bus off %u | CAN2: TEC %u REC %u, bus off %u | tramas ajenas %u\n",
             ecr1 & 0xFFU, (ecr1 >> 8) & 0x7FU, bc_busoff1, ecr2 & 0xFFU, (ecr2 >> 8) & 0x7FU, bc_busoff2, bc_ajenas);
     if ((ecr1 & 0x7FFFU) || (ecr2 & 0x7FFFU) || bc_busoff1 || bc_busoff2) pasa = 0;
+    uint32_t hw1 = can_rx_perdidas_hw[0], hw2 = can_rx_perdidas_hw[1];
+    uint32_t co1 = can_rx_perdidas_cola[0], co2 = can_rx_perdidas_cola[1];
+    if (hw1 || hw2 || co1 || co2) {
+        cprintf("  Perdidas dentro del micro (el bus estaba bien): FIFO RX lleno CAN1 %u CAN2 %u, cola llena CAN1 %u CAN2 %u\n",
+                hw1, hw2, co1, co2);
+    }
     cprintf("  Resultado: %s (criterio: 0 perdidas, 0 errores, TEC = REC = 0)\n", pasa ? "PASA" : "FALLA");
 }
 

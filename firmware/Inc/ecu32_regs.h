@@ -106,6 +106,14 @@
 #define FDCAN_ECR(b)    REG((b) + 0x040)  // contadores de error: TEC [7:0], REC [14:8]
 #define FDCAN_PSR(b)    REG((b) + 0x044)
 #define FDCAN_TDCR(b)   REG((b) + 0x048)
+#define FDCAN_IR(b)     REG((b) + 0x050)
+#define FDCAN_IE(b)     REG((b) + 0x054)
+#define FDCAN_ILS(b)    REG((b) + 0x058)
+#define FDCAN_ILE(b)    REG((b) + 0x05C)
+#define FDCAN_IR_RF0N   (1U << 0)   // trama nueva en el RX FIFO0
+#define FDCAN_IR_RF0L   (1U << 2)   // se perdió una trama: el RX FIFO0 (3 lugares) estaba lleno
+#define FDCAN1_IT0_IRQn 21
+#define FDCAN2_IT0_IRQn 86
 #define FDCAN_RXGFC(b)  REG((b) + 0x080)
 #define FDCAN_RXF0S(b)  REG((b) + 0x090)
 #define FDCAN_RXF0A(b)  REG((b) + 0x094)

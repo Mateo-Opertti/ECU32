@@ -55,8 +55,11 @@ static void fdcan_detener(uint32_t base)
     while (!(FDCAN_CCCR(base) & CCCR_INIT));
 }
 
+static void fdcan_rx_irq(uint32_t base, int on);
+
 static void fdcan_iniciar(uint32_t base, uint32_t modo)
 {
+    fdcan_rx_irq(base, 0);  // vuelve a recibir por polling; las pruebas de tráfico la prenden
     fdcan_detener(base);
     FDCAN_CCCR(base) |= CCCR_CCE;
 
@@ -122,8 +125,8 @@ static int fdcan_enviar(uint32_t base, uint32_t id, const uint8_t *data, uint32_
     return fdcan_enviar_ex(base, id, data, len, 1, brs);
 }
 
-// Devuelve 1 si sacó una trama del RX FIFO0, 0 si no había nada
-static int fdcan_recibir(uint32_t base, can_trama_t *t)
+// Saca una trama del RX FIFO0 del hardware. Devuelve 1 si había, 0 si estaba vacío
+static int fdcan_leer_fifo(uint32_t base, can_trama_t *t)
 {
     uint32_t s = FDCAN_RXF0S(base);
     if ((s & 0xFU) == 0) return 0;
@@ -139,6 +142,84 @@ static int fdcan_recibir(uint32_t base, can_trama_t *t)
         for (uint32_t k = 0; k < 4 && 4 * i + k < 64; k++) t->data[4 * i + k] = (uint8_t)(w >> (8 * k));
     }
     FDCAN_RXF0A(base) = idx;  // libera el lugar en el FIFO
+    return 1;
+}
+
+// Recepción por interrupción, para las pruebas de tráfico
+// El RX FIFO0 del hardware tiene solo 3 lugares: con CAN clásico a la tasa máxima llega una trama
+// cada ~230 us, así que si el loop se demora más de ~0,7 ms (por ejemplo armando una línea de
+// resumen a 16 MHz) el FDCAN descarta tramas que ya confirmó en el bus. La interrupción las pasa
+// a una cola de CAN_COLA_TAM tramas apenas llegan
+#define CAN_COLA_TAM 32U
+
+typedef struct {
+    can_trama_t t[CAN_COLA_TAM];
+    volatile uint32_t in, out;
+    volatile int activa;
+} can_cola_t;
+
+static can_cola_t can_cola[2];             // [0] = FDCAN1, [1] = FDCAN2
+volatile uint32_t can_rx_perdidas_hw[2];   // tramas que tiró el hardware (RX FIFO0 lleno)
+volatile uint32_t can_rx_perdidas_cola[2]; // tramas que no entraron en la cola
+
+static uint32_t can_idx(uint32_t base) { return base == FDCAN1_BASE ? 0U : 1U; }
+
+// Pasa todo lo que hay en el RX FIFO0 del hardware a la cola
+static void fdcan_drenar(uint32_t base)
+{
+    uint32_t i = can_idx(base);
+    can_cola_t *c = &can_cola[i];
+    uint32_t ir = FDCAN_IR(base);
+    FDCAN_IR(base) = ir & (FDCAN_IR_RF0N | FDCAN_IR_RF0L);
+    if (ir & FDCAN_IR_RF0L) can_rx_perdidas_hw[i]++;
+    for (;;) {
+        if (c->in - c->out >= CAN_COLA_TAM) {
+            can_trama_t basura;
+            if (!fdcan_leer_fifo(base, &basura)) break;
+            can_rx_perdidas_cola[i]++;
+            continue;
+        }
+        if (!fdcan_leer_fifo(base, &c->t[c->in % CAN_COLA_TAM])) break;
+        c->in++;
+    }
+}
+
+void FDCAN1_IT0_IRQHandler(void) { fdcan_drenar(FDCAN1_BASE); }
+void FDCAN2_IT0_IRQHandler(void) { fdcan_drenar(FDCAN2_BASE); }
+
+// on = 1: la instancia recibe por interrupción (fdcan_recibir lee de la cola). fdcan_iniciar lo apaga
+static void fdcan_rx_irq(uint32_t base, int on)
+{
+    uint32_t i = can_idx(base);
+    uint32_t irq = i ? FDCAN2_IT0_IRQn : FDCAN1_IT0_IRQn;
+    nvic_deshabilitar(irq);
+    FDCAN_ILE(base) = 0;
+    FDCAN_IE(base) = 0;
+    can_cola[i].activa = 0;
+    can_cola[i].in = can_cola[i].out = 0;
+    if (!on) return;
+    can_rx_perdidas_hw[i] = can_rx_perdidas_cola[i] = 0;
+    FDCAN_ILS(base) = 0;                                  // todo a la línea 0
+    FDCAN_IR(base) = FDCAN_IR_RF0N | FDCAN_IR_RF0L;
+    FDCAN_IE(base) = FDCAN_IR_RF0N | FDCAN_IR_RF0L;
+    FDCAN_ILE(base) = 1U;                                 // EINT0
+    can_cola[i].activa = 1;
+    nvic_habilitar(irq);
+}
+
+// Devuelve 1 si sacó una trama, 0 si no había nada
+static int fdcan_recibir(uint32_t base, can_trama_t *t)
+{
+    can_cola_t *c = &can_cola[can_idx(base)];
+    if (!c->activa) return fdcan_leer_fifo(base, t);
+
+    // Por las dudas también se drena desde acá (con las interrupciones apagadas)
+    __asm volatile ("cpsid i");
+    fdcan_drenar(base);
+    __asm volatile ("cpsie i");
+    if (c->in == c->out) return 0;
+    *t = c->t[c->out % CAN_COLA_TAM];
+    c->out++;
     return 1;
 }
 
@@ -218,6 +299,7 @@ static void can1_activar(uint32_t modo)
 // Estado seguro de CAN1: instancia en INIT, transceiver en standby, pines analógicos. Sin tocar RCC
 static void can1_apagar(void)
 {
+    fdcan_rx_irq(FDCAN1_BASE, 0);
     fdcan_detener(FDCAN1_BASE);
     gpio_poner(CAN_STB_PORT, CAN1_STB, 1);
     gpio_analogico(GPIOA_BASE, CAN1_RX);
