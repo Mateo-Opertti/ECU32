@@ -112,15 +112,15 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 - Criterio: informe final con 0 perdidas, 0 errores y TEC = REC = 0 (PASA). Vdiff dominante entre 1,5 V y 3,0 V y recesivo < 0,5 V (osciloscopio).
 - [x] Placa A, CAN clásico
 - [x] Placa A, CAN FD
-- [ ] Placa B, CAN clásico
-- [ ] Placa B, CAN FD
+- [x] Placa B, CAN clásico
+- [x] Placa B, CAN FD
 
 **COM-03 · LIN como commander y responder** (CE-23)
 - Cableado: LIN (J3-1) y GND entre placas; SW3 cerrado en la placa commander.
 - Comandos: `par lin` (A commander) hasta unas 10 000 tramas; cambiar SW3 y `par lin_inv` (B commander). Ver los errores por tipo con `estado` y `esclava estado`.
 - Criterio: 0 errores de checksum, sync o respuesta ausente; break, sync, PID y checksum correctos en el decodificador.
-- [ ] A commander, B responder
-- [ ] B commander, A responder
+- [o] A commander, B responder 20 ~ 24 errores en 3200 tramas
+- [o] B commander, A responder 4 ~ 6 errores en 3306 tramas
 
 ## 7. Integración
 
@@ -137,8 +137,8 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 **INT-02 · Consumo propio** (CE-07)
 - Comandos: `can_tasa max` e `integral` (carga de bus alta). Medir la corriente de entrada a 12 V, sin ESP32.
 - Criterio: ≤ 300 mA.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 ## 8. Nivel extendido
 
@@ -150,13 +150,13 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 - Cableado: CAN1–CAN1 y CAN2–CAN2 entre placas, terminación en las puntas de cada bus.
 - Comandos: `can_modo fd`, `can_tasa max`, `can_cantidad 100000`, `par canx`. Las dos placas transmiten a la vez: 0x120 (A) y 0x121 (B) por los dos buses.
 - Criterio: los dos informes (A y `[esclava]`) con 0 perdidas y 0 errores; en el decodificador gana 0x120 y la 0x121 se retransmite.
-- [ ] Hecho
+- [x] Hecho cambiar firmware de prueba, la placa B siempre pierde la primera trama
 
 **EXT-03 · Gateway entre buses** (CE-21)
 - Cableado: igual que EXT-02.
 - Comandos: `par gateway` (A reenvía CAN1 clásico a CAN2 FD; B manda y mide). Para carga alta, `can_tasa max`.
 - Criterio: informe de `gw_fuente` con 0 pérdidas; registrar la latencia (mínima, promedio y máxima).
-- [ ] Hecho
+- [x] Hecho
 
 **EXT-04 · LIN maestro-esclavo de larga duración** (CE-23)
 - Cableado: igual que COM-03.
@@ -169,13 +169,13 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 
 **EXT-05 · Serigrafía**
 - Sin firmware. Cada terminal y switch identificado; una persona ajena conecta la placa solo con la serigrafía y el manual.
-- [ ] Hecho
+- [x] Hecho
 
 **EXT-06 · Gabinete de acrílico**
 - Accesos a borneras, switches, SWD, testpoints y USB de la ESP32; sin conductores expuestos.
 - Comandos: `integral 60` con el gabinete cerrado.
 - Criterio: informe PASA, sin cortes por temperatura.
-- [ ] Hecho
+- [x] Hecho
 
 ## 9. Conector ESP32 (enchufar la ESP32 recién ahora)
 
