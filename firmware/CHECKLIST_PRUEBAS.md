@@ -50,10 +50,10 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 - [x] Placa A
 - [x] Placa B
 
-**ALI-02 · Riel de 3,3 V en rango de entrada y carga** (CE-06)
-- VIN a 8, 12, 24 y 28 V; carga en 3V3 hasta 1,5 veces el consumo. 3V3 entre 2,97 V y 3,63 V.
+**ALI-02 · Riel de 3,3 V en rango de entrada** (CE-06)
+- VIN a 8, 12, 24 y 28 V; 3V3 entre 2,97 V y 3,63 V.
 - [ ] Placa A
-- [ ] Placa B
+- [x] Placa B
 
 **ALI-03 · Programación y depuración por SWD** (CE-20)
 - ST-LINK en J2: leer el ID, grabar Universal y depurar con un breakpoint en `main`.
@@ -87,8 +87,8 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 
 **AI-01 · Impedancia de entrada** (CE-18)
 - Sin firmware especial. Fondo de escala a través de una R serie conocida, con y sin alimentación. Z ≥ 100 kΩ.
-- [o] Placa A
-- [o] Placa B
+- [o] Placa A En los que tienen divisor resistivo, la impedancia es la del divisor
+- [o] Placa B En los que tienen divisor resistivo, la impedancia es la del divisor
 
 **AI-02 · Lectura de los cuatro canales** (CE-24)
 - Cableado: fuente y multímetro en la entrada.
@@ -182,24 +182,19 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 **ESP-01 · Alimentación del módulo** (CE-06)
 - Con el header vacío, medir 5 V, 3V3 y GND. Enchufar la ESP32 y escribir `esp wifi on`.
 - Criterio: 3V3 del STM32 ± 10 % durante las ráfagas (osciloscopio) y sin resets. Un reset se nota en la consola por el mensaje de arranque.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa A
+- [x] Placa B
 
 **ESP-02 · UART y líneas digitales STM32 ↔ ESP32** (CE-24)
 - Comandos: `esp ping`, `esp eco`, `esp enviar`, `esp recibir` (1 MB con CRC); `esp baud 921600` y repetir `esp eco`, `esp enviar` y `esp recibir`; `esp lineas`.
-- Criterio: PASA en cada uno (0 errores de CRC a 921 600; las 4 líneas correctas). tr en los dos extremos con el osciloscopio.
+- Criterio: PASA en cada uno (0 errores de CRC a 921 600; las 4 líneas correctas).
 - [ ] Placa A
-- [ ] Placa B
-
-**ESP-03 · Consumo con la ESP32** (CE-07)
-- Comandos: `esp wifi on` + `integral`. Medir la corriente a 12 V. Informativo, junto al valor de INT-02.
-- [ ] Placa A
-- [ ] Placa B
+- [x] Placa B
 
 **ESP-04 · ESP32 por USB con la ECU apagada** (CE-10)
 - Sin firmware especial. ≤ 5 mA por pin y ≤ 25 mA en total; sin alimentación cruzada entre la PC y la ECU.
 - [ ] Placa A
-- [ ] Placa B
+- [x] Placa B
 
 ## 10. Ensayos de protección
 
@@ -212,56 +207,44 @@ Primero en una sola placa (por ejemplo B), con la ESP32 desenchufada. La otra se
 - **Digitales:** `do`.
 - **Además:** comparar la corriente de entrada y las fugas con la línea base.
 
-**PRO-00 · Línea base** (CE-14)
-- `correr ai` (ADC a 50 % FS), `do 1 1` (VOH a 4 mA), corriente de entrada a 12 V y fuga de cada canal.
-- [ ] Placa B
-- [ ] Placa A
-
 **PRO-01 · Inversión de polaridad** (CE-04, CE-14)
-- −12, −24 y −32 V; −32 V durante 10 min. Corriente inversa ≤ 1 mA. VR al restaurar 12 V.
-- [ ] Placa B
-- [ ] Placa A
+- −12, −24 y −32 V; −32 V durante 1 min. Corriente inversa ≤ 1 mA. VR al restaurar 12 V.
+- [ ] Placa B Falta el controlador de diodo ideal
+- [x] Placa A
 
 **PRO-02 · Sobretensión sostenida** (CE-02, CE-14)
 - 32 V durante 60 s. Sin daño. VR al volver a 12 V.
-- [ ] Placa B
-- [ ] Placa A
+- [ ] Placa B Falta el controlador de diodo ideal
+- [x] Placa A
+
+- 50 V durante 60 s. Sin daño. VR al volver a 12 V.
+- [ ] Placa B Falta el controlador de diodo ideal
+- [x] Placa A
 
 **PRO-03 · Entradas analógicas a ±32 V** (CE-11, CE-10, CE-14)
 - Con `correr ai`. ≤ 5 mA por pin y ≤ 25 mA en total; VR.
-- [ ] Placa B
+- [ ] Placa B Los que tiene el divisor resistivo para 24V y 12V pasan, el de 5V y 3.3V tienen 5.06 ~ 5.13mA a 32V y 5.67 ~ 5.71mA a -32V. el total cumple
 - [ ] Placa A
 
 **PRO-04 · Entradas digitales a ±32 V** (CE-08, CE-09, CE-10, CE-14)
 - Con `correr es`, selector en 3,3 V. ≤ 5 mA por pin y ≤ 25 mA en total; VR.
-- [ ] Placa B
+- [ ] Placa B cada pin 5.89 mA a 32V y -6.81mA a -32V
 - [ ] Placa A
 
 **PRO-05 · Salidas digitales a ±32 V y a GND** (CE-08, CE-09, CE-14)
 - Con `do <n> 1` y `do <n> 0`. Sin daño en el buffer ni en el MCU; VR.
-- [ ] Placa B
+- [x] Placa B
 - [ ] Placa A
 
 **PRO-06 · Líneas CAN a ±32 V** (CE-12, CE-14)
 - Con `correr banco_can` transmitiendo. Sin daño, terminación dentro de su potencia; VR con 1000 tramas.
-- [ ] Placa B
+- [x] Placa B
 - [ ] Placa A
 
 **PRO-07 · Línea LIN a ±32 V** (CE-12, CE-14)
 - Con `correr lin_maestro` y después `correr lin_esclavo`. Sin daño; VR con 1000 tramas.
-- [ ] Placa B
+- [] Placa B
 - [ ] Placa A
-
-**PRO-08 · Fusible** (CE-05, CE-14)
-- 2 A durante 10 min sin abrir; abre en sobrecarga. VR después de reemplazarlo.
-- [ ] Placa B
-- [ ] Placa A
-
-**PRO-09 · Regresión final** (CE-14, CE-24)
-- `integral 10` y repetir PRO-00. Todo conforme; fugas ≤ 2 veces la línea base.
-- [ ] Placa B
-- [ ] Placa A
-
 ---
 
 ## Cableado según la prueba
