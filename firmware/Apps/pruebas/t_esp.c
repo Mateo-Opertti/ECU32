@@ -18,6 +18,13 @@
 #define EU_LIN_TAM       96U
 #define EU_CR1_OVER8     (1U << 15)
 #define EU_CR1_FIFOEN    (1U << 29)
+#define EU_CR1_RTOIE     (1U << 26)  // interrupción por receiver timeout
+#define EU_CR2_RTOEN     (1U << 23)
+#define EU_CR3_RXFTIE    (1U << 28)  // interrupción cuando el FIFO de RX llega al umbral
+#define EU_CR3_RXFT_3_4  (3U << 25)  // umbral: 3/4 del FIFO de 8 = 6 bytes
+#define EU_ISR_RTOF      (1U << 11)
+#define EU_RTOR          REG(USART2_BASE + 0x14)
+#define EU_RTO_BITS      16U         // 16 bits de línea quieta: vacía lo que quedó en el FIFO
 #define EU_RX_PIN        6U      // PD6, AF7 (USART2_RX)
 #define EU_D4_PIN        4U      // PD4 <-> GPIO4
 #define EU_D18_PIN       3U      // PD3 <-> GPIO18
@@ -45,6 +52,9 @@ static volatile uint32_t eu_total_ok, eu_total_err;
 // ---------------------------------------------------------------------------------------------
 // USART2
 
+// La interrupción salta cuando hay 6 bytes en el FIFO de RX o cuando la línea queda quieta 16 bits
+// (para lo que quedó por debajo del umbral). A 921600 llega un byte cada ~11 us (~170 ciclos a
+// 16 MHz): con una interrupción por byte se iba más de la mitad del CPU y se perdían bytes
 void USART2_IRQHandler(void)
 {
     uint32_t isr = USART_ISR(USART2_BASE);
@@ -52,15 +62,18 @@ void USART2_IRQHandler(void)
         USART_ICR(USART2_BASE) = ISR_ORE | ISR_FE | ISR_NE | ISR_PE;
         eu_rx_err++;
     }
+    if (isr & EU_ISR_RTOF) USART_ICR(USART2_BASE) = EU_ISR_RTOF;  // RTOCF tiene la misma posición
+    uint32_t in = eu_rx_in, out = eu_rx_out;
     while (USART_ISR(USART2_BASE) & ISR_RXNE) {  // con FIFO: mientras quede algo
         uint8_t c = (uint8_t)USART_RDR(USART2_BASE);
-        if (eu_rx_in - eu_rx_out < EU_RX_TAM) {
-            eu_rx[eu_rx_in % EU_RX_TAM] = c;
-            eu_rx_in++;
+        if (in - out < EU_RX_TAM) {
+            eu_rx[in % EU_RX_TAM] = c;
+            in++;
         } else {
             eu_rx_perdidos++;
         }
     }
+    eu_rx_in = in;
 }
 
 // OVER8 para que 921600 baud quede con poco error (-0,8 % con 16 MHz)
@@ -78,9 +91,11 @@ static void eu_hw_init(void)
     RCC_APB1ENR1 |= RCC_USART2EN;
     (void)RCC_APB1ENR1;
     USART_CR1(USART2_BASE) = 0;
-    USART_CR3(USART2_BASE) = CR3_EIE;
-    USART_ICR(USART2_BASE) = ICR_ERRORES;
-    USART_CR1(USART2_BASE) = EU_CR1_FIFOEN | EU_CR1_OVER8 | CR1_RXNEIE | CR1_TE | CR1_RE;
+    USART_CR2(USART2_BASE) = EU_CR2_RTOEN;
+    USART_CR3(USART2_BASE) = CR3_EIE | EU_CR3_RXFTIE | EU_CR3_RXFT_3_4;
+    EU_RTOR = EU_RTO_BITS;
+    USART_ICR(USART2_BASE) = ICR_ERRORES | EU_ISR_RTOF;
+    USART_CR1(USART2_BASE) = EU_CR1_FIFOEN | EU_CR1_OVER8 | EU_CR1_RTOIE | CR1_TE | CR1_RE;
     eu_baud_poner(115200U);
     gpio_af(ESP_PORT, ESP_RX2, 7);
     gpio_af(ESP_PORT, EU_RX_PIN, 7);
@@ -94,6 +109,8 @@ static void eu_hw_deinit(void)
 {
     nvic_deshabilitar(USART2_IRQn);
     USART_CR1(USART2_BASE) = 0;
+    USART_CR2(USART2_BASE) = 0;
+    USART_CR3(USART2_BASE) = 0;
     RCC_APB1ENR1 &= ~RCC_USART2EN;
     gpio_analogico(ESP_PORT, ESP_RX2);
     gpio_analogico(ESP_PORT, EU_RX_PIN);
@@ -365,6 +382,9 @@ static void eu_linea_recibida(const char *l)
             cprintf("esp recibir: %u bytes ESP32 -> STM32 a %u baud en %u ms (%u B/s), bytes distintos %u, "
                     "CRC STM32 %08x ESP32 %08x -> %s\n", eu_n, eu_baud, ms,
                     ms ? (uint32_t)((uint64_t)eu_n * 1000U / ms) : 0, eu_mal, mio, suyo, ok ? "PASA" : "FALLA");
+            if (eu_rx_err || eu_rx_perdidos) {
+                cprintf("esp recibir: errores UART (ORE/FE/NE) %u, perdidos por buffer lleno %u\n", eu_rx_err, eu_rx_perdidos);
+            }
             eu_terminar(ok);
         }
         break;
@@ -410,17 +430,27 @@ static void eu_step(void)
 
     // RECIBIR: los datos llegan en binario; se verifican y se pasan por el CRC
     if (eu_op == OP_RECIBIR && eu_fase == 1) {
-        for (uint32_t k = 0; k < 512 && eu_rx_out != eu_rx_in && eu_i < eu_n; k++) {
-            uint8_t b = eu_rx[eu_rx_out % EU_RX_TAM];
-            eu_rx_out++;
-            if (b != eu_rng_byte()) eu_mal++;
+        uint32_t out = eu_rx_out, in = eu_rx_in, i = eu_i, mal = 0;
+        for (uint32_t k = 0; k < 1024 && out != in && i < eu_n; k++) {
+            uint8_t b = eu_rx[out % EU_RX_TAM];
+            out++;
+            if (b != eu_rng_byte()) mal++;
             CRC_DR8 = b;
-            eu_i++;
-            eu_t = ticks;
+            i++;
         }
+        if (i != eu_i) eu_t = ticks;
+        eu_mal += mal;
+        eu_i = i;
+        eu_rx_out = out;
         if (eu_i >= eu_n) {
             eu_fase = 2;
             eu_t = ticks;
+        } else if (eu_i && (ticks - eu_t) > 500U) {
+            // La ESP32 dejó de mandar y faltan bytes: se perdieron en el camino (en vez de esperar sin fin)
+            cprintf("esp recibir: llegaron %u de %u bytes a %u baud; errores UART (ORE/FE/NE) %u, "
+                    "perdidos por buffer lleno %u -> FALLA\n", eu_i, eu_n, eu_baud, eu_rx_err, eu_rx_perdidos);
+            eu_vaciar_rx();
+            eu_terminar(0);
         }
     } else {
         char *l = eu_linea();
@@ -508,6 +538,7 @@ static void eu_comando(char **pal, uint32_t n)
     } else if (texto_igual(sub, "enviar") || texto_igual(sub, "recibir")) {
         int enviar = texto_igual(sub, "enviar");
         eu_empezar(enviar ? OP_ENVIAR : OP_RECIBIR);
+        eu_rx_err = eu_rx_perdidos = 0;
         eu_n = v > 0 ? (uint32_t)v : EU_BYTES_DEF;
         eu_armar(buf, enviar ? "RX " : "TX ", eu_n, "\n");
         if (!enviar) {
