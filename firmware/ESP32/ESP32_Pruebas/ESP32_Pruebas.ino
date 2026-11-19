@@ -9,7 +9,7 @@
 //   PING            -> PONG
 //   BAUD <n>        -> OK y cambia la velocidad
 //   ECO <texto>     -> devuelve la misma línea
-//   RX <n>          -> LISTO, recibe n bytes y contesta CRC <8 hex>
+//   RX <n>          -> LISTO, recibe n bytes y contesta CRC <8 hex> <bytes recibidos>
 //   TX <n>          -> manda n bytes pseudoaleatorios y después CRC <8 hex>
 //   PIN <gpio> <v>  -> pone el GPIO como salida en v y contesta OK
 //   LEER <gpio>     -> pone el GPIO como entrada y contesta NIVEL <gpio> <v>
@@ -59,18 +59,28 @@ void responder_crc(uint32_t crc) {
 }
 
 // RX <n>: recibe n bytes en binario
+// Se lee de a bloques: a 921600 llega un byte cada ~11 us y leyendo de a uno (Serial2.read() con su
+// semáforo) el buffer se iba llenando hasta perder bytes
+// Contesta "CRC <8 hex> <bytes recibidos>" para que el STM32 sepa si faltó algo
 void recibir(uint32_t n) {
   responder("LISTO");
+  static uint8_t buf[1024];
   uint32_t crc = 0xFFFFFFFFUL, i = 0, t = millis();
   while (i < n && millis() - t < TIMEOUT_RX_MS) {
-    int c = Serial2.read();
-    if (c < 0) continue;
-    crc = crc_byte(crc, (uint8_t)c);
-    i++;
+    int a = Serial2.available();
+    if (a <= 0) continue;
+    uint32_t k = (uint32_t)a;
+    if (k > n - i) k = n - i;
+    if (k > sizeof(buf)) k = sizeof(buf);
+    k = Serial2.read(buf, k);
+    for (uint32_t j = 0; j < k; j++) crc = crc_byte(crc, buf[j]);
+    i += k;
     t = millis();
   }
   Serial.printf("  recibidos %lu de %lu bytes\n", (unsigned long)i, (unsigned long)n);
-  responder_crc(crc);
+  char r[32];
+  snprintf(r, sizeof(r), "CRC %08lX %lu", (unsigned long)crc, (unsigned long)i);
+  responder(r);
 }
 
 // TX <n>: manda n bytes pseudoaleatorios

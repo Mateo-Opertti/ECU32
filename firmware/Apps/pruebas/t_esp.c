@@ -347,6 +347,13 @@ static void eu_linea_recibida(const char *l)
             cprintf("esp enviar: %u bytes STM32 -> ESP32 a %u baud en %u ms (%u B/s), CRC STM32 %08x ESP32 %08x -> %s\n",
                     eu_n, eu_baud, ms, ms ? (uint32_t)((uint64_t)eu_n * 1000U / ms) : 0, mio, suyo,
                     mio == suyo ? "PASA" : "FALLA");
+            // El sketch nuevo agrega cuántos bytes le llegaron: "CRC 1234ABCD 1048576"
+            if (l[12] == ' ') {
+                uint32_t rec = 0;
+                for (const char *s = l + 13; *s >= '0' && *s <= '9'; s++) rec = rec * 10U + (uint32_t)(*s - '0');
+                if (rec != eu_n) cprintf("esp enviar: a la ESP32 le llegaron %u de %u bytes (se perdieron %u)\n",
+                                         rec, eu_n, eu_n - rec);
+            }
             eu_terminar(mio == suyo);
         }
         break;
@@ -457,7 +464,8 @@ static void eu_step(void)
     }
 
     // Tiempo máximo de cada espera
-    uint32_t limite = (eu_op == OP_RESET) ? 4000U : (eu_op == OP_ENVIAR || eu_op == OP_RECIBIR) ? 3000U : 1000U;
+    // ENVIAR: si a la ESP32 le faltan bytes, contesta después de 3 s sin datos; acá se espera más
+    uint32_t limite = (eu_op == OP_RESET) ? 4000U : (eu_op == OP_ENVIAR) ? 5000U : (eu_op == OP_RECIBIR) ? 3000U : 1000U;
     if (eu_op != OP_NADA && eu_op != OP_ECO && eu_op != OP_LINEAS && (ticks - eu_t) > limite) {
         cprintf("esp %s: la ESP32 no contesto (fase %u, %u de %u bytes). Esta el sketch ESP32_Pruebas? "
                 "Si quedo en otra velocidad, \"esp reset\"\n", eu_op_nombre[eu_op], eu_fase, eu_i, eu_n);
