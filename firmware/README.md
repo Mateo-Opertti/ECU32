@@ -35,7 +35,7 @@ J3-3 (CAN2_H) con J3-3, J3-2 (CAN2_L) con J3-2 y GND común, con una terminació
 - **CAN entre dos placas (`can_maestro` / `can_esclavo`, `wakeup`):** unir CANH1, CANL1 y GND entre las placas, con SW2 en ON en las dos.
 - **LIN (`lin_maestro` / `lin_esclavo`):** unir el pin LIN de J3 y GND entre las placas. En la placa que corre `lin_maestro`, SW3 cerrado (pull-up de master).
 - **Loopback (`loopback`):** un cable de DO3 (J1-4, PC10) a DI4 (J1-8, PC11), con el jumper de DI4 en 3V3.
-- **ESP32 (`esp32`):** módulo DevKit V1 en J5/J6, sin cables extra. El sketch [`ESP32_LED_Serial.ino`](ESP32/ESP32_LED_Serial/ESP32_LED_Serial.ino) se graba por USB desde Arduino, con la placa **DOIT ESP32 DEVKIT V1**.
+- **ESP32 (`esp32`):** módulo DevKit V1 en el zócalo U9, sin cables extra. El sketch [`ESP32_LED_Serial.ino`](ESP32/ESP32_LED_Serial/ESP32_LED_Serial.ino) se graba por USB desde Arduino, con la placa **DOIT ESP32 DEVKIT V1**.
 - **ADC (`adc`):** cada entrada de J4 tiene su propio rango: AN1 (B11) de 0 a 3,3 V, AN2 (A1) de 0 a 5 V, AN3 (C1) de 0 a 12 V y AN4 (A0) de 0 a 24 V. La consola muestra la tensión en el pin del MCU (0 a 3,3 V): para la del conector hay que multiplicarla por el factor de cada canal (ver el [README principal](../README.md#entradas-analógicas)).
 
 ## Primer uso
@@ -323,7 +323,7 @@ La lista completa, en orden y con casillas para tildar en las dos placas, está 
 | EXT-03 | Ídem | `par gateway`: esta placa reenvía y la otra mide pérdidas y latencia |
 | EXT-04 | Como COM-03 | `par lin` y `par lin_inv`, 30 min cada uno, a 12 V y 24 V |
 | EXT-06 | Como INT-01, con el gabinete cerrado | `integral 60` |
-| ESP-01 / ESP-03 | ESP32 en J5/J6 con el sketch [`ESP32_Pruebas`](ESP32/ESP32_Pruebas/ESP32_Pruebas.ino) | `esp wifi on` y medir los rieles y el consumo |
+| ESP-01 / ESP-03 | ESP32 en el zócalo U9 con el sketch [`ESP32_Pruebas`](ESP32/ESP32_Pruebas/ESP32_Pruebas.ino) | `esp wifi on` y medir los rieles y el consumo |
 | ESP-02 | Ídem | `esp ping`, `esp eco`, `esp enviar`, `esp recibir`, `esp baud 921600` y repetir, `esp lineas` |
 | VR (PRO) | Según el canal | CAN: `can_cantidad 1000`, `correr banco_can`. LIN: `par lin` hasta 1000 respuestas (`estado`) |
 | PRO-00 / PRO-09 | — | `correr ai` (ADC a 50 % FS), `do` (VOH a 4 mA), `integral` |
