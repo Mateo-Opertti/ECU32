@@ -132,7 +132,7 @@ Las columnas siguen el orden físico de cada bornera. Las señales de J1 pasan p
 |---|---|---|---|---|
 | Serigrafía (pin STM32) | B11 | A1 | C1 | A0 |
 | Señal | AN1 | AN2 | AN3 | AN4 |
-| Rango | 0 – 3,3 V | 0 – 5 V | 0 – 24 V | 0 – 12 V |
+| Rango | 0 – 3,3 V | 0 – 5 V | 0 – 12 V | 0 – 24 V |
 
 **J7, alimentación:** pin 1 = VBAT y pin 2 = GND.
 
@@ -151,8 +151,8 @@ Las columnas siguen el orden físico de cada bornera. Las señales de J1 pasan p
 | J1 | DO1 – DO4 | Salida lógica de 3,3 V a través de 4,7 kΩ (señal, no potencia) | Zener de 4,7 V, Schottky y TVS de 36 V |
 | J4 | AN1 (B11) | 0 – 3,3 V | Divisor resistivo y filtro RC, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
 | J4 | AN2 (A1) | 0 – 5 V | Ídem |
-| J4 | AN3 (C1) | 0 – 24 V | Ídem |
-| J4 | AN4 (A0) | 0 – 12 V | Ídem |
+| J4 | AN3 (C1) | 0 – 12 V | Ídem |
+| J4 | AN4 (A0) | 0 – 24 V | Ídem |
 | J3 | CAN1, CAN2 | Niveles CAN FD estándar | ESD2CAN36-Q1 por bus |
 | J3 | LIN | Nivel de batería (bus LIN estándar) | Propia del TLIN4029A-Q1 |
 
@@ -213,17 +213,17 @@ Las /OE son **activas en bajo**: para habilitar un grupo hay que poner su pin en
 |---|---|---|---|---|
 | AN1 | B11 | 1 | ADC12_IN14 | 0&nbsp;–&nbsp;3,3&nbsp;V |
 | AN2 | A1 | 2 | ADC12_IN2 | 0&nbsp;–&nbsp;5&nbsp;V |
-| AN3 | C1 | 3 | ADC12_IN7 | 0&nbsp;–&nbsp;24&nbsp;V |
-| AN4 | A0 | 4 | ADC12_IN1 | 0&nbsp;–&nbsp;12&nbsp;V |
+| AN3 | C1 | 3 | ADC12_IN7 | 0&nbsp;–&nbsp;12&nbsp;V |
+| AN4 | A0 | 4 | ADC12_IN1 | 0&nbsp;–&nbsp;24&nbsp;V |
 
 **Divisor y filtro de cada canal**
 
 | Señal | R serie | R a GND | C filtro | Factor | Fondo de escala | Corte del filtro |
 |---|---|---|---|---|---|---|
-| AN1 | R36&nbsp;=&nbsp;5,6&nbsp;kΩ | R35&nbsp;=&nbsp;1&nbsp;MΩ | C32&nbsp;=&nbsp;10&nbsp;nF | 1,006 | 3,32&nbsp;V | 2,9&nbsp;kHz |
-| AN2 | R28&nbsp;=&nbsp;5,6&nbsp;kΩ | R33&nbsp;=&nbsp;8,2&nbsp;kΩ | C1&nbsp;=&nbsp;10&nbsp;nF | 1,683 | 5,55&nbsp;V | 4,8&nbsp;kHz |
-| AN3 | R40&nbsp;=&nbsp;39&nbsp;kΩ | R39&nbsp;=&nbsp;3,9&nbsp;kΩ | C34&nbsp;=&nbsp;10&nbsp;nF | 11,00 | 36,3&nbsp;V | 4,5&nbsp;kHz |
-| AN4 | R37&nbsp;=&nbsp;12&nbsp;kΩ | R38&nbsp;=&nbsp;2,7&nbsp;kΩ | C33&nbsp;=&nbsp;15&nbsp;nF | 5,444 | 18,0&nbsp;V | 4,8&nbsp;kHz |
+| AN1 | R36&nbsp;=&nbsp;56&nbsp;kΩ | R35&nbsp;=&nbsp;1&nbsp;MΩ | C32&nbsp;=&nbsp;1&nbsp;nF | 1,056 | 3,48&nbsp;V | 3,0&nbsp;kHz |
+| AN2 | R28&nbsp;=&nbsp;56&nbsp;kΩ | R33&nbsp;=&nbsp;82&nbsp;kΩ | C1&nbsp;=&nbsp;1&nbsp;nF | 1,683 | 5,55&nbsp;V | 4,8&nbsp;kHz |
+| AN3 | R40&nbsp;=&nbsp;150&nbsp;kΩ | R39&nbsp;=&nbsp;39&nbsp;kΩ | C34&nbsp;=&nbsp;1&nbsp;nF | 4,846 | 16,0&nbsp;V | 5,1&nbsp;kHz |
+| AN4 | R37&nbsp;=&nbsp;150&nbsp;kΩ | R38&nbsp;=&nbsp;20&nbsp;kΩ | C33&nbsp;=&nbsp;2,2&nbsp;nF | 8,500 | 28,1&nbsp;V | 4,1&nbsp;kHz |
 
 Factor = (R serie + R a GND) / R a GND: la tensión en el conector es la del pin del MCU multiplicada por el factor. Fondo de escala = 3,3 V × factor. La serigrafía de la placa junto a J4 usa el nombre del pin del STM32 (B11, A1, C1, A0).
 
