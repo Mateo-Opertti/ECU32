@@ -39,9 +39,7 @@ desktop.ini
 *.sdf
 Simulation/
 
-# --- Fuentes editables de Altium (por ahora no se publican) ---
-hardware/altium/
-*.SchDoc
+# --- Fuentes editables de Altium: sólo se publican los .SchDoc (en hardware/altium/) ---
 *.PcbDoc
 *.PrjPcb
 *.SchLib

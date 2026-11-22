@@ -314,6 +314,7 @@ Puntos que hay que configurar sí o sí en el código de inicialización:
 ```
 ECU32/
 ├── hardware/
+│   ├── altium/            Esquemáticos editables de Altium (.SchDoc)
 │   ├── schematic/         Esquemático en PDF (7 hojas) + netlist PI_3.NET
 │   ├── pcb/               Layout en PDF (top y bottom)
 │   ├── 3d/                Modelo 3D de la placa (STEP)
