@@ -174,23 +174,25 @@ Poné **un solo jumper por canal**. Las entradas están protegidas por el zener 
 
 ### Entradas y salidas digitales
 
-**Entradas digitales:** el buffer maneja el pin del MCU, así que el pin siempre es entrada.
+Cada pin de J1 está unido a un pin del STM32 a través del buffer U5, que es unidireccional: **las DI sólo pueden ser entradas y las DO sólo salidas.** La serigrafía junto a J1 usa el nombre del pin del STM32 (E5, E1, D2, C11, B9, E0, C10, C12). Funciones alternativas según el datasheet DS13122 (Table 12); sólo se listan las que funcionan en el sentido del buffer.
 
-| Señal | Pin STM32 | Pin LQFP100 | Pin J1 | Funciones alternativas | EXTI |
-|---|---|---|---|---|---|
-| DI1 | PE5 | 4 | 5 | TIM3_CH4 (AF2, captura de entrada) | EXTI5 |
-| DI2 | PE1 | 98 | 6 | USART1_RX (AF7), TIM17_CH1 (AF4), TIM20_CH4 (AF6) | EXTI1 |
-| DI3 | PD2 | 84 | 7 | UART5_RX (AF5), TIM3_ETR (AF2, conteo de pulsos), TIM8_BKIN (AF4, corte de PWM por hardware) | EXTI2 |
-| DI4 | PC11 | 80 | 8 | UART4_RX (AF5), SPI3_MISO (AF6) | EXTI11 |
+**Entradas digitales**
 
-**Salidas digitales:** el MCU maneja el buffer, así que el pin siempre es salida.
+| Señal | Pin J1 | Pin STM32 (serigrafía) | Pin LQFP100 | Estructura I/O | Funciones alternativas | EXTI | Notas |
+|---|---|---|---|---|---|---|---|
+| DI1 | 5 | PE5 (E5) | 4 | FT | TIM3_CH4 (AF2, captura) | EXTI5 | |
+| DI2 | 6 | PE1 (E1) | 98 | FT | USART1_RX (AF7), TIM17_CH1 (AF4, captura), TIM20_CH4 (AF6, captura) | EXTI1 | RX de USART1 junto con DO2. La usa la consola CP2102 del firmware de pruebas |
+| DI3 | 7 | PD2 (D2) | 84 | FT | UART5_RX (AF5), TIM3_ETR (AF2, conteo de pulsos), TIM8_BKIN (AF4) | EXTI2 | RX de UART5 junto con DO4. TIM8_BKIN corta por hardware las PWM de TIM8 |
+| DI4 | 8 | PC11 (C11) | 80 | FT_f | UART4_RX (AF5), SPI3_MISO (AF6) | EXTI11 | RX de UART4 junto con DO3; MISO de SPI3 |
 
-| Señal | Pin STM32 | Pin LQFP100 | Pin J1 | Funciones alternativas |
-|---|---|---|---|---|
-| DO1 | PB9 | 96 | 2 | TIM4_CH4 (AF2), TIM8_CH3 (AF10), TIM17_CH1 (AF1), TIM1_CH3N (AF12), IR_OUT (AF6), COMP2_OUT (AF8) |
-| DO2 | PE0 | 97 | 1 | USART1_TX (AF7), TIM16_CH1 (AF4), TIM20_CH4N (AF3) |
-| DO3 | PC10 | 79 | 4 | UART4_TX (AF5), SPI3_SCK (AF6), TIM8_CH1N (AF4) |
-| DO4 | PC12 | 81 | 3 | UART5_TX (AF5), SPI3_MOSI (AF6), TIM8_CH3N (AF4) |
+**Salidas digitales**
+
+| Señal | Pin J1 | Pin STM32 (serigrafía) | Pin LQFP100 | Estructura I/O | Funciones alternativas | Notas |
+|---|---|---|---|---|---|---|
+| DO1 | 2 | PB9 (B9) | 96 | FT_f | TIM8_CH3 (AF10), TIM4_CH4 (AF2), TIM17_CH1 (AF1), TIM1_CH3N (AF12), IR_OUT (AF6), COMP2_OUT (AF8) | PWM. Sirve de CS por GPIO para SPI3 |
+| DO2 | 1 | PE0 (E0) | 97 | FT | USART1_TX (AF7), TIM16_CH1 (AF4), TIM20_CH4N (AF3) | TX de USART1 junto con DI2 (consola del firmware de pruebas). Sirve de CS por GPIO para SPI3 |
+| DO3 | 4 | PC10 (C10) | 79 | FT | UART4_TX (AF5), SPI3_SCK (AF6), TIM8_CH1N (AF4) | TX de UART4 junto con DI4; SCK de SPI3. PWM probada a 500 kHz |
+| DO4 | 3 | PC12 (C12) | 81 | FT | UART5_TX (AF5), SPI3_MOSI (AF6), TIM8_CH3N (AF4) | TX de UART5 junto con DI3; MOSI de SPI3 |
 
 | Habilitación (activa en bajo) | Pin STM32 | Controla |
 |---|---|---|
@@ -199,16 +201,7 @@ Poné **un solo jumper por canal**. Las entradas están protegidas por el zener 
 
 Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta impedancia.
 
-**Periféricos disponibles en J1:**
-
-| Periférico | Salida (DO) | Entrada (DI) | Notas |
-|---|---|---|---|
-| USART1 | TX = DO2, PE0 (J1.1) | RX = DI2, PE1 (J1.6) | La usa la consola CP2102 del firmware de pruebas |
-| UART4 | TX = DO3, PC10 (J1.4) | RX = DI4, PC11 (J1.8) | |
-| UART5 | TX = DO4, PC12 (J1.3) | RX = DI3, PD2 (J1.7) | |
-| SPI3 (solo maestro) | SCK = DO3, MOSI = DO4 | MISO = DI4 | Comparte pines con UART4 y con UART5_TX. CS por GPIO en DO1 o DO2 |
-| PWM | TIM8: DO1 (CH3), DO3 (CH1N), DO4 (CH3N). TIM4_CH4 / TIM17_CH1: DO1. TIM16_CH1: DO2 | — | DI3 (TIM8_BKIN) puede cortar las PWM de TIM8 por hardware |
-
+- **SPI3** funciona sólo como maestro (SCK y MOSI salen por DO, MISO entra por DI) y comparte pines con UART4 y con UART5_TX.
 - Funciones del pin que **no** se pueden usar por J1: I2C (I2C3_SDA en PC11, I2C1_SDA en PB9), porque necesita una línea bidireccional open-drain y el buffer es unidireccional; los canales TIMx_CHxN en las DI (son salidas) y los ETR en las DO (son entradas); USART3_TX/RX (PB9, PC10, PC11), porque USART3 lo usa el LIN en PD8/PD9; FDCAN1_TX en PB9, porque FDCAN1 ya está en PA12.
 - Para UART o cualquier señal de 3,3 V en una DI, el jumper de ese canal tiene que estar en 3V3. En 12V o 24V, el divisor deja la señal por debajo del umbral de alto.
 - Las DO tienen 4,7 kΩ en serie: sirven para señal (UART, SPI, PWM, probado a 500 kHz en PC10), no para potencia.
