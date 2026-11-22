@@ -34,11 +34,18 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 - [ ] Hecho
 
 **DOC-02 · Simulaciones de transitorios, ESD e inyección** (CE-03, CE-13, CE-10)
-- Sin firmware. Pulsos 1, 2a, 3a y 3b de ISO 7637-2 (24 V) y load dump limitado a 58 V; ESD ±8 kV contacto y ±15 kV aire en los terminales; inyección en cada tipo de entrada a ±32 V.
-- Criterio: todo por debajo de su máximo absoluto, en las esquinas de tolerancia; inyección en el pin del MCU ≤ 5 mA (negativa; la positiva no es admisible en pines FT) y ≤ 25 mA en total.
-- [ ] Transitorios y load dump (CE-03)
-- [ ] ESD (CE-13)
-- [ ] Inyección en pines del MCU (CE-10)
+
+Sin firmware. Simulación en LTspice, solo en el caso nominal y en el peor caso del componente que define el resultado (normalmente la tensión de clamping máxima del TVS).
+Transitorios en VIN (CE-03). No se dispone de la norma ISO 7637-2, así que se usan los pulsos representativos que describe la hoja de datos del LM74720-Q1 (§9.2.2.1, §9.2.3.7, §10.2 y §10.3), aplicados con la batería a 28 V:
+Pulso negativo: −600 V con 50 Ω de impedancia de fuente, 2 ms, flanco de 1 µs (el pulso 1 para 24 V).
+Pulso rápido: ±100 V, 100 ns (el pulso 3b, que absorben los capacitores de entrada).
+Load dump limitado a 58 V (RQ-04) durante 400 ms.
+ESD (CE-13). Red de descarga de 150 pF / 330 Ω a ±8 kV en contacto, en un canal de cada tipo (VIN, AI, DI, DO, CAN, LIN, ESP32). Los ±15 kV en aire se verifican con la hoja de datos: el TVS de cada terminal tiene que estar especificado para ±15 kV en aire según IEC 61000-4-2.
+Inyección (CE-10). Punto de operación con el terminal a +32 V y a −32 V en cada tipo de entrada, con la placa alimentada y sin alimentar.
+Criterio: tensión de cada componente por debajo de su máximo absoluto, energía de los TVS dentro de su curva de pulso, y tensión en el pin del MCU entre −0,3 V y VDD + 4 V (corriente inyectada ≤ 5 mA por pin y ≤ 25 mA en total).
+[ ] Transitorios y load dump (CE-03)
+[ ] ESD (CE-13)
+[ ] Inyección en pines del MCU (CE-10)
 
 ## 2. Inspección sin energía
 
