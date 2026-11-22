@@ -110,7 +110,8 @@ La placa se protege con tapas de acrílico superior e inferior, sostenidas por s
 | J1 | E/S digitales | 8 |
 | J4 | Entradas analógicas | 4 |
 | J2 | JTAG/SWD (ARM de 20 pines) | 20 |
-| J5 / J6 | Headers para el ESP32 DevKit | — |
+| U9 | Zócalo para el ESP32 DevKit | 30 |
+| J? | Header 2×10 con los GPIO libres del ESP32 (designador sin asignar en el esquemático) | 20 |
 
 **J1, pines de la bornera:**
 
