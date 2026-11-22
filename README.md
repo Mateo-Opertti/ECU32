@@ -82,13 +82,13 @@ flowchart LR
 | Bloque | Componente | Notas |
 |---|---|---|
 | Protección de entrada | F1, SMBJ58A + SMBJ28A, LM74720-Q1 + BUK7K15-80E | TVS en anti-serie e ideal diode con corte por OV (≈ 35 V) |
-| Buck 5 V | AP64202SP-13 | |
+| Buck 5 V | AP64202QSP-13 | Versión automotriz (AEC-Q100) |
 | LDO 3,3 V | TLE42744GS-V33 | |
 | MCU | STM32G491VCT6 | HSE de 16 MHz, LSE de 32,768 kHz |
 | CAN FD | TCAN1046AVDYYRQ1 | VIO = 3,3 V; ESD con ESD2CAN36-Q1 |
 | LIN | TLIN4029A-Q1 | Se maneja con el modo LIN del USART3 |
 | E/S digitales | SN74LV244A | Por canal: R serie, zener, Schottky y TVS |
-| Entradas analógicas | TLV9164 (seguidor) | Divisor distinto por canal (ver Pinout), 10 nF y clamps BAS40 |
+| Entradas analógicas | TLV9164 (seguidor) | Divisor y filtro RC distintos por canal (ver Pinout) y clamps BAS40 |
 | Wi-Fi / BLE | ESP32-DEVKIT-V1 (zócalo) | Se alimenta desde 5 V a través de un Schottky |
 
 El esquemático tiene 7 hojas, una por bloque: STM32, GPIOs, alimentación, CAN, LIN, entradas analógicas y ESP32. Está todo en [`hardware/schematic/ECU32_Schematic.pdf`](hardware/schematic/ECU32_Schematic.pdf). El layout (top y bottom) está en [`hardware/pcb/ECU32_PCB_Layout.pdf`](hardware/pcb/ECU32_PCB_Layout.pdf) y el modelo 3D en [`hardware/3d/ECU32.step`](hardware/3d/ECU32.step).
@@ -128,10 +128,11 @@ Las columnas siguen el orden físico de cada bornera. Las señales de J1 pasan p
 
 **J4, entradas analógicas:**
 
-| Pin STM32 | B11 | A1 | C1 | A0 |
+| Pin J4 | 1 | 2 | 3 | 4 |
 |---|---|---|---|---|
+| Serigrafía (pin STM32) | B11 | A1 | C1 | A0 |
 | Señal | AN1 | AN2 | AN3 | AN4 |
-| Rango | 0 – 3,3 V | 0 – 5 V | 0 – 12 V | 0 – 24 V |
+| Rango | 0 – 3,3 V | 0 – 5 V | 0 – 24 V | 0 – 12 V |
 
 **J7, alimentación:** pin 1 = VBAT y pin 2 = GND.
 
@@ -150,10 +151,10 @@ Las columnas siguen el orden físico de cada bornera. Las señales de J1 pasan p
 | J7 | VBAT, GND | 12 V o 24 V nominal | Fusible, TVS en anti-serie, corte por sobretensión (≈ 35 V) y protección de polaridad inversa |
 | J1 | DI1 – DI4 | **3,3 V, 12 V o 24 V**, según el jumper (ver abajo) | 4,7 kΩ en serie, zener de 4,7 V, Schottky y TVS de 36 V |
 | J1 | DO1 – DO4 | Salida lógica de 3,3 V a través de 4,7 kΩ (señal, no potencia) | Zener de 4,7 V, Schottky y TVS de 36 V |
-| J4 | AN1 | 0 – 3,3 V | Divisor resistivo y filtro RC, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
-| J4 | AN2 | 0 – 5 V | Ídem |
-| J4 | AN3 | 0 – 12 V | Ídem |
-| J4 | AN4 | 0 – 24 V | Ídem |
+| J4 | AN1 (B11) | 0 – 3,3 V | Divisor resistivo y filtro RC, clamps Schottky a 3,3 V y GND, y TVS de 36 V |
+| J4 | AN2 (A1) | 0 – 5 V | Ídem |
+| J4 | AN3 (C1) | 0 – 24 V | Ídem |
+| J4 | AN4 (A0) | 0 – 12 V | Ídem |
 | J3 | CAN1, CAN2 | Niveles CAN FD estándar | ESD2CAN36-Q1 por bus |
 | J3 | LIN | Nivel de batería (bus LIN estándar) | Propia del TLIN4029A-Q1 |
 
@@ -217,16 +218,14 @@ Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta im
 
 ### Entradas analógicas
 
-| Señal | Pin STM32 | Canal ADC | Rango | R serie | R a GND | Factor V_conector / V_pin |
-|---|---|---|---|---|---|---|
-| AN1 | PB11 | ADC12_IN14 | 0 – 3,3 V | R36 = ‹completar› | R35 = ‹completar› | ‹completar› |
-| AN2 | PA1 | ADC12_IN2 | 0 – 5 V | R28 = ‹completar› | R33 = ‹completar› | ‹completar› |
-| AN3 | PC1 | ADC12_IN7 | 0 – 12 V | R40 = ‹completar› | R39 = ‹completar› | ‹completar› |
-| AN4 | PA0 | ADC12_IN1 | 0 – 24 V | R37 = ‹completar› | R38 = ‹completar› | ‹completar› |
+| Señal | Serigrafía | Pin J4 | Canal ADC | Rango | R serie | R a GND | C filtro | Factor | Fondo de escala | Corte del filtro |
+|---|---|---|---|---|---|---|---|---|---|---|
+| AN1 | B11 | 1 | ADC12_IN14 | 0 – 3,3 V | R36 = 5,6 kΩ | R35 = 1 MΩ | C32 = 10 nF | 1,006 | 3,32 V | 2,9 kHz |
+| AN2 | A1 | 2 | ADC12_IN2 | 0 – 5 V | R28 = 5,6 kΩ | R33 = 8,2 kΩ | C1 = 10 nF | 1,683 | 5,55 V | 4,8 kHz |
+| AN3 | C1 | 3 | ADC12_IN7 | 0 – 24 V | R40 = 39 kΩ | R39 = 3,9 kΩ | C34 = 10 nF | 11,00 | 36,3 V | 4,5 kHz |
+| AN4 | A0 | 4 | ADC12_IN1 | 0 – 12 V | R37 = 12 kΩ | R38 = 2,7 kΩ | C33 = 15 nF | 5,444 | 18,0 V | 4,8 kHz |
 
-Factor = (R serie + R a GND) / R a GND. Fondo de escala = 3,3 V × factor.
-
-> **El esquemático no está actualizado.** Los divisores de AN1 y AN2 se cambiaron en la placa armada (AN1 quedó de 0 a 3,3 V y AN2 de 0 a 5 V), pero el PDF del esquemático todavía muestra los valores anteriores. Para los rangos vale esta tabla.
+Factor = (R serie + R a GND) / R a GND: la tensión en el conector es la del pin del MCU multiplicada por el factor. Fondo de escala = 3,3 V × factor. La serigrafía de la placa junto a J4 usa el nombre del pin del STM32 (B11, A1, C1, A0).
 
 ### CAN FD
 

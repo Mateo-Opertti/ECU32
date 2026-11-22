@@ -5,7 +5,7 @@
 | [`ECU32_BOM.csv`](ECU32_BOM.csv) | BOM agrupado por parte y valor (GitHub lo muestra como tabla) |
 | [`ECU32_BOM.xlsx`](ECU32_BOM.xlsx) | Lo mismo en Excel, con filtros |
 
-**198 componentes en 71 líneas.** Columnas: ítem, cantidad, designadores, valor, parte (MPN), fabricante, descripción, footprint y notas.
+**198 componentes en 76 líneas.** Columnas: ítem, cantidad, designadores, valor, parte (MPN), fabricante, descripción, footprint y notas.
 
 ## Cómo se generó
 
