@@ -209,12 +209,21 @@ Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta im
 
 ### Entradas analógicas
 
-| Señal | Serigrafía | Pin J4 | Canal ADC | Rango | R serie | R a GND | C filtro | Factor | Fondo de escala | Corte del filtro |
-|---|---|---|---|---|---|---|---|---|---|---|
-| AN1 | B11 | 1 | ADC12_IN14 | 0 – 3,3 V | R36 = 5,6 kΩ | R35 = 1 MΩ | C32 = 10 nF | 1,006 | 3,32 V | 2,9 kHz |
-| AN2 | A1 | 2 | ADC12_IN2 | 0 – 5 V | R28 = 5,6 kΩ | R33 = 8,2 kΩ | C1 = 10 nF | 1,683 | 5,55 V | 4,8 kHz |
-| AN3 | C1 | 3 | ADC12_IN7 | 0 – 24 V | R40 = 39 kΩ | R39 = 3,9 kΩ | C34 = 10 nF | 11,00 | 36,3 V | 4,5 kHz |
-| AN4 | A0 | 4 | ADC12_IN1 | 0 – 12 V | R37 = 12 kΩ | R38 = 2,7 kΩ | C33 = 15 nF | 5,444 | 18,0 V | 4,8 kHz |
+| Señal | Serigrafía | Pin J4 | Canal ADC | Rango |
+|---|---|---|---|---|
+| AN1 | B11 | 1 | ADC12_IN14 | 0&nbsp;–&nbsp;3,3&nbsp;V |
+| AN2 | A1 | 2 | ADC12_IN2 | 0&nbsp;–&nbsp;5&nbsp;V |
+| AN3 | C1 | 3 | ADC12_IN7 | 0&nbsp;–&nbsp;24&nbsp;V |
+| AN4 | A0 | 4 | ADC12_IN1 | 0&nbsp;–&nbsp;12&nbsp;V |
+
+**Divisor y filtro de cada canal**
+
+| Señal | R serie | R a GND | C filtro | Factor | Fondo de escala | Corte del filtro |
+|---|---|---|---|---|---|---|
+| AN1 | R36&nbsp;=&nbsp;5,6&nbsp;kΩ | R35&nbsp;=&nbsp;1&nbsp;MΩ | C32&nbsp;=&nbsp;10&nbsp;nF | 1,006 | 3,32&nbsp;V | 2,9&nbsp;kHz |
+| AN2 | R28&nbsp;=&nbsp;5,6&nbsp;kΩ | R33&nbsp;=&nbsp;8,2&nbsp;kΩ | C1&nbsp;=&nbsp;10&nbsp;nF | 1,683 | 5,55&nbsp;V | 4,8&nbsp;kHz |
+| AN3 | R40&nbsp;=&nbsp;39&nbsp;kΩ | R39&nbsp;=&nbsp;3,9&nbsp;kΩ | C34&nbsp;=&nbsp;10&nbsp;nF | 11,00 | 36,3&nbsp;V | 4,5&nbsp;kHz |
+| AN4 | R37&nbsp;=&nbsp;12&nbsp;kΩ | R38&nbsp;=&nbsp;2,7&nbsp;kΩ | C33&nbsp;=&nbsp;15&nbsp;nF | 5,444 | 18,0&nbsp;V | 4,8&nbsp;kHz |
 
 Factor = (R serie + R a GND) / R a GND: la tensión en el conector es la del pin del MCU multiplicada por el factor. Fondo de escala = 3,3 V × factor. La serigrafía de la placa junto a J4 usa el nombre del pin del STM32 (B11, A1, C1, A0).
 
