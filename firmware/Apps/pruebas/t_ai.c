@@ -3,13 +3,14 @@
 //   medida con VREFINT en cada tanda, así la lectura no depende de que el LDO dé justo 3,3 V
 // - Tensión en el conector = tensión en el pin x factor del divisor. El factor de cada canal es
 //   (R serie + R a GND) / R a GND: se carga con "divisor <canal> <R serie> <R a GND>" (en ohm) y
-//   queda guardado en la flash. Sin cargar, se usa el nominal: fondo de escala / 3,3 V
+//   queda guardado en la flash. Sin cargar, se usa el del esquemático (hoja 6), en ai_fac_def
 // - Cada 1 s imprime los 4 canales en el conector y en % del fondo de escala
 // - "ref <canal> <mV>" compara con el multímetro y da el error en % FS (criterio: <= 1 %)
 
 #define AI_PARAM_FACTOR  1U     // claves 1..4 de la flash: factor x1000 de AN1..AN4
 
-static const uint32_t ai_fs_mv[4] = { 3300, 5000, 12000, 24000 };  // fondo de escala de cada canal
+static const uint32_t ai_fs_mv[4] = { 3300, 5000, 24000, 12000 };  // rango nominal de cada canal (B11, A1, C1, A0)
+static const uint32_t ai_fac_def[4] = { 1006, 1683, 11000, 5444 }; // (R serie + R a GND) / R a GND x1000, hoja 6
 static uint32_t ai_factor[4];   // V conector / V pin, x1000
 static uint32_t ai_t_res;
 
@@ -17,7 +18,7 @@ static void ai_cargar_factores(void)
 {
     for (uint32_t i = 0; i < 4; i++) {
         uint32_t v = param_leer(AI_PARAM_FACTOR + i);
-        ai_factor[i] = (v != PARAM_VACIO && v >= 1000U) ? v : ai_fs_mv[i] * 1000U / 3300U;
+        ai_factor[i] = (v != PARAM_VACIO && v >= 1000U) ? v : ai_fac_def[i];
     }
 }
 
