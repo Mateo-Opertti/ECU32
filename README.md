@@ -199,7 +199,7 @@ Cada pin de J1 está unido a un pin del STM32 a través del buffer U5, que es un
 | 1/OE | PE8 | DO1 – DO4 |
 | 2/OE | PE10 | DI1 – DI4 |
 
-Las dos /OE tienen pull-up a 3,3 V, así que al reset el buffer queda en alta impedancia.
+Las /OE son **activas en bajo**: para habilitar un grupo hay que poner su pin en **0** (en 1 el grupo queda deshabilitado, en alta impedancia). Las dos tienen pull-up a 3,3 V, así que al reset, y hasta que el firmware las baje, el buffer queda deshabilitado.
 
 - **SPI3** funciona sólo como maestro (SCK y MOSI salen por DO, MISO entra por DI) y comparte pines con UART4 y con UART5_TX.
 - Funciones del pin que **no** se pueden usar por J1: I2C (I2C3_SDA en PC11, I2C1_SDA en PB9), porque necesita una línea bidireccional open-drain y el buffer es unidireccional; los canales TIMx_CHxN en las DI (son salidas) y los ETR en las DO (son entradas); USART3_TX/RX (PB9, PC10, PC11), porque USART3 lo usa el LIN en PD8/PD9; FDCAN1_TX en PB9, porque FDCAN1 ya está en PA12.
