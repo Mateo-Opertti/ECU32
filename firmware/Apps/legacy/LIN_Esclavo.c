@@ -177,10 +177,24 @@ static int recibir_contador(uint8_t *cont)
     return 1;
 }
 
+// Espacio de respuesta: 2 bits desde que llegó el PID, contados con el SysTick. El RXNE del PID se
+// prende a mitad de su bit de stop: respondiendo enseguida se cortaba ese stop y a veces se perdía
+// el start del primer byte (lo mismo que se corrigió en Apps/universal/p_lin.c)
+static void espacio_respuesta(void)
+{
+    uint32_t ciclos = 2U * CPU_HZ / LIN_BAUD, pasaron = 0, antes = SYST_CVR;
+    while (pasaron < ciclos) {
+        uint32_t ahora = SYST_CVR;  // cuenta para abajo y vuelve a SYST_RVR
+        pasaron += antes >= ahora ? antes - ahora : antes + SYST_RVR + 1U - ahora;
+        antes = ahora;
+    }
+}
+
 // Trama 0x11: completa el header del maestro con la respuesta
 static void responder(uint8_t cont)
 {
     uint8_t data[LIN_LEN] = { cont, (uint8_t)~cont, 0xA5, 0x5A };
+    espacio_respuesta();
     for (uint32_t i = 0; i < LIN_LEN; i++) {
         if (!lin_putc(data[i])) return;
     }
