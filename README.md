@@ -224,7 +224,7 @@ Las /OE son **activas en bajo**: para habilitar un grupo hay que poner su pin en
 | AN1 | R36&nbsp;=&nbsp;56&nbsp;kΩ | R35&nbsp;=&nbsp;1&nbsp;MΩ | C32&nbsp;=&nbsp;1&nbsp;nF | 1,056 | 3,48&nbsp;V | 3,0&nbsp;kHz |
 | AN2 | R28&nbsp;=&nbsp;56&nbsp;kΩ | R33&nbsp;=&nbsp;82&nbsp;kΩ | C1&nbsp;=&nbsp;1&nbsp;nF | 1,683 | 5,55&nbsp;V | 4,8&nbsp;kHz |
 | AN3 | R40&nbsp;=&nbsp;150&nbsp;kΩ | R39&nbsp;=&nbsp;39&nbsp;kΩ | C34&nbsp;=&nbsp;1&nbsp;nF | 4,846 | 16,0&nbsp;V | 5,1&nbsp;kHz |
-| AN4 | R37&nbsp;=&nbsp;150&nbsp;kΩ | R38&nbsp;=&nbsp;20&nbsp;kΩ | C33&nbsp;=&nbsp;2,2&nbsp;nF | 8,500 | 28,1&nbsp;V | 4,1&nbsp;kHz |
+| AN4 | R37&nbsp;=&nbsp;150&nbsp;kΩ | R38&nbsp;=&nbsp;22&nbsp;kΩ | C33&nbsp;=&nbsp;2,2&nbsp;nF | 7,818 | 25,8&nbsp;V | 3,8&nbsp;kHz |
 
 Factor = (R serie + R a GND) / R a GND: la tensión en el conector es la del pin del MCU multiplicada por el factor. Fondo de escala = 3,3 V × factor. La serigrafía de la placa junto a J4 usa el nombre del pin del STM32 (B11, A1, C1, A0).
 
