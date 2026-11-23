@@ -211,6 +211,14 @@ static int bc_tx_completo(void)
     return 1;
 }
 
+// 1 cuando ya salieron al bus las tramas encoladas en el TX FIFO de cada flujo. Apagar el FDCAN antes
+// las descarta: las últimas (hasta 3 por bus) nunca le llegan a la otra placa
+static int bc_tx_vacio(void)
+{
+    for (uint32_t i = 0; i < bc_n; i++) if (FDCAN_TXBRP(bc_f[i].tx_base)) return 0;
+    return 1;
+}
+
 // Informe final. "esperadas" = tramas que tendría que haber recibido cada flujo (0 = las que mandó)
 static void bc_informe(uint32_t esperadas)
 {
@@ -326,13 +334,16 @@ static void cp_step(void)
     bc_motor_step();
     bc_leds();
 
-    // Fin: mandé todo y recibí todo, o la otra placa dejó de transmitir, o nunca llegó nada
+    // Fin: mandé todo (y salió del TX FIFO) y recibí todo, o la otra placa dejó de transmitir, o nunca
+    // llegó nada. La placa que arranca después (la MAESTRO, ~100 ms) termina de mandar última y ya tiene
+    // todo lo de la otra: sin esperar el FIFO se cortaba con sus últimas tramas adentro
     uint32_t desde = ticks - bc_t_inicio;
     int recibido = 1;
     for (uint32_t i = 0; i < bc_n; i++) if (!bc_cantidad || bc_f[i].rx_ok + bc_f[i].perdidas < bc_cantidad) recibido = 0;
     int otra_paro = bc_t_ult_rx && (ticks - bc_t_ult_rx) > BC_FIN_SIN_RX_MS;
     int nunca = !bc_t_ult_rx && desde > 10000U;
-    if ((bc_tx_completo() && (recibido || otra_paro)) || (otra_paro && !bc_cantidad) || nunca) {
+    int tx_listo = bc_tx_completo() && (bc_tx_vacio() || (ticks - bc_t_ult_tx) > 500U);  // 500 ms: bus trabado
+    if ((tx_listo && (recibido || otra_paro)) || (otra_paro && !bc_cantidad) || nunca) {
         bc_fase = 2;
         prueba_parar();
     }
