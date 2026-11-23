@@ -25,7 +25,7 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 - [x] Consola: CP2102 TX → J1-6 (DI2), RX → J1-1 (DO2), GND común, jumper de DI2 en 3V3, terminal a 115200 8N1
 - [x] `rol maestro` en A (B queda ESCLAVA)
 - [x] CAN2 entre placas (J3-3 con J3-3, J3-2 con J3-2, GND) y `esclava estado` contesta ACK
-- [x] Divisores de cada canal cargados en A y en B: `divisor 1 <Rs> <Rg>` … `divisor 4 <Rs> <Rg>` (verificar con `factor`). *AI-02 ya pasó, así que probablemente esto está hecho: confirmar con `factor` y tildar.*
+- [ ] Factores de los divisores en A y en B: `factor` y `esclava factor` tienen que decir "del README" en los 4 canales (el firmware ya trae los valores de la tabla del README; no hace falta cargar `divisor`).
 
 ## 1. Verificaciones documentales y por simulación
 

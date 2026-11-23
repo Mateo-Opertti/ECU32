@@ -213,10 +213,22 @@ static void cmd_pwm(char **pal, uint32_t n)
 static void cmd_divisor(char **pal, uint32_t n)
 {
     int32_t c = n > 1 ? texto_numero(pal[1]) : -1;
+    if (c >= 1 && c <= 4 && n > 2 && texto_igual(pal[2], "nominal")) {
+        if (!param_guardar(AI_PARAM_FACTOR + (uint32_t)c - 1U, 0)) {
+            cputs("ERROR: no se pudo grabar la flash\n");
+            return;
+        }
+        ai_cargar_factores();
+        uint32_t f = ai_factor[c - 1];
+        cprintf("AN%u: factor %u.%03u del README (fondo de escala %u mV en el conector)\n", c, f / 1000U, f % 1000U,
+                (uint32_t)(3300ULL * f / 1000U));
+        return;
+    }
     int32_t rs = n > 2 ? texto_numero(pal[2]) : -1;
     int32_t rg = n > 3 ? texto_numero(pal[3]) : -1;
     if (c < 1 || c > 4 || rs < 0 || rg < 1) {
-        cputs("Uso: divisor <1-4> <R serie en ohm> <R a GND en ohm>   (ej: divisor 4 100000 15000)\n");
+        cputs("Uso: divisor <1-4> <R serie en ohm> <R a GND en ohm>   (ej: divisor 4 150000 18000)\n"
+              "     divisor <1-4> nominal   vuelve al factor del README\n");
         return;
     }
     uint32_t f = (uint32_t)(((uint64_t)(uint32_t)rs + (uint32_t)rg) * 1000U / (uint32_t)rg);
@@ -235,7 +247,7 @@ static void cmd_factor(void)
     for (uint32_t i = 0; i < 4; i++) {
         uint32_t p = param_leer(AI_PARAM_FACTOR + i);
         cprintf("AN%u: factor %u.%03u (%s)\n", i + 1, ai_factor[i] / 1000U, ai_factor[i] % 1000U,
-                p == PARAM_VACIO ? "nominal: fondo de escala / 3,3 V" : "medido, cargado con \"divisor\"");
+                (p == PARAM_VACIO || p < 1000U) ? "del README" : "cargado con \"divisor\"");
     }
 }
 
@@ -287,7 +299,7 @@ static void cmd_plan(void)
           "  DIG-01     do <1|3|4> 1  /  do <n> 0. DO2 en reposo esta en alto; \"do 2 0 [s]\" la baja s segundos\n"
           "  DIG-02     correr es (avisa cada cambio de entrada) y di; rampa lenta para el umbral\n"
           "  DIG-03     pwm <n> 100000 50 en cada salida; frec on mide la frecuencia de las entradas\n"
-          "  AI-02      correr ai; divisor <c> <Rs> <Rg>; ref <c> <mV del multimetro> da el error en % FS;\n"
+          "  AI-02      factor (del README en los 4); correr ai; ref <c> <mV del multimetro> da el error en % FS;\n"
           "             repetir con adc_conv 2 (ADC2) y adc_conv 1 (ADC1)\n"
           "  COM-02     puente CAN1-CAN2 en J3: can_modo clasico | fd; can_cantidad 100000; correr banco_can\n"
           "  COM-03     LIN entre placas: par lin (esta placa commander) y par lin_inv (al reves)\n"
@@ -316,6 +328,7 @@ static void ayuda_extra(void)
           "  promedio <1-256>            muestras promediadas por canal del ADC (256 por defecto)\n"
           "  adc_conv 1|2                mide AN1..AN4 con el ADC1 o con el ADC2 (para probar los dos)\n"
           "  divisor <c> <Rs> <Rg>       carga el divisor de AN<c> en ohm (queda en la flash); factor: los muestra\n"
+          "  divisor <c> nominal         AN<c> vuelve al factor del README\n"
           "  ref <c> <mV>                error del ADC contra el multimetro, en % del fondo de escala\n"
           "  can_modo clasico|fd         CAN clasico 8 bytes o FD 64 bytes con BRS (banco_can, can_placas, integral)\n"
           "  can_tasa <n|max>            tramas/s por sentido; max = lo mas rapido posible\n"

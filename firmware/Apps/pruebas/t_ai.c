@@ -3,11 +3,15 @@
 //   medida con VREFINT en cada tanda, así la lectura no depende de que el LDO dé justo 3,3 V
 // - Tensión en el conector = tensión en el pin x factor del divisor. El factor de cada canal es
 //   (R serie + R a GND) / R a GND: se carga con "divisor <canal> <R serie> <R a GND>" (en ohm) y
-//   queda guardado en la flash. Sin cargar, se usa el del esquemático (hoja 6), en ai_fac_def
+//   queda guardado en la flash. Sin cargar (o con "divisor <canal> nominal"), se usa el del
+//   esquemático (hoja 6) y el README, en ai_fac_def
 // - Cada 1 s imprime los 4 canales en el conector y en % del fondo de escala
 // - "ref <canal> <mV>" compara con el multímetro y da el error en % FS (criterio: <= 1 %)
 
-#define AI_PARAM_FACTOR  1U     // claves 1..4 de la flash: factor x1000 de AN1..AN4
+// Claves 9..12 de la flash: factor x1000 de AN1..AN4. Hasta R38 = 18 kΩ eran las 1..4: lo que
+// quedó grabado ahí ya no se lee, así manda el valor del README sin tener que borrar nada en las placas
+// Un valor menor que 1000 (lo graba "divisor <c> nominal") quiere decir "usar el del README"
+#define AI_PARAM_FACTOR  9U
 
 static const uint32_t ai_fs_mv[4] = { 3300, 5000, 12000, 24000 };  // rango nominal de cada canal (B11, A1, C1, A0)
 static const uint32_t ai_fac_def[4] = { 1056, 1683, 4846, 9333 };  // (R serie + R a GND) / R a GND x1000, hoja 6
