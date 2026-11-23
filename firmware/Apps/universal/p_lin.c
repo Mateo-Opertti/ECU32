@@ -10,6 +10,11 @@
 #define LIN_LEN         4U
 #define LIN_BYTE_TIMEOUT_MS 5U
 #define LIN_RX_TIMEOUT_MS   500U
+// Espacio de respuesta de la esclava, en bits, contado desde que llega el PID. El RXNE del PID se
+// prende a mitad de su bit de stop: si la esclava manda en ese momento, corta el stop del commander
+// a medio bit y al receptor (el del commander y el propio, que lee el eco) le puede faltar la línea
+// en reposo que necesita antes del flanco de start: se pierde el primer byte de la respuesta
+#define LIN_ESPACIO_BITS    2U
 
 static volatile uint32_t lin_eco_err;  // bytes propios que no se leyeron bien en el bus
 static uint32_t lin_baud = LIN_BAUD;   // Universal.c arranca en 20 kbit/s (lo pide el plan); comando lin_baud
@@ -23,6 +28,7 @@ static struct {
     uint32_t nrx, irx;
     uint32_t t;  // último movimiento, para los timeouts
     int eco_leido;  // cuando falla un eco: el byte que volvió, o -1 si no volvió nada
+    uint32_t t_us, espera_us;  // el primer byte sale recién espera_us después de t_us
 } lin;
 
 static void lin_hw_init(void)
@@ -84,6 +90,16 @@ static void lin_empezar_tx(void)
     lin.itx = 0;
     lin.eco_pendiente = 0;
     lin.t = ticks;
+    lin.espera_us = 0;
+}
+
+// Respuesta de la esclava al header del commander: igual que lin_empezar_tx, pero el primer byte
+// espera LIN_ESPACIO_BITS (deja terminar el stop del PID y un bit de reposo, como pide LIN 2.x)
+static void lin_empezar_respuesta(void)
+{
+    lin_empezar_tx();
+    lin.t_us = micros();
+    lin.espera_us = (LIN_ESPACIO_BITS * 1000000U + lin_baud - 1U) / lin_baud;
 }
 
 static void lin_empezar_rx(uint32_t n)
@@ -112,6 +128,8 @@ static int lin_tx_step(void)
             lin.eco_leido = -1;
             return -1;
         }
+    } else if (lin.itx == 0 && (micros() - lin.t_us) < lin.espera_us) {
+        // espacio de respuesta: todavía no
     } else if (USART_ISR(USART3_BASE) & ISR_TXE) {
         USART_TDR(USART3_BASE) = lin.tx[lin.itx];
         lin.eco_pendiente = 1;

@@ -102,7 +102,7 @@ static void le_step(void)
                 lin.tx[3] = 0x5A;
                 lin.tx[LIN_LEN] = lin_checksum(lin_pid(LIN_ID_ESCLAVO), lin.tx, LIN_LEN);
                 lin.ntx = LIN_LEN + 1;
-                lin_empezar_tx();
+                lin_empezar_respuesta();
                 le_estado = LE_RESPUESTA;
             } else {
                 le_estado = LE_ESPERA;  // trama de otro ID: se ignora

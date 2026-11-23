@@ -290,7 +290,7 @@ static void cbe_step(void)
                 cb_empaquetar(lin.tx);
                 lin.tx[CB_LEN] = lin_checksum(lin_pid(CB_ID_E2M), lin.tx, CB_LEN);
                 lin.ntx = CB_LEN + 1;
-                lin_empezar_tx();
+                lin_empezar_respuesta();
                 cbe_estado = CBE_RESPUESTA;
             } else {
                 cbe_estado = CBE_ESPERA;  // otro ID: se ignora
