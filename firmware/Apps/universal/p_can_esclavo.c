@@ -195,4 +195,5 @@ static const prueba_t p_can_esclavo = {
     .descripcion = "CAN FD por CAN1 entre placas: recibe 0x100, contesta 0x101 y juego de luces",
     .init = ce_init, .step = ce_step, .deinit = ce_deinit, .estado = ce_estado,
     .ok = &ce_ok, .err = &ce_err,
+    .flags = PRUEBA_TIEMPO_REAL,
 };

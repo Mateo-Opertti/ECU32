@@ -204,4 +204,5 @@ static const prueba_t p_can_maestro = {
     .descripcion = "CAN FD por CAN1 entre placas: manda 0x100 y espera 0x101",
     .init = cm_init, .step = cm_step, .deinit = cm_deinit, .estado = cm_estado,
     .ok = &cm_ok, .err = &cm_err,
+    .flags = PRUEBA_TIEMPO_REAL,
 };

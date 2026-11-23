@@ -2,7 +2,8 @@
 // Se incluye antes del enlace y de las pruebas. La implementación está en nucleo.c, que cada
 // firmware incluye después de definir su tabla de pruebas y sus funciones "extra"
 
-#define PRUEBA_SOLO_LOCAL (1U << 0)  // usa FDCAN2: por CAN2 se pide como línea ("esclava correr ...")
+#define PRUEBA_SOLO_LOCAL  (1U << 0)  // usa FDCAN2: por CAN2 se pide como línea ("esclava correr ...")
+#define PRUEBA_TIEMPO_REAL (1U << 1)  // tráfico LIN / CAN / UART: no se graba la flash mientras corre
 
 typedef struct {
     const char *nombre;       // nombre corto para la consola
@@ -33,6 +34,7 @@ static uint32_t pruebas_total;
 static int prueba_correr(uint32_t n, int desde_can);
 static void prueba_parar(void);
 static uint32_t prueba_actual(void);
+static int flash_se_puede(void);  // 0 (y lo explica) si grabar la flash ahora cortaría el tráfico de la prueba
 static const char *prueba_nombre(uint32_t n);
 static uint32_t prueba_segundos(void);
 static int prueba_contadores(uint32_t *ok, uint32_t *err);

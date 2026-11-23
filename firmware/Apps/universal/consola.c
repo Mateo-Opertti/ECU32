@@ -82,6 +82,11 @@ static uint32_t fwd_lineas;         // '\n' que todavía no salieron
 static int consola_reenviar;        // lo prende enlace.c en la ESCLAVA con el enlace activo
 volatile uint32_t fwd_perdidos;     // bytes que no entraron en el buffer de reenvío
 
+// 1 mientras DO2 (el TX de la consola) está prestada a una prueba: lo que se imprime se descarta en
+// vez de mandarse por un pin desconectado. Así el USART queda quieto y, al devolver el pin, no sale
+// un byte cortado por la mitad (un carácter basura en la terminal)
+static int consola_muda;
+
 static void cputc(char c)
 {
     if (consola_reenviar) {
@@ -95,6 +100,7 @@ static void cputc(char c)
         }
     }
 
+    if (consola_muda) return;  // el reenvío a la placa MAESTRO (arriba) sigue andando
     if (tx_in - tx_out >= TX_TAM) {  // lleno: se pierde, nunca se bloquea
         cons_perdidos++;
         return;

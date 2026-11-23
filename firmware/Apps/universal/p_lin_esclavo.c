@@ -214,4 +214,5 @@ static const prueba_t p_lin_esclavo = {
     .descripcion = "LIN 19200 entre placas: recibe 0x10 y responde 0x11",
     .init = le_init, .step = le_step, .deinit = le_deinit, .estado = le_estado_imprimir,
     .ok = &le_rx_ok, .err = &le_rx_err,
+    .flags = PRUEBA_TIEMPO_REAL,
 };

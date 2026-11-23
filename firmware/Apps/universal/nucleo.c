@@ -54,6 +54,18 @@ static void placa_salidas_seguras(void)
 
 static uint32_t prueba_actual(void) { return actual; }
 
+// Grabar la flash (y más si hay que borrar la página) frena el CPU hasta ~20 ms: el código corre
+// desde la misma flash. Con LIN, CAN o UART andando eso da tramas perdidas que no son de la placa
+static int flash_se_puede(void)
+{
+    if (actual && (pruebas[actual]->flags & PRUEBA_TIEMPO_REAL)) {
+        cprintf("Primero \"parar\": grabar la flash frena la placa unos 20 ms y le cortaria el trafico a %s\n",
+                pruebas[actual]->nombre);
+        return 0;
+    }
+    return 1;
+}
+
 static const char *prueba_nombre(uint32_t n)
 {
     return (n > P_NINGUNA && n < pruebas_total && pruebas[n]) ? pruebas[n]->nombre : "?";
@@ -249,6 +261,7 @@ static void cmd_rol(const char *arg)
         cputs("Uso: rol [maestro|esclava]\n");
         return;
     }
+    if (!flash_se_puede()) return;
     if (rol_guardar(r)) cprintf("Rol guardado: %s\n", rol_nombre(rol_actual));
     else cprintf("ERROR al grabar la flash. Rol actual: %s\n", rol_nombre(rol_actual));
 }

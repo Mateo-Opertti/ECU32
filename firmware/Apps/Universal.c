@@ -214,6 +214,7 @@ static void cmd_divisor(char **pal, uint32_t n)
 {
     int32_t c = n > 1 ? texto_numero(pal[1]) : -1;
     if (c >= 1 && c <= 4 && n > 2 && texto_igual(pal[2], "nominal")) {
+        if (!flash_se_puede()) return;
         if (!param_guardar(AI_PARAM_FACTOR + (uint32_t)c - 1U, 0)) {
             cputs("ERROR: no se pudo grabar la flash\n");
             return;
@@ -232,7 +233,8 @@ static void cmd_divisor(char **pal, uint32_t n)
         return;
     }
     uint32_t f = (uint32_t)(((uint64_t)(uint32_t)rs + (uint32_t)rg) * 1000U / (uint32_t)rg);
-    if (f > 0xFFFFU || !param_guardar(AI_PARAM_FACTOR + (uint32_t)c - 1U, f)) {
+    if (!flash_se_puede()) return;
+    if (f > 0xFFFFU ||!param_guardar(AI_PARAM_FACTOR + (uint32_t)c - 1U, f)) {
         cputs("ERROR: factor fuera de rango o no se pudo grabar la flash\n");
         return;
     }
@@ -284,6 +286,7 @@ static void cmd_autoarranque(const char *arg)
         cputs("Uso: autoarranque <prueba|no>\n");
         return;
     }
+    if (!flash_se_puede()) return;
     if (param_guardar(PARAM_AUTOARRANQUE, p)) {
         if (p) cprintf("Al encender arranca sola: %s\n", tabla[p]->nombre);
         else cputs("Autoarranque desactivado\n");

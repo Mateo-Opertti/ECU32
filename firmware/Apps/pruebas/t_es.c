@@ -148,8 +148,10 @@ static void es_do2_soltar(void)
     if (es_do2_tomada) {
         es_do2_tomada = 0;
         es_pwm[2] = 0;
+        gpio_salida(CONS_PORT, CONS_TX, 1);  // primero en reposo alto: sin un bajo suelto al parar el PWM
         es_tim_parar(TIM16_BASE);
-        gpio_af(CONS_PORT, CONS_TX, 7);  // vuelve a ser el TX de la consola
+        gpio_af(CONS_PORT, CONS_TX, 7);      // vuelve a ser el TX de la consola (el USART estaba quieto)
+        consola_muda = 0;
         cputs("DO2 volvio a ser el TX de la consola\n");
     }
 }
@@ -168,6 +170,7 @@ static void es_do2_step(void)
     if (es_do2_pedida && !es_do2_tomada && consola_tx_vacia()) {
         es_do2_tomada = 1;
         es_do2_desde = ticks;
+        consola_muda = 1;  // con el TX vacío: nada queda a medio salir cuando vuelva el pin
         es_aplicar(2);
     }
     if (es_do2_tomada && (ticks - es_do2_desde) >= es_do2_seg * 1000U) es_do2_soltar();

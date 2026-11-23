@@ -221,4 +221,5 @@ static const prueba_t p_lin_maestro = {
     .descripcion = "LIN 19200 entre placas: manda 0x10 y pide 0x11 cada 50 ms (SW3 cerrado)",
     .init = lm_init, .step = lm_step, .deinit = lm_deinit, .estado = lm_estado_imprimir,
     .ok = &lm_resp_ok, .err = &lm_resp_err,
+    .flags = PRUEBA_TIEMPO_REAL,
 };

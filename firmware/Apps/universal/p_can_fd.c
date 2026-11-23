@@ -161,5 +161,5 @@ static const prueba_t p_can_fd = {
     .descripcion = "FDCAN1 -> FDCAN2 en la misma placa (puente CAN1-CAN2 en J3)",
     .init = cfd_init, .step = cfd_step, .deinit = cfd_deinit, .estado = cfd_estado,
     .ok = &cfd_ok, .err = &cfd_err,
-    .flags = PRUEBA_SOLO_LOCAL,
+    .flags = PRUEBA_SOLO_LOCAL | PRUEBA_TIEMPO_REAL,
 };

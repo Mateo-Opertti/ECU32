@@ -179,5 +179,5 @@ static const prueba_t p_integral = {
     .descripcion = "Todo a la vez: PWM, DI, ADC, CAN1<->CAN2 y LIN, N minutos (INT-01/02, PRO-09)",
     .init = ig_init, .step = ig_step, .deinit = ig_deinit, .estado = ig_estado,
     .ok = &ig_ok, .err = &ig_err,
-    .flags = PRUEBA_SOLO_LOCAL,
+    .flags = PRUEBA_SOLO_LOCAL | PRUEBA_TIEMPO_REAL,
 };

@@ -298,7 +298,7 @@ static const prueba_t p_banco_can = {
     .descripcion = "CAN1 <-> CAN2 en esta placa (puente en J3), clasico o FD, N tramas por sentido (COM-02)",
     .init = banco_init, .step = banco_step, .deinit = banco_deinit, .estado = banco_estado,
     .ok = &bc_ok_total, .err = &bc_err_total,
-    .flags = PRUEBA_SOLO_LOCAL,
+    .flags = PRUEBA_SOLO_LOCAL | PRUEBA_TIEMPO_REAL,
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -363,6 +363,7 @@ static const prueba_t p_can_placas = {
     .descripcion = "Las dos placas transmiten a la vez por CAN1 y CAN2, con arbitraje (EXT-02)",
     .init = cp_init, .step = cp_step, .deinit = cp_deinit, .estado = banco_estado,
     .ok = &bc_ok_total, .err = &bc_err_total,
+    .flags = PRUEBA_TIEMPO_REAL,
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -434,6 +435,7 @@ static const prueba_t p_gateway = {
     .descripcion = "Reenvia CAN1 clasico (0x130) a CAN2 FD con BRS (0x131) (EXT-03, con gw_fuente)",
     .init = gw_init, .step = gw_step, .deinit = gw_deinit,
     .ok = &gw_reenviadas, .err = &gw_descartadas,
+    .flags = PRUEBA_TIEMPO_REAL,
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -552,4 +554,5 @@ static const prueba_t p_gw_fuente = {
     .descripcion = "Fuente del gateway: manda por CAN1 y mide perdidas y latencia en CAN2 (EXT-03)",
     .init = gf_init, .step = gf_step, .deinit = gf_deinit,
     .ok = &gf_rx, .err = &gf_perdidas,
+    .flags = PRUEBA_TIEMPO_REAL,
 };

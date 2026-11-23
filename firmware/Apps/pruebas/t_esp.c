@@ -594,4 +594,5 @@ static const prueba_t p_esp_uart = {
     .descripcion = "UART y lineas STM32 <-> ESP32: eco, 1 MB con CRC, lineas, reset, Wi-Fi (ESP-01/02/03)",
     .init = eu_init, .step = eu_step, .deinit = eu_deinit, .estado = eu_estado,
     .ok = &eu_total_ok, .err = &eu_total_err,
+    .flags = PRUEBA_TIEMPO_REAL,
 };

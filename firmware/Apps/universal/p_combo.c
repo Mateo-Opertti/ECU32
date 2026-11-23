@@ -238,6 +238,7 @@ static const prueba_t p_combo_maestro = {
     .descripcion = "ADC + LIN + LEDs cruzados: manda sus AN por LIN y muestra los de la otra placa",
     .init = cbm_init, .step = cbm_step, .deinit = cb_deinit, .estado = cb_estado,
     .ok = &cb_ok, .err = &cb_err,
+    .flags = PRUEBA_TIEMPO_REAL,
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -352,4 +353,5 @@ static const prueba_t p_combo_esclavo = {
     .descripcion = "ADC + LIN + LEDs cruzados: responde con sus AN por LIN y muestra los de la otra placa",
     .init = cbe_init, .step = cbe_step, .deinit = cb_deinit, .estado = cb_estado,
     .ok = &cb_ok, .err = &cb_err,
+    .flags = PRUEBA_TIEMPO_REAL,
 };
