@@ -31,21 +31,21 @@ Comandos y conexiones en detalle: [README del firmware](README.md#plan-de-prueba
 
 **DOC-01 · Calificación AEC-Q de la BOM** (CE-25)
 - Sin firmware. Columna de calificación en la BOM y justificación de cada excepción (incluir el fusible que reemplazó al PTC y el devkit ESP32).
-- [ ] Hecho
+- [x] Hecho
 
 **DOC-02 · Simulaciones de transitorios, ESD e inyección** (CE-03, CE-13, CE-10)
 
-Sin firmware. Simulación en LTspice, solo en el caso nominal y en el peor caso del componente que define el resultado (normalmente la tensión de clamping máxima del TVS).
-Transitorios en VIN (CE-03). No se dispone de la norma ISO 7637-2, así que se usan los pulsos representativos que describe la hoja de datos del LM74720-Q1 (§9.2.2.1, §9.2.3.7, §10.2 y §10.3), aplicados con la batería a 28 V:
-Pulso negativo: −600 V con 50 Ω de impedancia de fuente, 2 ms, flanco de 1 µs (el pulso 1 para 24 V).
-Pulso rápido: ±100 V, 100 ns (el pulso 3b, que absorben los capacitores de entrada).
+Sin firmware. Simulación en LTspice, en el caso nominal y en el peor caso del componente que define el resultado (tensión de clamping máxima de los TVS, VF máxima de los diodos, 5 nH de pista). En CE-10 se agrega la VBR mínima para VIN.
+Transitorios en VIN (CE-03). No se dispone de la norma ISO 7637-2, así que se usan los valores de referencia del equipo para 24 V, aplicados con la batería a 28 V:
+Pulso 1: −300 V con 50 Ω, 1 ms (el pulso de −600 V / 2 ms del LM74720-Q1 queda como dato informativo).
+Pulso 2a: +112 V con 2 Ω, 50 µs. Pulsos 3a y 3b: ±300 V con 50 Ω, 150 ns.
 Load dump limitado a 58 V (RQ-04) durante 400 ms.
-ESD (CE-13). Red de descarga de 150 pF / 330 Ω a ±8 kV en contacto, en un canal de cada tipo (VIN, AI, DI, DO, CAN, LIN, ESP32). Los ±15 kV en aire se verifican con la hoja de datos: el TVS de cada terminal tiene que estar especificado para ±15 kV en aire según IEC 61000-4-2.
-Inyección (CE-10). Punto de operación con el terminal a +32 V y a −32 V en cada tipo de entrada, con la placa alimentada y sin alimentar.
-Criterio: tensión de cada componente por debajo de su máximo absoluto, energía de los TVS dentro de su curva de pulso, y tensión en el pin del MCU entre −0,3 V y VDD + 4 V (corriente inyectada ≤ 5 mA por pin y ≤ 25 mA en total).
-[ ] Transitorios y load dump (CE-03)
-[ ] ESD (CE-13)
-[ ] Inyección en pines del MCU (CE-10)
+ESD (CE-13). Red de descarga de 150 pF / 330 Ω a ±8 kV en contacto, en un canal de cada tipo (VIN, AI, DI, DO, CAN, LIN, ESP32) y en J2, con la placa alimentada y sin alimentar. Los ±15 kV en aire se verifican con el rating IEC 61000-4-2 de cada TVS. La tensión residual se acota con la misma red cargada a ±15 kV.
+Inyección (CE-10). Barrido en continua de −32 V a +32 V en cada borne, con la placa alimentada y sin alimentar, y en todos los AI y DI a la vez. Las líneas del ESP32 quedan fuera.
+Criterio: tensión de cada componente por debajo de su máximo absoluto, energía de los TVS dentro de su curva de pulso, y tensión en el pin del MCU por debajo de VDD + 4 V (4,0 V en los TT_a). Por debajo de VSS rige la corriente inyectada (≤ 5 mA por pin y ≤ 25 mA en total), y el −0,3 V es informativo.
+- [x] Transitorios y load dump (CE-03)
+- [ ] ESD (CE-13): no cumple en CAN, LIN, ESP32 y J2. Los cambios propuestos están en la sección 7 del informe.
+- [x] Inyección en pines del MCU (CE-10)
 
 ## 2. Inspección sin energía
 
