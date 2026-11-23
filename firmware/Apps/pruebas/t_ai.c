@@ -10,7 +10,7 @@
 #define AI_PARAM_FACTOR  1U     // claves 1..4 de la flash: factor x1000 de AN1..AN4
 
 static const uint32_t ai_fs_mv[4] = { 3300, 5000, 12000, 24000 };  // rango nominal de cada canal (B11, A1, C1, A0)
-static const uint32_t ai_fac_def[4] = { 1056, 1683, 4846, 7818 };  // (R serie + R a GND) / R a GND x1000, hoja 6
+static const uint32_t ai_fac_def[4] = { 1056, 1683, 4846, 9333 };  // (R serie + R a GND) / R a GND x1000, hoja 6
 static uint32_t ai_factor[4];   // V conector / V pin, x1000
 static uint32_t ai_t_res;
 
