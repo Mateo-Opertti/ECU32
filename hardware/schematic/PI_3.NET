@@ -18,7 +18,7 @@ Capacitor cerámico TH           C14            Capacitor cerámico TH-Footpri
 Capacitor cerámico TH           C15            Capacitor cerámico TH-Footpri
 Capacitor cerámico TH           C16            Capacitor cerámico TH-Footpri
 Capacitor cerámico TH           C17            Capacitor cerámico TH-Footpri
-ECA1HHG331B                     C18            FP-RAD-TH-D_10_0_5-L_16_1-MFG
+330uF                           C18            FP-RAD-TH-D_10_0_5-L_16_1-MFG
 FG14C0G2A153JRT06               C19            FG14C0G2A153JRT06-Footprint-1
 Capacitor cerámico TH           C20            Capacitor cerámico TH-Footpri
 RCE5C1H100J0A2H03B              C21            FP-RCE0DB-MFG
@@ -82,7 +82,7 @@ BAS40LT1G                       D34            ONSC-SOT-23-3-318-08_V
 ESD2CAN36DBZRQ1                 D35            SOT-23-3_DBZ_TEX
 BAS40LT1G                       D36            ONSC-SOT-23-3-318-08_V
 BAS40LT1G                       D37            ONSC-SOT-23-3-318-08_V
-B340A-13-F                      D38            FP-SMA-MFG
+1N5819                          D38            FP-SMA-MFG
 PESD5V0L4UG,115                 D39            PESD5V0L4UG,115-Footprint-1
 ESD9X5.0ST5G                    D40            ONSC-SOD-923-2-514AA-01_V
 G502DC                          DS1            CGX-G502DC
@@ -190,7 +190,7 @@ SLW-111629-7A-D                 SW2            SLW-111629-7A-D-Footprint-1
 SLW-111629-7A-D                 SW4            SLW-111629-7A-D-Footprint-1
 STM32G491VCT6                   U1             STM32G491VCT6-Footprint-1
 LM74720QDRRRQ1                  U2             LM74720QDRRRQ1-Footprint-1
-AP64202SP-13                    U3             IC8_AP64202SP-13_DIO
+AP64202QSP-13                   U3             IC8_AP64202SP-13_DIO
 TLE42744GS V33                  U4             INF-PG-SOT223_SC-73_M
 SN74LV244AQDGSRQ1               U5             VSSOP20_DGS_TEX
 TCAN1046AVDYYRQ1                U6             TCAN1046AVDYYRQ1-Footprint-1
@@ -215,14 +215,14 @@ ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
 [00231] VBAT_F
         C7         1       1              PASSIVE     Capacitor cerámico TH
         C8         1       1              PASSIVE     Capacitor cerámico TH
-        C18        2       A              PASSIVE     ECA1HHG331B
+        C18        2       A              PASSIVE     330uF
         C30        1       1              PASSIVE     RCE5C1H100J0A2H03B
         D22        2       A              PASSIVE     BZT52C18-7-F
         D24        1       K              PASSIVE     STPS2H100AY
         Q1         3       3              PASSIVE     BUK7K15-80EX
         R17        1       1              PASSIVE     MFR-25FBF52-47R5
         SW3        2       2              PASSIVE     1825255-1
-        U3         2       VIN            PASSIVE     AP64202SP-13
+        U3         2       VIN            PASSIVE     AP64202QSP-13
         U7         7       VSUP           POWER       TLIN4029ADRQ1
 
 [00230] VBAT
@@ -691,16 +691,16 @@ ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
 [00110] NetR19_2
         R19        2       2              PASSIVE     MFR-25FBF52-47R5
         R21        1       1              PASSIVE     MFR-25FBF52-47R5
-        U3         5       FB             PASSIVE     AP64202SP-13
+        U3         5       FB             PASSIVE     AP64202QSP-13
 
 [00109] NetR18_2
         R18        2       2              PASSIVE     MFR-25FBF52-47R5
-        U3         4       RT/CLK         PASSIVE     AP64202SP-13
+        U3         4       RT/CLK         PASSIVE     AP64202QSP-13
 
 [00108] NetR17_2
         R17        2       2              PASSIVE     MFR-25FBF52-47R5
         R20        1       1              PASSIVE     MFR-25FBF52-47R5
-        U3         3       EN             PASSIVE     AP64202SP-13
+        U3         3       EN             PASSIVE     AP64202QSP-13
 
 [00107] NetR16_2
         R16        2       2              PASSIVE     MFR-25FBF52-47R5
@@ -910,16 +910,16 @@ ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
 
 [00051] NetC11_1
         C11        1       1              PASSIVE     Capacitor cerámico TH
-        U3         6       SS             PASSIVE     AP64202SP-13
+        U3         6       SS             PASSIVE     AP64202QSP-13
 
 [00050] NetC6_2
         C6         2       2              PASSIVE     Capacitor cerámico TH
         L1         1       1              PASSIVE     HPAL1V1040-100-R
-        U3         8       SW             PASSIVE     AP64202SP-13
+        U3         8       SW             PASSIVE     AP64202QSP-13
 
 [00049] NetC6_1
         C6         1       1              PASSIVE     Capacitor cerámico TH
-        U3         1       BST            PASSIVE     AP64202SP-13
+        U3         1       BST            PASSIVE     AP64202QSP-13
 
 [00048] NetC4_1
         C4         1       1              PASSIVE     RCE5C1H100J0A2H03B
@@ -948,7 +948,7 @@ ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
         C14        1       1              PASSIVE     Capacitor cerámico TH
         C16        1       1              PASSIVE     Capacitor cerámico TH
         C17        1       1              PASSIVE     Capacitor cerámico TH
-        C18        1       C              PASSIVE     ECA1HHG331B
+        C18        1       C              PASSIVE     330uF
         C19        1       1              PASSIVE     FG14C0G2A153JRT06
         C20        2       2              PASSIVE     Capacitor cerámico TH
         C21        2       2              PASSIVE     RCE5C1H100J0A2H03B
@@ -1061,8 +1061,8 @@ ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
         U1         74      VSS            POWER       STM32G491VCT6
         U1         99      VSS            POWER       STM32G491VCT6
         U2         7       GND            POWER       LM74720QDRRRQ1
-        U3         7       GND            POWER       AP64202SP-13
-        U3         EPAD    EPAD           PASSIVE     AP64202SP-13
+        U3         7       GND            POWER       AP64202QSP-13
+        U3         EPAD    EPAD           PASSIVE     AP64202QSP-13
         U4         2       GND            POWER       TLE42744GS V33
         U4         4       GND            POWER       TLE42744GS V33
         U5         10      GND            POWER       SN74LV244AQDGSRQ1
@@ -1074,7 +1074,7 @@ ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
         U9         29      GND            POWER       ESP32-DEVKIT-V1
 
 [00045] ESP_VIN
-        D38        1       C              PASSIVE     B340A-13-F
+        D38        1       C              PASSIVE     1N5819
         J?         17      17             PASSIVE     SSK03-MPH-254-B10
         J?         19      19             PASSIVE     SSK03-MPH-254-B10
         J?         20      20             PASSIVE     SSK03-MPH-254-B10
@@ -1310,7 +1310,7 @@ ESP32-DEVKIT-V1                 U9             MODULE_ESP32_DEVKIT_V1
         C14        2       2              PASSIVE     Capacitor cerámico TH
         C22        1       1              PASSIVE     RCE5C1H100J0A2H03B
         C42        2       2              PASSIVE     Capacitor cerámico TH
-        D38        2       A              PASSIVE     B340A-13-F
+        D38        2       A              PASSIVE     1N5819
         DS4        1       A              PASSIVE     G502DC
         L1         2       2              PASSIVE     HPAL1V1040-100-R
         R16        1       1              PASSIVE     MFR-25FBF52-47R5
