@@ -238,7 +238,7 @@ Con la ESP32 desenchufada. Para el nivel base alcanza con una placa por ensayo:
 - [x] Placa A, VR (`correr ai`)
 
 **PRO-04 · Entradas digitales a ±32 V, placa alimentada** (CE-08, CE-09, CE-10, CE-14)
-- Con `correr es`, selector en 3,3 V (peor caso). Tensión del pin del MCU dentro de −0,3 V a VDD + 4 V (recuadro de arriba); VR.
+- Con `correr es`, selector en 3,3 V (peor caso). Tensión del pin del MCU dentro de −0,3 V a 4 V (recuadro de arriba); VR.
 - [x] Placa B, inyección
 - [x] Placa B, VR (`correr es` / `di`)
 - [x] Placa A *(opcional)*
