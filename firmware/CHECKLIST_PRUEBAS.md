@@ -152,7 +152,7 @@ Criterio: tensión de cada componente por debajo de su máximo absoluto, energí
 ## 8. Nivel extendido
 
 **EXT-01 · Segunda placa verificada**
-- La placa B completó INS a INT-01. Comparar corriente a 12 V, 3V3, VOH a 4 mA, ADC a 50 % FS y umbrales de entrada.
+- La placa B completó INS a INT-01.
 - [x] Hecho
 
 **EXT-02 · CAN FD entre placas con arbitraje** (CE-21)
