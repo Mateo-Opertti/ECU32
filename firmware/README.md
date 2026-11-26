@@ -255,9 +255,60 @@ Al parar una prueba, su `deinit()` apaga sus periféricos y transceptores. Despu
 
 ## Compilar y grabar
 
-1. Abrir la carpeta `firmware/` en VS Code con la extensión STM32Cube instalada. Las versiones del toolchain (GCC 14.3.1, CMake, Ninja, ST-LINK GDB server) están fijadas en [`.settings/`](.settings/) y la extensión las descarga sola.
-2. Elegir el preset **Debug** y compilar. La salida queda en `build/Debug/`, que no se versiona.
-3. Conectar el ST-LINK a J2 y lanzar **STM32Cube: STM32 Launch ST-Link GDB Server** (F5). Compila, graba y frena en `main`.
+El firmware se compila dentro de un proyecto vacío de STM32Cube creado para el STM32G491VCT6, al que se le copia el código de esta carpeta.
+
+### 1. Instalar la extensión STM32Cube
+
+1. En VS Code, abrir **Extensiones** (`Ctrl+Shift+X`).
+2. Buscar **STM32Cube for Visual Studio Code**, de STMicroelectronics, e instalarla. Se instala junto con sus extensiones auxiliares (build CMake, debug, core).
+3. Reiniciar VS Code. Aparece el ícono de **STM32Cube** en la barra lateral.
+
+La primera vez la extensión descarga sola el toolchain: GCC 14.3.1, CMake, Ninja, el ST-LINK GDB server y STM32CubeProgrammer. Las versiones que usa este proyecto están fijadas en [`.settings/`](.settings/).
+
+### 2. Descargar el soporte del STM32G491VCT6
+
+1. Abrir el panel **STM32Cube** de la barra lateral.
+2. En la gestión de paquetes del dispositivo, buscar **STM32G491VCT6** e instalar el paquete de la familia **STM32G4**. Ese paquete trae el startup, el linker script y las definiciones del micro.
+
+El firmware no usa HAL ni CubeMX, así que no hace falta instalar nada más.
+
+### 3. Crear el proyecto para el STM32G491VCT6
+
+1. Abrir la paleta de comandos (`Ctrl+Shift+P`) y elegir **STM32Cube: Create empty project**, o usar la opción para crear un proyecto vacío del panel STM32Cube.
+2. Elegir como micro el **STM32G491VCT6**.
+3. Ponerle de nombre **ECU32**, con toolchain **GCC**, y elegir una carpeta **fuera del repo** (por ejemplo `D:\PI3-ECU32\Firmware_cargar`).
+4. Abrir esa carpeta en VS Code. El proyecto trae `CMakeLists.txt`, `cmake/`, `Src/` (con un `main.c` vacío), `Inc/` y `stm32g491xc_flash.ld`.
+
+### 4. Copiar el código del repo al proyecto
+
+Copiar estos archivos de `firmware/` a la carpeta del proyecto nuevo y **reemplazar** los que ya existan:
+
+| Desde `firmware/` | Hacia el proyecto | Por qué |
+|---|---|---|
+| `Apps/` (carpeta completa) | `Apps/` | Todo el código: `Universal.c`, `universal/`, `pruebas/` y `legacy/` |
+| `Inc/ecu32_placa.h`, `Inc/ecu32_regs.h` | `Inc/` | Pines de la placa y registros del micro |
+| `Src/main.c` | `Src/main.c` | Elige qué programa se compila (por defecto `Universal.c`) |
+| `Src/startup_stm32g491xx.S` | `Src/startup_stm32g491xx.S` | Agrega la interrupción `FDCAN2_IT0`, que el startup generado no tiene |
+| `stm32g491xc_flash.ld` | `stm32g491xc_flash.ld` | Reserva la última página de flash para guardar el rol MAESTRO/ESCLAVA |
+| `ESP32/` (opcional) | `ESP32/` | Sketches del ESP32. No se compilan acá: se graban desde Arduino |
+
+**No copiar** `CMakeLists.txt`, `cmake/`, `CMakePresets.json`, `project-description.json` ni `.settings/`: son del proyecto que generó la extensión. Los archivos de `Apps/` no se agregan a CMake porque `main.c` los incluye con `#include`.
+
+> El startup y el linker script hay que copiarlos sí o sí. Con los generados, el proyecto compila igual, pero el enlace CAN2 entre placas no recibe interrupciones y el rol se puede borrar al grabar.
+
+### 5. Compilar
+
+1. En la barra de estado de VS Code, elegir el preset **Debug**.
+2. Compilar (**Build** en la barra de estado, o `F7`). La salida queda en `build/Debug/ECU32.elf`.
+3. Al final de la compilación se muestra el uso de memoria. Tiene que aparecer la región **ROL** de 2 KB: si no aparece, no se copió el `stm32g491xc_flash.ld` del repo.
+
+### 6. Grabar
+
+1. Conectar el ST-LINK a J2 y alimentar la placa por J7.
+2. Lanzar **STM32Cube: STM32 Launch ST-Link GDB Server** (`F5`). Compila, graba y frena en `main`. Si el proyecto no tiene `.vscode/launch.json`, copiar el de [`firmware/.vscode/launch.json`](.vscode/launch.json).
+3. Repetir con la otra placa: las dos llevan el mismo firmware. Después seguir con [Primer uso](#primer-uso).
+
+Si se cambia el código en el repo, hay que volver a copiar los archivos del paso 4 antes de compilar.
 
 Al grabar solo se borran las páginas que ocupa el programa, así que el rol se mantiene. Un borrado completo de la flash (*full chip erase*) también borra el rol y la placa vuelve a ser ESCLAVA.
 

@@ -45,3 +45,6 @@ Simulation/
 *.SchLib
 *.PcbLib
 *.IntLib
+
+# --- Carpeta local de carga de firmware ---
+Firmware_cargar/
