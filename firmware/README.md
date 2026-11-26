@@ -305,7 +305,7 @@ Copiar estos archivos de `firmware/` a la carpeta del proyecto nuevo y **reempla
 ### 6. Grabar
 
 1. Conectar el ST-LINK a J2 y alimentar la placa por J7.
-2. Descargar el [driver de ST-LINK](https://www.st.com/en/development-tools/stsw-link009.html)
+2. Descargar e instalar el [driver de ST-LINK](https://www.st.com/en/development-tools/stsw-link009.html)
 3. Lanzar **STM32Cube: STM32 Launch ST-Link GDB Server** (`F5`). Compila, graba y frena en `main`. Si el proyecto no tiene `.vscode/launch.json`, copiar el de [`firmware/.vscode/launch.json`](.vscode/launch.json).
 4. Repetir con la otra placa: las dos llevan el mismo firmware. Después seguir con [Primer uso](#primer-uso).
 
