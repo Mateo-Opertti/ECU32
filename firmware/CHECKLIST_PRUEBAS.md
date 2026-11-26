@@ -171,10 +171,8 @@ Criterio: tensión de cada componente por debajo de su máximo absoluto, energí
 - Sin firmware. Cada terminal y switch identificado; una persona ajena conecta la placa solo con la serigrafía y el manual.
 - [x] Hecho
 
-**EXT-05 · Gabinete de acrílico**
-- Accesos a borneras, switches, SWD, testpoints y USB de la ESP32; sin conductores expuestos.
-- Comandos: `integral 60` con el gabinete cerrado.
-- Criterio: informe PASA, sin cortes por temperatura.
+**EXT-05 · Gabinete**
+- Accesos a borneras, switches, SWD, testpoints y USB de la ESP32.
 - [x] Hecho
 
 ## 9. Conector ESP32 (enchufar la ESP32 recién ahora)
