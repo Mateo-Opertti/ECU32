@@ -44,7 +44,7 @@ ESD (CE-13). Red de descarga de 150 pF / 330 Ω a ±8 kV en contacto, en un cana
 Inyección (CE-10). Barrido en continua de −32 V a +32 V en cada borne, con la placa alimentada y sin alimentar, y en todos los AI y DI a la vez. Las líneas del ESP32 quedan fuera.
 Criterio: tensión de cada componente por debajo de su máximo absoluto, energía de los TVS dentro de su curva de pulso, y tensión en el pin del MCU por debajo de VDD + 4 V (4,0 V en los TT_a). Por debajo de VSS rige la corriente inyectada (≤ 5 mA por pin y ≤ 25 mA en total), y el −0,3 V es informativo.
 - [x] Transitorios y load dump (CE-03)
-- [ ] ESD (CE-13): no cumple en CAN, LIN, ESP32 y J2. Los cambios propuestos están en la sección 7 del informe.
+- [o] ESD (CE-13): no cumple en CAN, LIN, ESP32 y J2. Los cambios propuestos están en la sección 7 del informe.
 - [x] Inyección en pines del MCU (CE-10)
 
 ## 2. Inspección sin energía
@@ -66,7 +66,7 @@ Criterio: tensión de cada componente por debajo de su máximo absoluto, energí
 - [x] Placa A
 - [x] Placa B
 
-**ALI-02 · Riel de 3,3 V en rango de entrada** (CE-06)
+**ALI-02 · Riel de 3,3 V en rango de entrada** (CE-01, CE-06)
 - VIN a 8, 12, 24 y 28 V; 3V3 entre 2,97 V y 3,63 V.
 - [x] Placa A
 - [x] Placa B
@@ -125,7 +125,7 @@ Criterio: tensión de cada componente por debajo de su máximo absoluto, energí
 - [x] Placa A
 - [x] Placa B
 
-**COM-02 · CAN y CAN FD entre CAN1 y CAN2** (CE-21)
+**COM-02 · CAN y CAN FD entre CAN1 y CAN2** (CE-21, CE-24)
 - Cableado: CANH1–CANH2 y CANL1–CANL2 en J3, las dos terminaciones activas, sin CAN2 hacia la otra placa.
 - Comandos: `can_cantidad 100000`; `can_modo clasico` y `correr banco_can`; después `can_modo fd` y `correr banco_can`.
 - Criterio: informe final con 0 perdidas, 0 errores y TEC = REC = 0 (PASA). Vdiff dominante entre 1,5 V y 3,0 V y recesivo < 0,5 V (osciloscopio con decodificación CAN FD, en lugar del analizador de bus del anteproyecto).
@@ -134,7 +134,7 @@ Criterio: tensión de cada componente por debajo de su máximo absoluto, energí
 - [x] Placa B, CAN clásico
 - [x] Placa B, CAN FD
 
-**COM-03 · LIN como commander y responder** (CE-23)
+**COM-03 · LIN como commander y responder** (CE-23, CE-24)
 - Cableado: LIN (J3-1) y GND entre placas; SW3 cerrado en la placa commander.
 - Comandos: `par lin` (A commander) hasta unas 8 000 tramas; cambiar SW3 y `par lin_inv` (B commander). Ver los errores por tipo con `estado` y `esclava estado`.
 - Criterio: 0 errores de checksum, sync o respuesta ausente; break, sync, PID y checksum correctos en el decodificador.
@@ -278,3 +278,39 @@ Con la ESP32 desenchufada. Para el nivel base alcanza con una placa por ensayo:
 - [x] Placa A, VIN invertida: salidas
 
 ---
+
+## Trazabilidad con los criterios de éxito
+
+Cada criterio de éxito de los cuadros 4 a 7 del anteproyecto se vincula con las pruebas de esta lista que lo respaldan. Las pruebas asignadas surgen de los CE indicados entre paréntesis en cada prueba, y el estado resume el de sus casillas.
+
+| CE | Criterio (resumido) | Requisito | Verificación prevista | Pruebas | Estado |
+|---|---|---|---|---|---|
+| CE-01 | La placa opera con todas sus funciones en el rango de alimentación | RQ-01, RQ-02 | Ensayo con fuente de laboratorio | ALI-02 | Cumple |
+| CE-02 | Tolera la sobretensión sostenida y recupera el funcionamiento | RQ-03 | Ensayo sobre hardware | PRO-02 | Cumple (placa A, 32 V y 50 V) |
+| CE-03 | Ningún componente supera su máximo absoluto ante transitorios y load dump | RQ-04 | Simulación | DOC-02 | Cumple |
+| CE-04 | Tolera la inversión de polaridad sin daño ni consumo apreciable | RQ-05 | Ensayo sobre hardware | PRO-01 | Cumple (placa A) |
+| CE-05 | La limitación de corriente actúa y se rearma sin sustituir componentes | RQ-06 | Ensayo sobre hardware | PRO-08 | No cumple por diseño (nota 1) |
+| CE-06 | El riel de la lógica queda en tolerancia en todo el rango de entrada y de carga | RQ-07 | Medición | ALI-01, ALI-02, ESP-01 | Cumple |
+| CE-07 | El consumo propio no supera el valor especificado | RQ-08 | Medición | INT-01 | Cumple |
+| CE-08 | Los canales digitales toleran el cortocircuito contra batería | RQ-12 | Ensayo sobre cada tipo de interfaz | PRO-04, PRO-05 | Cumple |
+| CE-09 | Los canales digitales toleran la tensión negativa, con la placa alimentada y sin alimentar | RQ-13 | Ensayo sobre cada tipo de interfaz | PRO-04, PRO-05, PRO-09 | Cumple |
+| CE-10 | La corriente inyectada en los pines del MCU queda dentro del límite | RQ-14 | Simulación y medición | DOC-02, ESP-03, PRO-03, PRO-04, PRO-09 | Cumple |
+| CE-11 | Los canales analógicos toleran sobretensiones de ambas polaridades | RQ-17 | Ensayo sobre cada tipo de interfaz | PRO-03 | Cumple |
+| CE-12 | Las líneas de bus toleran sobretensiones de ambas polaridades | RQ-21 | Ensayo sobre cada tipo de interfaz | PRO-06, PRO-07 | Cumple |
+| CE-13 | Los terminales accesibles toleran las descargas electrostáticas | RQ-22 | Simulación | DOC-02 | No cumple en CAN, LIN, ESP32 y J2 (nota 2) |
+| CE-14 | La placa recupera su funcionamiento al retirar la falla | RQ-23 | Ensayo sobre hardware | INS-01, PRO-01 a PRO-07, PRO-09 | Cumple (VR conforme en todos los ensayos ejecutados) |
+| CE-15 | Cantidad especificada de canales digitales y analógicos | RQ-09, RQ-15 | Inspección | INS-02 | Cumple |
+| CE-16 | Cada salida entrega y absorbe la corriente mínima con niveles válidos | RQ-10 | Medición | DIG-01 | Cumple |
+| CE-17 | Las protecciones no degradan la conmutación a la frecuencia especificada | RQ-11 | Medición con osciloscopio | DIG-03 | Cumple |
+| CE-18 | Impedancia de entrada analógica no inferior a la especificada | RQ-16 | Medición | AI-01 | Cumple |
+| CE-19 | Todas las señales especificadas son accesibles por testpoints | RQ-24 | Inspección | INS-02 | Cumple |
+| CE-20 | Programación y depuración por el conector previsto | RQ-25 | Ensayo sobre hardware | ALI-03 | Cumple |
+| CE-21 | Los canales CAN o CAN-FD transmiten y reciben sin errores de trama | RQ-18 | Ensayo contra analizador de bus | COM-02, EXT-02, EXT-03 | Cumple (nota 3) |
+| CE-22 | Terminación de bus seleccionable y de valor especificado | RQ-19 | Medición e inspección | COM-01 | Cumple |
+| CE-23 | LIN opera como maestro y como esclavo | RQ-20 | Ensayo contra nodo LIN externo | COM-03 | Cumple (nota 4) |
+| CE-24 | El firmware de prueba ejercita todas las interfaces implementadas | Todos | Ejecución del firmware de prueba | DIG-01, DIG-02, AI-02, COM-02, COM-03, ESP-02 | Cumple |
+| CE-25 | Componentes con calificación AEC-Q, con las excepciones justificadas | — | Revisión de la lista de materiales | DOC-01 | Cumple |
+
+**Notas**
+1. RQ-06 pide una limitación rearmable de 2 A, y las placas usan un fusible de 500 mA que no se rearma. La justificación del cambio se documenta en el informe.
+2. La verificación prevista es por simulación. Los cambios propuestos para los canales que no cumplen están en la sección 7 del informe de DOC-02.
