@@ -305,9 +305,9 @@ Cada criterio de éxito de los cuadros 4 a 7 del anteproyecto se vincula con las
 | CE-18 | Impedancia de entrada analógica no inferior a la especificada | RQ-16 | Medición | AI-01 | Cumple |
 | CE-19 | Todas las señales especificadas son accesibles por testpoints | RQ-24 | Inspección | INS-02 | Cumple |
 | CE-20 | Programación y depuración por el conector previsto | RQ-25 | Ensayo sobre hardware | ALI-03 | Cumple |
-| CE-21 | Los canales CAN o CAN-FD transmiten y reciben sin errores de trama | RQ-18 | Ensayo contra analizador de bus | COM-02, EXT-02, EXT-03 | Cumple (nota 3) |
+| CE-21 | Los canales CAN o CAN-FD transmiten y reciben sin errores de trama | RQ-18 | Ensayo contra analizador de bus | COM-02, EXT-02, EXT-03 | Cumple |
 | CE-22 | Terminación de bus seleccionable y de valor especificado | RQ-19 | Medición e inspección | COM-01 | Cumple |
-| CE-23 | LIN opera como maestro y como esclavo | RQ-20 | Ensayo contra nodo LIN externo | COM-03 | Cumple (nota 4) |
+| CE-23 | LIN opera como maestro y como esclavo | RQ-20 | Ensayo contra nodo LIN externo | COM-03 | Cumple |
 | CE-24 | El firmware de prueba ejercita todas las interfaces implementadas | Todos | Ejecución del firmware de prueba | DIG-01, DIG-02, AI-02, COM-02, COM-03, ESP-02 | Cumple |
 | CE-25 | Componentes con calificación AEC-Q, con las excepciones justificadas | — | Revisión de la lista de materiales | DOC-01 | Cumple |
 
