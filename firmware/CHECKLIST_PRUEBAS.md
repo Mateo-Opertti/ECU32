@@ -1,6 +1,6 @@
 # Checklist del plan de pruebas
 
-Orden de ejecución y forma de correr cada prueba de `plan_pruebas_ecu.pdf` con el firmware **Universal** ([`Apps/Universal.c`](Apps/Universal.c)). Los valores medidos van en la hoja de registro del plan (anexo B). Cada prueba indica entre paréntesis los criterios de éxito (CE) del anteproyecto que respalda; al final está la [trazabilidad completa CE → prueba](#trazabilidad-con-los-criterios-de-éxito).
+Orden de ejecución y forma de correr cada prueba de `plan_pruebas_ecu.pdf` con el firmware **Universal** ([`Apps/Universal.c`](Apps/Universal.c)). Cada prueba indica entre paréntesis los criterios de éxito (CE) del anteproyecto que respalda; al final está la [trazabilidad completa CE → prueba](#trazabilidad-con-los-criterios-de-éxito).
 
 **Convención de casillas**
 - `[x]` terminada con resultado conforme.
@@ -82,9 +82,9 @@ Criterio: tensión de cada componente por debajo de su máximo absoluto, energí
 - Cableado: para VOH, 560 Ω de la salida a GND (≥ 4,3 mA a 2,4 V); para VOL, 680 Ω de la salida a 3V3 (≥ 4,3 mA a 0,4 V).
 - Comandos: `do 1 1`, `do 1 0`, `do 3 1`, `do 3 0`, `do 4 1`, `do 4 0`; DO2 en la placa ESCLAVA con `esclava do 2 1` / `esclava do 2 0`.
 - Criterio: cambia solo la salida pedida; VOH ≥ 2,4 V y VOL ≤ 0,4 V con la carga de 4 mA.
-- [x] Placa A (DO1, DO3, DO4)
-- [x] Placa B (DO1, DO3, DO4)
-- [x] DO2 en Placa B (como esclava)
+- [o] Placa A (DO1, DO3, DO4): se midió sin carga (niveles válidos y cambia solo la salida pedida). Con 4 mA no cumple por diseño: R1 a R4 de 4,7 kΩ limitan la salida a ≈ 0,7 mA.
+- [o] Placa B (DO1, DO3, DO4): ídem.
+- [o] DO2 en Placa B (como esclava): ídem.
 
 **DIG-02 · Entradas en las tres posiciones del divisor** (CE-24)
 - Cableado: fuente en cada DI, jumper en 3V3, 12V y 24V. Para DI2, desconectar el TX del CP2102.
@@ -300,17 +300,21 @@ Cada criterio de éxito de los cuadros 4 a 7 del anteproyecto se vincula con las
 | CE-13 | Los terminales accesibles toleran las descargas electrostáticas | RQ-22 | Simulación | DOC-02 | No cumple en CAN, LIN, ESP32 y J2 (nota 2) |
 | CE-14 | La placa recupera su funcionamiento al retirar la falla | RQ-23 | Ensayo sobre hardware | INS-01, PRO-01 a PRO-07, PRO-09 | Cumple (VR conforme en todos los ensayos ejecutados) |
 | CE-15 | Cantidad especificada de canales digitales y analógicos | RQ-09, RQ-15 | Inspección | INS-02 | Cumple |
-| CE-16 | Cada salida entrega y absorbe la corriente mínima con niveles válidos | RQ-10 | Medición | DIG-01 | Cumple |
+| CE-16 | Cada salida entrega y absorbe la corriente mínima con niveles válidos | RQ-10 | Medición | DIG-01 | No cumple (nota 5) |
 | CE-17 | Las protecciones no degradan la conmutación a la frecuencia especificada | RQ-11 | Medición con osciloscopio | DIG-03 | Cumple |
 | CE-18 | Impedancia de entrada analógica no inferior a la especificada | RQ-16 | Medición | AI-01 | Cumple |
-| CE-19 | Todas las señales especificadas son accesibles por testpoints | RQ-24 | Inspección | INS-02 | Cumple |
+| CE-19 | Todas las señales especificadas son accesibles por testpoints | RQ-24 | Inspección | INS-02 | Cumple de forma parcial (nota 6) |
 | CE-20 | Programación y depuración por el conector previsto | RQ-25 | Ensayo sobre hardware | ALI-03 | Cumple |
-| CE-21 | Los canales CAN o CAN-FD transmiten y reciben sin errores de trama | RQ-18 | Ensayo contra analizador de bus | COM-02, EXT-02, EXT-03 | Cumple |
+| CE-21 | Los canales CAN o CAN-FD transmiten y reciben sin errores de trama | RQ-18 | Ensayo contra analizador de bus | COM-02, EXT-02, EXT-03 | Cumple (nota 3) |
 | CE-22 | Terminación de bus seleccionable y de valor especificado | RQ-19 | Medición e inspección | COM-01 | Cumple |
-| CE-23 | LIN opera como maestro y como esclavo | RQ-20 | Ensayo contra nodo LIN externo | COM-03 | Cumple |
+| CE-23 | LIN opera como maestro y como esclavo | RQ-20 | Ensayo contra nodo LIN externo | COM-03 | Cumple (nota 4) |
 | CE-24 | El firmware de prueba ejercita todas las interfaces implementadas | Todos | Ejecución del firmware de prueba | DIG-01, DIG-02, AI-02, COM-02, COM-03, ESP-02 | Cumple |
 | CE-25 | Componentes con calificación AEC-Q, con las excepciones justificadas | — | Revisión de la lista de materiales | DOC-01 | Cumple |
 
 **Notas**
 1. RQ-06 pide una limitación rearmable de 2 A, y las placas usan un fusible de 500 mA que no se rearma. La justificación del cambio se documenta en el informe.
 2. La verificación prevista es por simulación. Los cambios propuestos para los canales que no cumplen están en la sección 7 del informe de DOC-02.
+3. El nivel base exige un canal CAN, que cubre COM-02. EXT-02 y EXT-03 corresponden al segundo canal CAN-FD y al gateway del nivel extendido. En lugar del analizador de bus se usó un osciloscopio con decodificación CAN FD.
+4. LIN pertenece al nivel extendido. El nodo LIN externo es la otra placa.
+5. DIG-01 se midió sin carga. La resistencia serie de 4,7 kΩ limita la corriente de cada salida a aproximadamente 0,7 mA, por debajo de los 4 mA de RQ-10 (desvío de diseño).
+6. No hay testpoints en DI, DO, CAN ni LIN por falta de espacio junto a las borneras. Esas señales se miden en las borneras o en los pines de los jumpers.
