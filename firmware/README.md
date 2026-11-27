@@ -41,7 +41,7 @@ J3-3 (CAN2_H) con J3-3, J3-2 (CAN2_L) con J3-2 y GND común, con una terminació
 ## Primer uso
 
 1. Grabar el mismo firmware en las dos placas (ver [Compilar y grabar](#compilar-y-grabar)).
-2. Conectar el CP2102 a una placa y abrir una terminal serie a 115200 8N1 (PuTTY, Tera Term, el monitor serie de VS Code o de Arduino). Al resetear la placa aparece la causa del reset y el rol.
+2. Conectar el CP2102, TX a E1 y RX a E0 con tierra comun, a una placa y abrir una terminal serie a 115200 8N1 (PuTTY, Tera Term, el monitor serie de VS Code o de Arduino). Al resetear la placa aparece la causa del reset y el rol.
 3. Escribir `rol maestro`. El rol queda guardado en la flash. La otra placa, sin rol grabado, arranca como ESCLAVA.
 4. Unir CAN2 entre las placas y escribir `esclava estado`. La esclava tiene que contestar con un ACK.
 
